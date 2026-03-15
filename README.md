@@ -16,7 +16,7 @@ An evidence-driven knowledge base and multi-agent debate framework for comparing
 │   ├── quantum_algorithm_portfolio.md      # Generated: per-substrate vendor portfolio
 │   ├── vendor_application_matrix.html      # Generated: interactive colour-coded matrix
 │   ├── vendor_application_bipartite.png    # Bipartite graph visualisation
-│   └── refs/                               # 56 evidence files (vendor strategy docs, paper excerpts, benchmarks)
+│   └── refs/                               # 59 evidence files (vendor strategy docs, paper excerpts, benchmarks)
 └── vq-slides/                              # Brainstorm presentation (retro CRT aesthetic)
 ```
 
@@ -36,6 +36,17 @@ An evidence-driven knowledge base and multi-agent debate framework for comparing
 **13 application groups**: optimisation, chemistry & materials, drug discovery, finance, logistics & scheduling, quantum ML, simulation & physics, error correction, crypto & security, energy & climate, networking & edge, boson sampling, platforms & tooling.
 
 Run `python3 vendor-app/build.py` to regenerate the markdown portfolio and HTML matrix from `edges.json`.
+
+## Reference files
+
+`vendor-app/refs/` contains 59 files in several categories:
+
+- **Vendor strategy docs** (`sp01`–`sp05`, `ti01`–`ti08`, `na01`–`na04`, `ph01`–`ph04`, `an01`): per-vendor portfolio evidence organised by substrate
+- **Technical excerpts** (`ref01`–`ref31`): paper summaries, algorithm details, and partnership documentation linked from edges
+- **Benchmarking papers** (`ref07`, `ref23`, `ref24`): general background (QAOA MaxkSAT, SupermarQ, application-oriented benchmarks) not tied to specific edges
+- **External links** (`ref25`–`ref28`): pointers to Wikipedia/GitHub for vendors without edges (1QBit, QCWare, QMill, QEDC)
+
+49 ref files are linked from edges in `edges.json`; 10 are standalone background reference material.
 
 ## Debate architecture
 
