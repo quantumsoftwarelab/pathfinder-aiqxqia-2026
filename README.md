@@ -52,14 +52,14 @@ Run `python3 vendor-app/build.py` to regenerate the markdown portfolio and HTML 
 
 The system is designed around structured technical debates between vendor-specific agents, scored on:
 
-| Metric | Weight |
-|--------|--------|
-| Expected output fidelity | 30% |
-| Native circuit depth + 2Q gates | 25% |
-| Error mitigation overhead | 15% |
-| Wall-clock time | 15% |
-| Qubit sufficiency | 10% |
-| Engineering complexity | 5% |
+| Metric                          | Weight |
+| ------------------------------- | ------ |
+| Expected output fidelity        | 30%    |
+| Native circuit depth + 2Q gates | 25%    |
+| Error mitigation overhead       | 15%    |
+| Wall-clock time                 | 15%    |
+| Qubit sufficiency               | 10%    |
+| Engineering complexity          | 5%     |
 
 See `quantum_vendor_debate_architecture.md` for the full protocol, anti-gaming rules, and MVP scope.
 
@@ -73,8 +73,9 @@ Academic papers seeding the algorithm definitions and resource estimates:
 - Quantum computing vision and challenges (2403.02240)
 - Resource estimation techniques (2402.12434)
 
-
 ### Addendum
 
 - need a framework to evaluate debate structures
 - testing agents expertise in vendor, in general quantum applications
+- idempotence of debates
+- incorporate some of the README in QSL-debates.tex
