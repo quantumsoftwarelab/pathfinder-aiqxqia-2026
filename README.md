@@ -72,3 +72,9 @@ Academic papers seeding the algorithm definitions and resource estimates:
 - QC applications in health and medicine (2301.09106)
 - Quantum computing vision and challenges (2403.02240)
 - Resource estimation techniques (2402.12434)
+
+
+### Addendum
+
+- need a framework to evaluate debate structures
+- testing agents expertise in vendor, in general quantum applications
