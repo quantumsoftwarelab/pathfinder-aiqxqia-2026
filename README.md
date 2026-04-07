@@ -1,4 +1,4 @@
-# Quantum Vendor Debate System (wwQSL)
+# Quantum Vendor Debate System (agQSL)
 
 An evidence-driven knowledge base and multi-agent debate framework for comparing quantum hardware vendors on algorithm implementation readiness.
 
