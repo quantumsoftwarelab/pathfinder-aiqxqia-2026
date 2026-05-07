@@ -54,7 +54,7 @@ Key generated outputs:
 - [`vendor-app/vendor_application_bipartite.svg`](vendor-app/vendor_application_bipartite.svg)
 - [`vendor-app/vendor_application_bipartite.png`](vendor-app/vendor_application_bipartite.png)
 
-Reference evidence lives under [`vendor-app/refs/`](vendor-app/refs/), with 82 local files covering vendor strategy documents, technical excerpts, benchmark papers, HTML snapshots, and external pointers.
+Reference evidence lives under [`vendor-app/refs/`](vendor-app/refs/), with 112 local files covering vendor strategy documents, technical excerpts, benchmark papers, HTML snapshots, and external pointers.
 The collection history is tracked in [`vendor-app/collection_rounds.md`](vendor-app/collection_rounds.md).
 
 ## Portability Pipeline
