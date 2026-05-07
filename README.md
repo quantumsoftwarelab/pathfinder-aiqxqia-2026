@@ -36,9 +36,9 @@ The repository is deliberately filesystem-first: generated outputs should be reb
 
 ## Vendor/Application Graph
 
-[`vendor-app/edges.json`](vendor-app/edges.json) is the canonical local data source for vendor/application edges. It currently tracks 79 edges across 27 vendors and 13 application groups.
+[`vendor-app/edges.json`](vendor-app/edges.json) is the canonical local data source for vendor/application edges. It currently tracks 82 edges across 27 vendors and 13 application groups.
 
-Each edge records the vendor, application group, communication evidence, technical papers, normalised match type, partner organisations, local reference IDs, verification status, and notes. The generated matrix and portfolio files are derived artefacts and should not be hand-edited. Collection-round metadata lives in `edges.json`; the last data collection round was 2026-04-15, and later output regeneration does not imply fresh collection.
+Each edge records the vendor, application group, communication evidence, technical papers, normalised match type, partner organisations, local reference IDs, verification status, and notes. The generated matrix and portfolio files are derived artefacts and should not be hand-edited. Collection-round metadata lives in `edges.json`; the last data collection round was 2026-05-07, and later output regeneration does not imply fresh collection.
 
 Regenerate the graph outputs after changing `edges.json`:
 
@@ -50,9 +50,11 @@ Key generated outputs:
 
 - [`vendor-app/quantum_algorithm_portfolio.md`](vendor-app/quantum_algorithm_portfolio.md)
 - [`vendor-app/vendor_application_matrix.html`](vendor-app/vendor_application_matrix.html)
+- [`vendor-app/vendor_application_bipartite.excalidraw`](vendor-app/vendor_application_bipartite.excalidraw)
+- [`vendor-app/vendor_application_bipartite.svg`](vendor-app/vendor_application_bipartite.svg)
 - [`vendor-app/vendor_application_bipartite.png`](vendor-app/vendor_application_bipartite.png)
 
-Reference evidence lives under [`vendor-app/refs/`](vendor-app/refs/), with 59 local files covering vendor strategy documents, technical excerpts, benchmark papers, and external pointers.
+Reference evidence lives under [`vendor-app/refs/`](vendor-app/refs/), with 62 local files covering vendor strategy documents, technical excerpts, benchmark papers, and external pointers.
 The collection history is tracked in [`vendor-app/collection_rounds.md`](vendor-app/collection_rounds.md).
 
 ## Portability Pipeline
