@@ -22,6 +22,7 @@ The repository is deliberately filesystem-first: generated outputs should be reb
 ├── dossiers/                 # Portability scanner queue and per-paper dossiers
 ├── ezratty/                  # Ezratty indexer, Nanograph assets, Slack/debate bot runtime
 ├── ezratty2/                 # Key-less search wrapper over the Ezratty seed/index data
+├── logs/                     # Per-stage runner logs (gitignored under logs/portability/)
 ├── plans/                    # Active implementation and design plans
 ├── prompts/portability/      # Scanner, Romain, Julien, Brillant, and Critic prompts
 ├── quantum-wars/             # Source notes and presentations for the broader evaluation work
@@ -71,6 +72,8 @@ Per-paper dossier folders contain:
 - `extraction.md`: Julien's standalone technical extraction.
 - `paper.html`, `paper.pdf`, or `paper.url`: fetched source paper or fetch fallback.
 - `dossier.pdf`: generated presentation PDF, ignored by git.
+
+`dossier.md` retains the full audit trail (every Critic pass, every Brillant revision). The published `dossier.pdf` strips inter-agent chatter: the rendered Critic block surfaces only the final pass's `Residual caveats` subsection, with verifier identity, findings, and verdict rationale held back as pipeline-internal context.
 
 Useful commands:
 
