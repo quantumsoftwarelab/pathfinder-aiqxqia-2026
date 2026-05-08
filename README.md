@@ -26,14 +26,15 @@ The repository is deliberately filesystem-first: generated outputs should be reb
 ├── logs/                     # Per-stage runner logs (gitignored under logs/portability/)
 ├── plans/                    # Active implementation and design plans
 ├── prompts/portability/      # Scanner, Romain, Julien, Brillant, and Critic prompts
-├── quantum-wars/             # Source notes and presentations for the broader evaluation work
 ├── scripts/portability/      # Scanner, bootstrap, stage runner, publisher
 ├── slides/                   # Presentation material
 ├── surveys/                  # Academic survey and reference inputs
 ├── tests/                    # Pytest coverage for portability and Ezratty tooling
-├── vendor-app/               # Canonical vendor/application graph and generated matrix outputs
-└── vq-slides/                # Brainstorm presentation material
+└── vendor-app/               # Canonical vendor/application graph and generated matrix outputs
 ```
+
+The former `quantum-wars/` and `vq-slides/` material now lives in the standalone
+[`qwQSL`](https://github.com/vd1/qwQSL) repository.
 
 ## Vendor/Application Graph
 
