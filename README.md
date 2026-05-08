@@ -21,7 +21,7 @@ The repository is deliberately filesystem-first: generated outputs should be reb
 ├── comments/                 # Inter-agent review and coordination notes
 ├── debates/                  # Debate outputs and experiments
 ├── dossiers/                 # Portability scanner queue and per-paper dossiers
-├── ezratty/                  # Ezratty indexer, Nanograph assets, Slack/debate bot runtime
+├── ezratty/                  # Ezratty indexer and legacy graph-backed Slack/debate bot runtime
 ├── ezratty2/                 # Key-less search wrapper over the Ezratty seed/index data
 ├── logs/                     # Per-stage runner logs (gitignored under logs/portability/)
 ├── plans/                    # Active implementation and design plans
@@ -55,7 +55,7 @@ Key generated outputs:
 - [`vendor-app/vendor_application_bipartite.svg`](vendor-app/vendor_application_bipartite.svg)
 - [`vendor-app/vendor_application_bipartite.png`](vendor-app/vendor_application_bipartite.png)
 
-Reference evidence lives under [`vendor-app/refs/`](vendor-app/refs/), with 62 local files covering vendor strategy documents, technical excerpts, benchmark papers, and external pointers.
+Reference evidence lives under [`vendor-app/refs/`](vendor-app/refs/), with 112 local files covering vendor strategy documents, technical excerpts, benchmark papers, HTML snapshots, and external pointers.
 The collection history is tracked in [`vendor-app/collection_rounds.md`](vendor-app/collection_rounds.md).
 
 ## Portability Pipeline
@@ -101,7 +101,7 @@ The current worked dossiers include:
 
 ## Ezratty Index And Bots
 
-[`ezratty/`](ezratty/) contains the indexed Olivier Ezratty source workflow, Nanograph configuration, and Slack/debate bot support files. [`ezratty2/search.py`](ezratty2/search.py) is the key-less local search wrapper used by agents when they need vendor/modality background without requiring external credentials.
+[`ezratty/`](ezratty/) contains the indexed Olivier Ezratty source workflow and legacy graph-backed Slack/debate bot support files. [`ezratty2/search.py`](ezratty2/search.py) is the key-less local search wrapper used by agents when they need vendor/modality background without requiring external credentials.
 
 Typical search commands:
 
@@ -111,7 +111,7 @@ python3 ezratty2/search.py section 8-3-7-vendors Quantinuum
 python3 ezratty2/search.py references <section-slug>
 ```
 
-Container and shared-home setup for the bots is documented in [`ezratty/README.md`](ezratty/README.md). The optional `nanograph` binary is not bundled; if it is missing, use `ezratty2/search.py` or set the documented runtime path before relying on direct Nanograph commands.
+Container and shared-home setup for the bots is documented in [`ezratty/README.md`](ezratty/README.md). Pipeline agents should use `ezratty2/search.py`; the older graph-backed bot runtime is a separate legacy path.
 
 ## Planning And Coordination
 
