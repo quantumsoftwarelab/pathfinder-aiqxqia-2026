@@ -59,6 +59,8 @@ Key generated outputs:
 Reference evidence lives under [`vendor-app/refs/`](vendor-app/refs/), with 112 local files covering vendor strategy documents, technical excerpts, benchmark papers, HTML snapshots, and external pointers.
 The collection history is tracked in [`vendor-app/collection_rounds.md`](vendor-app/collection_rounds.md).
 
+Physical-layer reference notes for each hardware substrate live under [`vendor-notes/`](vendor-notes/), indexed by [`vendor-notes/README.md`](vendor-notes/README.md). The portability agents that reason about substrate physics (Brillant, Julien, the quantum-physicist triage reviewer) are pointed at this corpus from their prompts.
+
 ## Portability Pipeline
 
 The portability pipeline starts from recent papers or announcements with actual hardware execution, then asks: given this application ran on vendor X, which other vendors could support it, and how?
