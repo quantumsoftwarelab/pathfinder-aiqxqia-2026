@@ -55,6 +55,7 @@ Key generated outputs:
 
 - [`vendor-app/quantum_algorithm_portfolio.md`](vendor-app/quantum_algorithm_portfolio.md)
 - [`vendor-app/vendor_application_matrix.html`](vendor-app/vendor_application_matrix.html)
+- [`vendor-app/algorithm_vendor_matrix.html`](vendor-app/algorithm_vendor_matrix.html) (QPU-primitive by vendor matrix, built from the `dossiers/<slug>/algorithm.json` sidecars and `edge_algorithm.json`)
 - [`vendor-app/vendor_application_bipartite.excalidraw`](vendor-app/vendor_application_bipartite.excalidraw)
 - [`vendor-app/vendor_application_bipartite.svg`](vendor-app/vendor_application_bipartite.svg)
 - [`vendor-app/vendor_application_bipartite.png`](vendor-app/vendor_application_bipartite.png)
