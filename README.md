@@ -23,14 +23,17 @@ The repository is deliberately filesystem-first: generated outputs should be reb
 ├── dossiers/                 # Portability scanner queue and per-paper dossiers
 ├── ezratty/                  # Ezratty indexer and legacy graph-backed Slack/debate bot runtime
 ├── ezratty2/                 # Key-less search wrapper over the Ezratty seed/index data
+├── inbox/                    # Local paper inputs and unpacked source bundles
 ├── logs/                     # Per-stage runner logs (gitignored under logs/portability/)
 ├── plans/                    # Active implementation and design plans
 ├── prompts/portability/      # Scanner, Romain, Julien, Brillant, and Critic prompts
-├── scripts/portability/      # Scanner, bootstrap, stage runner, publisher
+├── qatch/                    # QATCH LaTeX note and generated local PDF
+├── scripts/                  # Repository helper scripts, including portability
 ├── slides/                   # Presentation material
 ├── surveys/                  # Academic survey and reference inputs
 ├── tests/                    # Pytest coverage for portability and Ezratty tooling
-└── vendor-app/               # Canonical vendor/application graph and generated matrix outputs
+├── vendor-app/               # Canonical vendor/application graph and generated matrix outputs
+└── vendor-notes/             # Physical-layer substrate notes
 ```
 
 The former `quantum-wars/` and `vq-slides/` material now lives in the standalone
@@ -38,9 +41,9 @@ The former `quantum-wars/` and `vq-slides/` material now lives in the standalone
 
 ## Vendor/Application Graph
 
-[`vendor-app/edges.json`](vendor-app/edges.json) is the canonical local data source for vendor/application edges. It currently tracks 82 edges across 27 vendors and 13 application groups.
+[`vendor-app/edges.json`](vendor-app/edges.json) is the canonical local data source for vendor/application edges. It currently tracks 117 edges across 28 vendors and 13 application groups.
 
-Each edge records the vendor, application group, communication evidence, technical papers, normalised match type, partner organisations, local reference IDs, verification status, and notes. The generated matrix and portfolio files are derived artefacts and should not be hand-edited. Collection-round metadata lives in `edges.json`; the last data collection round was 2026-05-07, and later output regeneration does not imply fresh collection.
+Each edge records the vendor, application group, communication evidence, technical papers, normalised match type, partner organisations, local reference IDs, verification status, notes, and optional portability metadata on paper rows. The generated matrix and portfolio files are derived artefacts and should not be hand-edited. Collection-round metadata lives in `edges.json`; the last data collection round was 2026-05-21, and later output regeneration does not imply fresh collection.
 
 Regenerate the graph outputs after changing `edges.json`:
 
@@ -56,7 +59,7 @@ Key generated outputs:
 - [`vendor-app/vendor_application_bipartite.svg`](vendor-app/vendor_application_bipartite.svg)
 - [`vendor-app/vendor_application_bipartite.png`](vendor-app/vendor_application_bipartite.png)
 
-Reference evidence lives under [`vendor-app/refs/`](vendor-app/refs/), with 112 local files covering vendor strategy documents, technical excerpts, benchmark papers, HTML snapshots, and external pointers.
+Reference evidence lives under [`vendor-app/refs/`](vendor-app/refs/), with 114 local files covering vendor strategy documents, technical excerpts, benchmark papers, HTML snapshots, and external pointers.
 The collection history is tracked in [`vendor-app/collection_rounds.md`](vendor-app/collection_rounds.md).
 
 Physical-layer reference notes for each hardware substrate live under [`vendor-notes/`](vendor-notes/), indexed by [`vendor-notes/README.md`](vendor-notes/README.md). The portability agents that reason about substrate physics (Brillant, Julien, the quantum-physicist triage reviewer) are pointed at this corpus from their prompts.
@@ -68,7 +71,7 @@ The portability pipeline starts from recent papers or announcements with actual 
 The current app path is:
 
 ```text
-scan queue -> human triage -> bootstrap -> Romain -> Julien -> Brillant -> Critic -> publish
+scan -> librarian/physicist triage -> manual promotion -> bootstrap -> Romain -> Julien -> Brillant -> Critic -> publish
 ```
 
 A side artefact of each dossier run is `dossiers/<slug>/algorithm.json`,
@@ -88,9 +91,9 @@ bootstrap` line). Each wake writes one line to
 section of `dossiers/_queue.md`. Recover a parked paper with
 `uv run python -m scripts.portability.port_next_daily --slug <slug>`.
 
-The queue is a projection over [`vendor-app/edges.json`](vendor-app/edges.json). Each entry in an edge's `papers[]` array carries an optional `portability` sub-object with the dossier status, slug, queue decision, and rationale. The Markdown view at [`dossiers/_queue.md`](dossiers/_queue.md) is generated by `scripts/portability/render_queue.py` for human reading and must not be hand-edited. Approved candidates have `portability.dossier_status = "queued"`; bootstrapped dossiers have `"in_progress"`; published ones have `"published"`.
+The queue is a projection over [`vendor-app/edges.json`](vendor-app/edges.json). Each entry in an edge's `papers[]` array carries an optional `portability` sub-object with the dossier status, slug, queue decision, and rationale. The Markdown view at [`dossiers/_queue.md`](dossiers/_queue.md) is generated by `scripts/portability/render_queue.py` for human reading and must not be hand-edited. Approved candidates have `portability.dossier_status = "queued"`; bootstrapped dossiers have `"in_progress"`; published ones have `"published"`. In the current checkout, portability rows include 65 queued papers and 6 published dossiers.
 
-Untagged scanner findings live separately in [`vendor-app/scan_candidates.jsonl`](vendor-app/scan_candidates.jsonl). New scan runs append JSONL rows there; humans triage by promoting a row into `edges.json` (appending it to the matching edge's `papers[]` with a `portability` sub-object).
+Untagged scanner findings live separately in [`vendor-app/scan_candidates.jsonl`](vendor-app/scan_candidates.jsonl). New scan runs append JSONL rows there; the automated librarian and physicist triage reviewers can mark rows as promoted or rejected, but promoted rows still require a manual curation pass through `promote_candidates.py` before they land in `edges.json`.
 
 Per-paper dossier folders contain:
 
@@ -105,6 +108,8 @@ Useful commands:
 
 ```bash
 uv run python -m scripts.portability.scan --since YYYY-MM-DD       # appends to vendor-app/scan_candidates.jsonl
+uv run python -m scripts.portability.triage --dry-run              # reviews pending scan candidates without writing
+uv run python -m scripts.portability.promote_candidates --dry-run  # validates the promotion mapping before writing edges.json
 uv run python -m scripts.portability.bootstrap <slug> --triager <name>
 uv run python -m scripts.portability.port_paper <slug> --all
 uv run python -m scripts.portability.publish <slug>                # writes dossier_status="published" back to edges.json
@@ -112,12 +117,16 @@ uv run python -m scripts.portability.render_queue                  # regenerates
 scripts/portability/port_next.sh --run
 ```
 
-The scanner appends JSONL rows to `vendor-app/scan_candidates.jsonl` and dedupes against existing entries by `url`. The queue helpers in [`scripts/portability/_queue.py`](scripts/portability/_queue.py) read directly from `edges.json` (the public API: `parse`, `find_row`, `pending_bootstrap_slugs`, `mark_bootstrapped`, `mark_published` -- is preserved). Use the provided scripts rather than parsing the generated `_queue.md` directly.
+The scanner appends JSONL rows to `vendor-app/scan_candidates.jsonl` and dedupes against existing entries by `url`. By default, a successful scan also runs the triage step; pass `--no-triage` to skip it. The queue helpers in [`scripts/portability/_queue.py`](scripts/portability/_queue.py) read directly from `edges.json` (the public API: `parse`, `find_row`, `pending_bootstrap_slugs`, `mark_bootstrapped`, `mark_published` -- is preserved). Use the provided scripts rather than parsing the generated `_queue.md` directly.
 
-The current worked dossiers include:
+Published worked dossiers include:
 
 - [`dossiers/2026-arxiv-2604.14921-ethylene-se-qpe/`](dossiers/2026-arxiv-2604.14921-ethylene-se-qpe/)
 - [`dossiers/2026-arxiv-2604.16164-nonlinear-spectroscopy/`](dossiers/2026-arxiv-2604.16164-nonlinear-spectroscopy/)
+- [`dossiers/2026-arxiv-2604.12635-iqp-connectivity/`](dossiers/2026-arxiv-2604.12635-iqp-connectivity/)
+- [`dossiers/2026-arxiv-2605.04737-aquila-graph-classification/`](dossiers/2026-arxiv-2605.04737-aquila-graph-classification/)
+- [`dossiers/2026-arxiv-2605.21276-pasqal-logical-kernel-de-solver/`](dossiers/2026-arxiv-2605.21276-pasqal-logical-kernel-de-solver/)
+- [`dossiers/2026-arxiv-2407.02553-quera-quantum-reservoir-learning/`](dossiers/2026-arxiv-2407.02553-quera-quantum-reservoir-learning/)
 
 ## Ezratty Index And Bots
 
@@ -143,7 +152,7 @@ Durable organisation-level memory belongs in QSL documents, not in local hidden 
 
 ## Debate Architecture
 
-The original vendor debate system is described in [`quantum_vendor_debate_architecture.md`](quantum_vendor_debate_architecture.md). It scores vendor-specific agents on:
+The original vendor debate system is described in [`debates/quantum_vendor_debate_architecture.md`](debates/quantum_vendor_debate_architecture.md). It scores vendor-specific agents on:
 
 | Metric | Weight |
 |---|---:|
