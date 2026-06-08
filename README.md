@@ -129,6 +129,18 @@ Published worked dossiers include:
 - [`dossiers/2026-arxiv-2605.21276-pasqal-logical-kernel-de-solver/`](dossiers/2026-arxiv-2605.21276-pasqal-logical-kernel-de-solver/)
 - [`dossiers/2026-arxiv-2407.02553-quera-quantum-reservoir-learning/`](dossiers/2026-arxiv-2407.02553-quera-quantum-reservoir-learning/)
 
+To build dossier PDFs reproducibly on Linux or macOS, enter the repo dev shell
+first:
+
+```bash
+nix develop
+python -m scripts.portability.publish <slug>
+```
+
+`publish.py` renders `dossier.md` plus `extraction.md` through `pandoc` and
+`xelatex`, writing `dossiers/<slug>/dossier.pdf`. The site exporter prefers the
+PDF when it exists and otherwise falls back to `dossier.md`.
+
 ## Ezratty Index And Bots
 
 [`ezratty/`](ezratty/) contains the indexed Olivier Ezratty source workflow and legacy graph-backed Slack/debate bot support files. [`ezratty2/search.py`](ezratty2/search.py) is the key-less local search wrapper used by agents when they need vendor/modality background without requiring external credentials.
