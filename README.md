@@ -41,9 +41,9 @@ The former `quantum-wars/` and `vq-slides/` material now lives in the standalone
 
 ## Vendor/Application Graph
 
-[`vendor-app/edges.json`](vendor-app/edges.json) is the canonical local data source for vendor/application edges. It currently tracks 117 edges across 28 vendors and 13 application groups.
+[`vendor-app/edges.json`](vendor-app/edges.json) is the canonical local data source for vendor/application edges. It currently tracks 118 edges across 28 vendors and 13 application groups.
 
-Each edge records the vendor, application group, communication evidence, technical papers, normalised match type, partner organisations, local reference IDs, verification status, notes, and optional portability metadata on paper rows. The generated matrix and portfolio files are derived artefacts and should not be hand-edited. Collection-round metadata lives in `edges.json`; the last data collection round was 2026-05-21, and later output regeneration does not imply fresh collection.
+Each edge records the vendor, application group, communication evidence, technical papers, normalised match type, partner organisations, local reference IDs, verification status, notes, and optional portability metadata on paper rows. Every communication and paper entry also carries a stable `artefact_id` (`eNNN.NNN`, assigned once per edge in accession order and never renumbered) so downstream analyses can cite individual artefacts rather than whole edges. The generated matrix and portfolio files are derived artefacts and should not be hand-edited. Collection-round metadata lives in `edges.json`; the last data collection round was 2026-05-21, and later output regeneration does not imply fresh collection.
 
 Regenerate the graph outputs after changing `edges.json`:
 
