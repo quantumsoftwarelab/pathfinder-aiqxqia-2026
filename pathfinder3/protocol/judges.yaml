@@ -29,10 +29,10 @@ judges:
     transport: claude-cli
     settings: {}
 
-# Escalation rule (plan item 2): if the cheap judge cannot reach recall
-# >= 0.95 on curator-good pairs at any operating point with flagged share
-# <= 10 percent, promote the cheap tier to claude-sonnet-4-6 and re-measure
-# before touching the prompt. Prompt edits and judge swaps never happen in
-# the same step.
+# Escalation rule (plan item 2): if the cheap judge cannot offer a useful
+# tradeoff between strong-model recall and strong-pass volume, either
+# promote the cheap tier to claude-sonnet-4-6 and re-measure, or accept that
+# Phase 1 forwards a large survivor set to the strong tier. Prompt edits and
+# judge swaps never happen in the same step.
 escalation:
   cheap_fallback_alias: claude-sonnet-4-6
