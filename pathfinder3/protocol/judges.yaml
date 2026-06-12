@@ -1,0 +1,35 @@
+# Pathfinder judge registry. Verdict rows cite judges as
+# "claude:<model_id>" using the model_id recorded here, which is the exact
+# identifier confirmed by a dry-run, not merely the requested alias.
+
+prompt_version: v1
+registered: "2026-06-12"
+
+dry_run:
+  date: "2026-06-12"
+  method: >
+    claude --model <alias> --print --output-format text
+    -p "State the exact model ID from your system prompt. Output only the
+    model ID string, nothing else."
+
+judges:
+  cheap:
+    alias: claude-haiku-4-5
+    model_id: claude-haiku-4-5   # dry-run confirmed 2026-06-12
+    tier: cheap
+    transport: claude-cli        # batch API deferred; CLI suffices at calibration scale
+    settings: {}
+  strong:
+    alias: claude-opus-4-8
+    model_id: claude-opus-4-8    # dry-run confirmed 2026-06-12
+    tier: strong
+    transport: claude-cli
+    settings: {}
+
+# Escalation rule (plan item 2): if the cheap judge cannot reach recall
+# >= 0.95 on curator-good pairs at any operating point with flagged share
+# <= 10 percent, promote the cheap tier to claude-sonnet-4-6 and re-measure
+# before touching the prompt. Prompt edits and judge swaps never happen in
+# the same step.
+escalation:
+  cheap_fallback_alias: claude-sonnet-4-6
