@@ -22,6 +22,7 @@ import argparse
 import concurrent.futures as cf
 import json
 import subprocess
+import tempfile
 import threading
 from datetime import date
 from pathlib import Path
@@ -38,10 +39,14 @@ LOG_DIR = P3 / "logs"
 
 def _call_judge(model_id: str, prompt: str, timeout: int = 300) -> str:
     # No permission bypass and no tools: the judge is a pure text call.
+    # cwd is a neutral directory so the CLI loads no project context
+    # (CLAUDE.md, AGENTS.md, repo hooks); with project context present the
+    # judge sometimes narrates a skill check instead of emitting bare JSON.
     proc = subprocess.run(
         ["claude", "--model", model_id, "--disallowedTools", "*",
          "--print", "--output-format", "text", "-p", prompt],
         capture_output=True, text=True, timeout=timeout,
+        cwd=tempfile.gettempdir(),
     )
     if proc.returncode != 0:
         raise RuntimeError(f"claude rc={proc.returncode}: {proc.stderr[:300]}")
@@ -115,7 +120,7 @@ def main() -> int:
         row, q, p = entry
         prompt = render_prompt(template, q, p)
         raw, verdict, error = None, None, None
-        for attempt in (1, 2):
+        for attempt in (1, 2, 3):
             try:
                 raw = _call_judge(model_id, prompt)
                 verdict = _parse_verdict(raw)

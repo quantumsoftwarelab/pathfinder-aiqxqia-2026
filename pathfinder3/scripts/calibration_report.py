@@ -29,6 +29,19 @@ RECALL_TARGET = 0.95
 FLAG_SHARE_CAP = 0.10
 STRATA = ("likely_good", "surface_similar", "hard_positive", "random")
 
+# Pairs whose pairing is described as a worked example inside the v2 judge
+# prompt (sourced from pathfinder/revealing_examples.md). The judges have
+# effectively been told the answer for these, so they are excluded from
+# judge-vs-curator metrics and the threshold sweep. Paper-level halo
+# (other pairs sharing a paper with an example) is reported but not
+# excluded.
+EXAMPLE_PAIR_IDS = {
+    "qsl:2501.14380::e100.001",
+    "qsl:2011.10005::e118.001",
+}
+EXAMPLE_PAPERS = {"qsl:2508.05523", "qsl:2210.13200", "qsl:2501.14380",
+                  "qsl:2011.10005"}
+
 
 def wilson(successes: int, n: int, z: float = 1.96) -> tuple[float, float]:
     if n == 0:
@@ -146,15 +159,24 @@ def main() -> None:
             "",
         ]
     else:
-        good = {pid for pid, l in labels.items()
+        eval_labels = {pid: l for pid, l in labels.items()
+                       if pid not in EXAMPLE_PAIR_IDS}
+        excluded = len(labels) - len(eval_labels)
+        halo = sum(1 for pid in eval_labels
+                   if pid.split("::")[0] in EXAMPLE_PAPERS)
+        good = {pid for pid, l in eval_labels.items()
                 if l["corr_label"] == 1 and l["int_label"] == 1}
-        lines += ["## Judge vs curator", ""]
+        lines += ["## Judge vs curator", "",
+                  f"Excluded from all metrics below: {excluded} pair(s) "
+                  "described as worked examples inside the judge prompt. "
+                  f"Paper-level halo (non-excluded pairs sharing a paper "
+                  f"with an example): {halo} pair(s), reported but kept.", ""]
         for tier in ("cheap", "strong"):
             lines.append(f"### {tier} judge")
             lines.append("")
             for axis, lab in (("corr", "corr_label"), ("int", "int_label")):
-                obs = [(verdict_of[(pid, tier)][axis], labels[pid][lab])
-                       for pid in labels if (pid, tier) in verdict_of]
+                obs = [(verdict_of[(pid, tier)][axis], eval_labels[pid][lab])
+                       for pid in eval_labels if (pid, tier) in verdict_of]
                 kp = kappa([(int(s >= 0.5), y) for s, y in obs])
                 a = auc(obs)
                 kp_s = f"{kp:.3f}" if kp is not None else "undefined"
@@ -166,7 +188,8 @@ def main() -> None:
                   "| threshold | recall on good | flagged share (random stratum) |",
                   "|---|---|---|"]
         random_ids = [r["pair_id"] for r in by_stratum.get("random", [])
-                      if (r["pair_id"], "cheap") in verdict_of]
+                      if (r["pair_id"], "cheap") in verdict_of
+                      and r["pair_id"] not in EXAMPLE_PAIR_IDS]
         chosen = None
         for t in [round(0.05 * k, 2) for k in range(0, 20)]:
             flagged_good = sum(

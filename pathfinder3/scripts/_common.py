@@ -9,8 +9,8 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[2]
 P3 = REPO / "pathfinder3"
 SCHEMA_PATH = P3 / "protocol" / "pair_matrix.schema.json"
-PROMPT_PATH = P3 / "protocol" / "judge_prompt_v1.md"
-PROMPT_VERSION = "v1"
+PROMPT_PATH = P3 / "protocol" / "judge_prompt_v2.md"
+PROMPT_VERSION = "v2"
 
 
 def load_jsonl(path: Path) -> list[dict]:

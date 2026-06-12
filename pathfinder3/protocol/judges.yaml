@@ -2,7 +2,10 @@
 # "claude:<model_id>" using the model_id recorded here, which is the exact
 # identifier confirmed by a dry-run, not merely the requested alias.
 
-prompt_version: v1
+prompt_version: v2   # v2 2026-06-12: corr anchor broadened to include
+                     # composition (Q's technique incorporated into P's
+                     # workload on the same hardware); v1 verdicts retained
+                     # in pair rows for instrument comparison.
 registered: "2026-06-12"
 
 dry_run:
