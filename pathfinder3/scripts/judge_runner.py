@@ -8,13 +8,18 @@ pinned model id, validates the strict-JSON verdict (ranges, rationale
 length), and appends it to the pair's ``verdicts`` array. Raw outputs go to
 ``pathfinder3/logs/judge-<tier>-<date>.jsonl``.
 
-Out-of-contract output gets one retry; a second failure is recorded in the
-log and the pair is left for a later run. The pairs file is rewritten
-atomically at the end.
+Out-of-contract output gets retries; a final failure is recorded in the
+log and the pair is left for a later run.
+
+The pairs file is rewritten atomically every 200 completed verdicts and at
+the end, so an interrupted run keeps its progress; re-running is idempotent
+on ``(judge, prompt_version)``.
 
 Usage:
     python3 pathfinder3/scripts/judge_runner.py --judge cheap [--workers 4]
     python3 pathfinder3/scripts/judge_runner.py --judge strong
+    python3 pathfinder3/scripts/judge_runner.py --judge cheap \
+        --pairs pathfinder3/phase1/pair_matrix.jsonl
 """
 from __future__ import annotations
 
@@ -82,7 +87,10 @@ def main() -> int:
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--limit", type=int, default=0,
                     help="judge at most N pairs (0 = all)")
+    ap.add_argument("--pairs", type=Path, default=PAIRS_PATH,
+                    help="pairs file to judge (default: calibration set)")
     args = ap.parse_args()
+    pairs_path = args.pairs
 
     registry = yaml.safe_load((P3 / "protocol" / "judges.yaml").read_text())
     judge_cfg = registry["judges"][args.judge]
@@ -90,7 +98,7 @@ def main() -> int:
     judge_id = f"claude:{model_id}"
     template = PROMPT_PATH.read_text()
     items = corpus_by_item_id()
-    pairs = load_jsonl(PAIRS_PATH)
+    pairs = load_jsonl(pairs_path)
     today = date.today().isoformat()
 
     todo = []
@@ -112,7 +120,12 @@ def main() -> int:
     print(f"{args.judge} judge ({judge_id}): {len(todo)} pairs to judge")
 
     LOG_DIR.mkdir(exist_ok=True)
-    log_path = LOG_DIR / f"judge-{args.judge}-{today}.jsonl"
+    # Non-calibration runs get a directory-named prefix so that
+    # calibration_report.py's glob over judge-*.jsonl stays scoped to
+    # calibration logs.
+    prefix = ("judge" if pairs_path.resolve() == PAIRS_PATH.resolve()
+              else f"{pairs_path.parent.name}-judge")
+    log_path = LOG_DIR / f"{prefix}-{args.judge}-{today}.jsonl"
     log_lock = threading.Lock()
     failures = []
 
@@ -133,28 +146,33 @@ def main() -> int:
                                 "date": today}, ensure_ascii=False) + "\n")
         return row["pair_id"], verdict, error
 
-    with cf.ThreadPoolExecutor(max_workers=args.workers) as ex:
-        results = list(ex.map(work, todo))
-
     by_id = {r["pair_id"]: r for r in pairs}
     done = 0
-    for pair_id, verdict, error in results:
-        if verdict is None:
-            failures.append((pair_id, error))
-            continue
-        by_id[pair_id]["verdicts"].append({
-            "judge": judge_id,
-            "tier": args.judge,
-            "prompt_version": PROMPT_VERSION,
-            "corr": float(verdict["corr"]),
-            "int": float(verdict["int"]),
-            "rationale": verdict["rationale"],
-            "settings": {"transport": judge_cfg.get("transport", "claude-cli")},
-            "judged_at": today,
-        })
-        done += 1
+    checkpoint_every = 200
+    with cf.ThreadPoolExecutor(max_workers=args.workers) as ex:
+        futures = [ex.submit(work, entry) for entry in todo]
+        for i, fut in enumerate(cf.as_completed(futures), 1):
+            pair_id, verdict, error = fut.result()
+            if verdict is None:
+                failures.append((pair_id, error))
+                continue
+            by_id[pair_id]["verdicts"].append({
+                "judge": judge_id,
+                "tier": args.judge,
+                "prompt_version": PROMPT_VERSION,
+                "corr": float(verdict["corr"]),
+                "int": float(verdict["int"]),
+                "rationale": verdict["rationale"],
+                "settings": {"transport": judge_cfg.get("transport", "claude-cli")},
+                "judged_at": today,
+            })
+            done += 1
+            if done % checkpoint_every == 0:
+                dump_jsonl(pairs_path, pairs)
+                print(f"checkpoint: {done} judged, {i}/{len(todo)} processed",
+                      flush=True)
 
-    dump_jsonl(PAIRS_PATH, pairs)
+    dump_jsonl(pairs_path, pairs)
     print(f"judged {done}/{len(todo)}; failures: {len(failures)}")
     for pair_id, error in failures:
         print(f"  FAILED {pair_id}: {error}")
