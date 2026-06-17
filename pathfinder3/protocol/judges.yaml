@@ -28,6 +28,17 @@ judges:
     tier: strong
     transport: claude-cli
     settings: {}
+  cheap_sonnet:
+    # Escalation candidate for the cheap tier (escalation rule below). Run on
+    # the calibration set only, same prompt v2, scored against the same Opus
+    # strong reference, to measure whether Sonnet buys a better recall/volume
+    # tradeoff than Haiku. Verdicts carry tier 'cheap_candidate' so they stay
+    # distinct from the deployed Haiku cheap judge and from the strong tier.
+    alias: claude-sonnet-4-6
+    model_id: claude-sonnet-4-6  # dry-run confirmed 2026-06-12
+    tier: cheap_candidate
+    transport: claude-cli
+    settings: {}
 
 # Escalation rule (plan item 2): if the cheap judge cannot offer a useful
 # tradeoff between strong-model recall and strong-pass volume, either

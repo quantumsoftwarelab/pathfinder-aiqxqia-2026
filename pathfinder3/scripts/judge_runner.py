@@ -83,7 +83,9 @@ def _parse_verdict(raw: str) -> dict:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--judge", required=True, choices=("cheap", "strong"))
+    ap.add_argument("--judge", required=True,
+                    help="judge key from protocol/judges.yaml (e.g. cheap, "
+                         "strong, cheap_sonnet)")
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--limit", type=int, default=0,
                     help="judge at most N pairs (0 = all)")
@@ -93,6 +95,9 @@ def main() -> int:
     pairs_path = args.pairs
 
     registry = yaml.safe_load((P3 / "protocol" / "judges.yaml").read_text())
+    if args.judge not in registry["judges"]:
+        raise SystemExit(f"unknown judge {args.judge!r}; registered: "
+                         f"{', '.join(sorted(registry['judges']))}")
     judge_cfg = registry["judges"][args.judge]
     model_id = judge_cfg["model_id"]
     judge_id = f"claude:{model_id}"
@@ -158,7 +163,7 @@ def main() -> int:
                 continue
             by_id[pair_id]["verdicts"].append({
                 "judge": judge_id,
-                "tier": args.judge,
+                "tier": judge_cfg.get("tier", args.judge),
                 "prompt_version": PROMPT_VERSION,
                 "corr": float(verdict["corr"]),
                 "int": float(verdict["int"]),
