@@ -143,7 +143,17 @@ PDF when it exists and otherwise falls back to `dossier.md`.
 
 ## Ezratty Index And Bots
 
-[`ezratty/`](ezratty/) contains the indexed Olivier Ezratty source workflow and legacy graph-backed Slack/debate bot support files. [`ezratty2/search.py`](ezratty2/search.py) is the key-less local search wrapper used by agents when they need vendor/modality background without requiring external credentials.
+[`ezratty/`](ezratty/) contains the Olivier Ezratty source workflow and legacy
+graph-backed Slack/debate bot support files. That path can use Nanograph and
+hosted embeddings, depending on its local configuration.
+[`ezratty2/search.py`](ezratty2/search.py) is the key-less local search wrapper
+used by agents when they need vendor/modality background without OpenAI
+embedding API access.
+
+`ezratty2` still depends on the generated seed file
+`ezratty/build/seed.jsonl`; it does not query the raw Ezratty PDF. If that seed
+is absent, portability agents should skip Ezratty rather than downloading or
+reading the source survey during a dossier stage.
 
 Typical search commands:
 
@@ -153,7 +163,10 @@ python3 ezratty2/search.py section 8-3-7-vendors Quantinuum
 python3 ezratty2/search.py references <section-slug>
 ```
 
-Container and shared-home setup for the bots is documented in [`ezratty/README.md`](ezratty/README.md). Pipeline agents should use `ezratty2/search.py`; the older graph-backed bot runtime is a separate legacy path.
+Container and shared-home setup for the bots is documented in
+[`ezratty/README.md`](ezratty/README.md). Pipeline agents should use
+`ezratty2/search.py`; the older graph-backed bot runtime is a separate legacy
+path.
 
 ## Planning And Coordination
 
