@@ -9,6 +9,7 @@ The repository is deliberately filesystem-first: generated outputs should be reb
 | Workflow | Source of truth | Main outputs |
 |---|---|---|
 | Vendor/application graph | `vendor-app/edges.json` | `vendor-app/quantum_algorithm_portfolio.md`, `vendor-app/vendor_application_matrix.html` |
+| Vendor capability and supplier DB | `vendor-db/*.json`, `vendor-db/*.jsonl`, `vendor-notes/substrate_note_map.json` | `vendor-db/exports/*.json`, `vendor-db/*_matrix.html`, `vendor-db/lookup.py` answers |
 | Portability dossiers | `vendor-app/edges.json` (queue + portability metadata), `dossiers/<slug>/dossier.md`, `dossiers/<slug>/extraction.md` | Per-paper `dossier.md`; generated `dossiers/_queue.md`; local ignored `dossier.pdf` |
 | Scan candidates | `vendor-app/scan_candidates.jsonl` (untagged scanner findings) | JSONL appended by `scan.py`; humans triage by promoting rows into `edges.json` |
 | Ezratty index/search | `ezratty/`, `ezratty2/` | `ezratty/build/seed.jsonl`, local search answers, Slack/debate bot runtime files |
@@ -33,6 +34,7 @@ The repository is deliberately filesystem-first: generated outputs should be reb
 ├── surveys/                  # Academic survey and reference inputs
 ├── tests/                    # Pytest coverage for portability and Ezratty tooling
 ├── vendor-app/               # Canonical vendor/application graph and generated matrix outputs
+├── vendor-db/                # Curated vendor capability and supplier lookup layer
 └── vendor-notes/             # Physical-layer substrate notes
 ```
 
@@ -63,7 +65,38 @@ Key generated outputs:
 Reference evidence lives under [`vendor-app/refs/`](vendor-app/refs/), with 114 local files covering vendor strategy documents, technical excerpts, benchmark papers, HTML snapshots, and external pointers.
 The collection history is tracked in [`vendor-app/collection_rounds.md`](vendor-app/collection_rounds.md).
 
-Physical-layer reference notes for each hardware substrate live under [`vendor-notes/`](vendor-notes/), indexed by [`vendor-notes/README.md`](vendor-notes/README.md). The portability agents that reason about substrate physics (Brillant, Julien, the quantum-physicist triage reviewer) are pointed at this corpus from their prompts.
+Physical-layer reference notes for each hardware substrate live under [`vendor-notes/`](vendor-notes/), indexed by [`vendor-notes/README.md`](vendor-notes/README.md) and discoverable through [`vendor-db/lookup.py`](vendor-db/lookup.py). The portability agents that reason about substrate physics (Brillant, Julien, the quantum-physicist triage reviewer) are pointed at this corpus from their prompts.
+
+## Vendor Capability DB
+
+[`vendor-db/`](vendor-db/) is the curated operational store for current vendor,
+system, capability, supplier, offering, substrate, dependency, and evidence
+facts. It complements, but does not replace, the demand-side application graph
+in [`vendor-app/edges.json`](vendor-app/edges.json), the substrate notes in
+[`vendor-notes/`](vendor-notes/), or the supply-chain narrative in the sibling
+`../qwQSL` repository.
+
+Agents should query it through the lookup CLI rather than reading raw JSON:
+
+```bash
+python3 vendor-db/lookup.py vendor quantinuum
+python3 vendor-db/lookup.py system quantinuum --current
+python3 vendor-db/lookup.py capability mid_circuit_measurement --vendor quantinuum
+python3 vendor-db/lookup.py notes --vendor quantinuum
+python3 vendor-db/lookup.py dependencies --vendor quantinuum
+python3 vendor-db/lookup.py chain --vendor quantinuum --capability mid_circuit_measurement
+```
+
+Lookup checks freshness before returning answers. If it fails with an instruction
+to run `python3 vendor-db/build.py`, an operator should refresh the deterministic
+tracked outputs and then run `python3 vendor-db/build.py --check`. Lookup may
+write ignored cache files under `vendor-db/build/`, but it must not rewrite
+tracked source tables, exports, review queues, or vendor/application data.
+
+Ezratty remains useful survey context through `ezratty2/search.py`, but it is
+not the authority for current vendor specifications. Current capability and
+supplier/dependency claims should be sourced through vendor-db and primary
+evidence, with probable or undocumented dependencies carried as caveats.
 
 ## Portability Pipeline
 
