@@ -25,7 +25,7 @@ plans/pathfinder3-ledger-refactor-design.md.
 
 Usage:
     python3 pathfinder3/scripts/judge_runner.py --judge cheap [--workers 4]
-    python3 pathfinder3/scripts/judge_runner.py --judge cheap --pairs-file some-pairs.txt
+    python3 pathfinder3/scripts/judge_runner.py --judge cheap --pair-ids qsl:A::e001.001 qsl:A::e002.001
     python3 pathfinder3/scripts/judge_runner.py --judge cheap --repeat --run-id probe-1
 """
 from __future__ import annotations
@@ -143,6 +143,10 @@ def register_instrument_if_new(identity: dict, led: ledger.Ledger,
     row["instrument_id"] = iid
     row["registered_at"] = date.today().isoformat()
     row["first_run_id"] = run_id
+    # Safe without its own lock only because the sole caller (main()) always
+    # holds the verdicts.jsonl AppendLock before calling this; a future
+    # standalone caller of register_instrument_if_new would need to take
+    # that lock itself to keep this append race-free.
     with instruments_path.open("a") as f:
         f.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
         f.flush()
@@ -154,6 +158,27 @@ def skip_pair_ids(led: ledger.Ledger, *, judge: str, prompt_version: str | None,
                   instrument_id: str) -> set[str]:
     return {e["pair_id"] for e in
             led.canonical_for_series(judge=judge, instrument_id=instrument_id)}
+
+
+def check_provenance(pid: str, q: dict, p: dict, led: ledger.Ledger) -> None:
+    """Verify the corpus text for both sides of pair ``pid`` still matches
+    the SHA-256 recorded on the pair row before a judge call is spent on it.
+
+    Ported from the pre-refactor judge_runner.py (see pathfinder3-ledger-
+    refactor-design.md), whose equivalent check silently disappeared in the
+    ledger rewrite. A mismatch means the corpus snapshot has drifted since
+    the pair was minted; raises SystemExit naming the pair and the
+    mismatched side rather than spending a judge call on stale text.
+    """
+    pair = led.pairs[pid]
+    for side, item in (("c1", q), ("c2", p)):
+        got = sha256_text(item_block(item))
+        want = pair[side]["input_sha256"]
+        if got != want:
+            raise SystemExit(
+                f"provenance mismatch on {pid} {side}: corpus text no "
+                "longer matches the pair's input_sha256; rebuild the "
+                "ledger pairs or restore the corpus snapshot")
 
 
 def _unwired_capture_usage(raw_output: str) -> dict:
@@ -231,7 +256,6 @@ def main() -> int:
             f"{torn}; back up the file, then truncate to that offset before "
             f"resuming")
 
-    led = ledger.load_ledger()
     identity = resolve_instrument_identity(judge_cfg, model_id)
 
     # blocking=False is load-bearing: the safety contract (see module
@@ -242,6 +266,11 @@ def main() -> int:
     # `led` snapshot taken before the first process's run committed its
     # instrument registration, risking a duplicate instruments.jsonl row).
     with AppendLock(ledger.VERDICTS_PATH, blocking=False) as lock:
+        # led is loaded only once the lock is held, not before: reading it
+        # earlier would risk a snapshot that is already stale relative to
+        # another process's writes that land between the read and this
+        # process's (successful) lock acquisition.
+        led = ledger.load_ledger()
         iid = register_instrument_if_new(identity, led, ledger.INSTRUMENTS_PATH, run_id)
         skip = set() if args.repeat else skip_pair_ids(
             led, judge=judge_full_id, prompt_version=None, instrument_id=iid)
@@ -260,6 +289,7 @@ def main() -> int:
 
         def work(pid: str) -> None:
             q, p = items[led.pairs[pid]["c1"]["item_id"]], items[led.pairs[pid]["c2"]["item_id"]]
+            check_provenance(pid, q, p, led)
             prompt = render_prompt(template, q, p)
             raw, verdict, error = None, None, None
             for attempt in (1, 2, 3):
