@@ -1,14 +1,12 @@
-"""Build the Phase 1 production pair file: the full corpus product.
+"""Merge new (QSL paper, vendor paper) pairs into ledger/pairs.jsonl.
 
-Emits one row per (QSL paper, vendor paper) pair to
-``pathfinder3/phase1/pair_matrix.jsonl``, schema-identical to the
-calibration file but with ``stratum: "production"``. Verdicts already
-recorded in ``calibration_pairs.jsonl`` are copied across by pair_id so the
-sweep does not re-judge the calibration subset; the runner's idempotency on
-``(judge, prompt_version)`` then skips those rows.
-
-Refuses to overwrite an existing output file, because judge verdicts
-accumulate in it; delete it deliberately if a rebuild is intended.
+For future corpus growth only — the 10,912 pairs from the initial migration
+already live in ledger/pairs.jsonl (see migrate_to_ledger.py and
+plans/pathfinder3-ledger-refactor-design.md). This script computes the full
+corpus product, adds any pair_id not already present, and asserts every
+existing pair's recorded input_sha256 is unchanged (a changed corpus text
+under an unchanged pair_id would silently invalidate every verdict that
+scored the old text — that must be a loud provenance error, not a merge).
 
 Usage: python3 pathfinder3/scripts/build_phase1_pairs.py
 """
@@ -16,11 +14,13 @@ from __future__ import annotations
 
 import subprocess
 
-from _common import P3, REPO, dump_jsonl, item_block, load_jsonl, sha256_text
+from _common import P3, REPO, item_block, load_jsonl, sha256_text
+from _ledger_common import dump_jsonl_sorted
+import ledger
 
-CALIBRATION_PATH = P3 / "calibration" / "calibration_pairs.jsonl"
-PHASE1_DIR = P3 / "phase1"
-OUT_PATH = PHASE1_DIR / "pair_matrix.jsonl"
+
+class ProvenanceError(RuntimeError):
+    pass
 
 
 def corpus_snapshot() -> str:
@@ -30,45 +30,50 @@ def corpus_snapshot() -> str:
     ).stdout.strip()
 
 
-def main() -> None:
-    if OUT_PATH.exists():
-        raise SystemExit(f"{OUT_PATH} already exists; refusing to overwrite")
-
-    qsl = load_jsonl(P3 / "corpus" / "qsl_papers.jsonl")
-    vendor = load_jsonl(P3 / "corpus" / "vendor_papers.jsonl")
-    snapshot = corpus_snapshot()
-    calibration_verdicts = {
-        r["pair_id"]: r["verdicts"] for r in load_jsonl(CALIBRATION_PATH)
-        if r["verdicts"]
-    }
-
-    rows = []
-    copied = 0
+def merge_pairs(existing: list[dict], qsl: list[dict], vendor: list[dict],
+                snapshot: str) -> tuple[list[dict], int, int]:
+    by_id = {r["pair_id"]: r for r in existing}
+    new_count = unchanged_count = 0
     for q in qsl:
         for p in vendor:
             pair_id = f"{q['item_id']}::{p['item_id']}"
-            verdicts = calibration_verdicts.get(pair_id, [])
-            copied += bool(verdicts)
-            rows.append({
-                "schema_version": 1,
+            c1_hash = sha256_text(item_block(q))
+            c2_hash = sha256_text(item_block(p))
+            if pair_id in by_id:
+                row = by_id[pair_id]
+                if (row["c1"]["input_sha256"] != c1_hash
+                        or row["c2"]["input_sha256"] != c2_hash):
+                    raise ProvenanceError(
+                        f"{pair_id}: corpus text changed under an existing "
+                        f"pair_id (old hash vs recomputed hash mismatch); "
+                        f"every verdict scoring the old text is now "
+                        f"orphaned from its input — investigate before "
+                        f"merging")
+                unchanged_count += 1
+                continue
+            by_id[pair_id] = {
                 "pair_id": pair_id,
                 "c1": {"corpus": "QSL_Papers", "item_id": q["item_id"],
-                       "title": q["title"],
-                       "input_sha256": sha256_text(item_block(q))},
+                      "title": q["title"], "input_sha256": c1_hash},
                 "c2": {"corpus": "Vendor_papers", "item_id": p["item_id"],
-                       "title": p["title"],
-                       "input_sha256": sha256_text(item_block(p))},
+                      "title": p["title"], "input_sha256": c2_hash},
                 "corpus_snapshot": snapshot,
-                "stratum": "production",
-                "sampling_seed": None,
-                "verdicts": verdicts,
-                "decision": None,
-            })
+            }
+            new_count += 1
+    merged = sorted(by_id.values(), key=lambda r: r["pair_id"])
+    return merged, new_count, unchanged_count
 
-    PHASE1_DIR.mkdir(exist_ok=True)
-    dump_jsonl(OUT_PATH, rows)
-    print(f"wrote {len(rows)} pairs ({len(qsl)} x {len(vendor)}) to {OUT_PATH}; "
-          f"verdicts copied from calibration for {copied} pairs")
+
+def main() -> None:
+    qsl = load_jsonl(P3 / "corpus" / "qsl_papers.jsonl")
+    vendor = load_jsonl(P3 / "corpus" / "vendor_papers.jsonl")
+    snapshot = corpus_snapshot()
+    existing = load_jsonl(ledger.PAIRS_PATH) if ledger.PAIRS_PATH.exists() else []
+
+    merged, new_count, unchanged_count = merge_pairs(existing, qsl, vendor, snapshot)
+    dump_jsonl_sorted(ledger.PAIRS_PATH, merged)
+    print(f"ledger/pairs.jsonl: {len(merged)} total "
+         f"({new_count} new, {unchanged_count} unchanged, snapshot {snapshot})")
 
 
 if __name__ == "__main__":
