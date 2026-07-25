@@ -4,9 +4,11 @@ pathfinder3 ledger script (migration, view builder, judge runner, loader).
 Kept independent of vendor-db/_lib.py deliberately: pathfinder3 is a
 self-contained subsystem (see pathfinder3/scripts/_common.py) and should not
 take a runtime dependency on a different subsystem's internals. The
-validate_schema/json_type_matches pair below is a direct, intentional port of
-vendor-db's implementation because the two are meant to enforce identical
-JSON Schema semantics, not because the code is shared.
+validate_schema/json_type_matches pair below is adapted from vendor-db's
+implementation, extended with const and $ref/$defs support (needed because
+pathfinder3's schemas use those, vendor-db's don't) and without the
+empty-string check (pathfinder3 uses null for absent optional fields, not
+empty strings).
 """
 from __future__ import annotations
 
