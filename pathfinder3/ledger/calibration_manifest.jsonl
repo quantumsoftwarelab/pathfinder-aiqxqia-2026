@@ -1,0 +1,100 @@
+{"pair_id": "qsl:1809.01953::e050.002", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:1809.01953::e097.001", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:1905.12700::e052.003", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:1905.12700::e088.001", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2011.10005::e016.003", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2011.10005::e084.001", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2011.10005::e087.001", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2011.10005::e118.001", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": true}
+{"pair_id": "qsl:2101.05692::e065.002", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2101.05692::e091.001", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2101.05692::e112.001", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2108.01756::e011.002", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2203.03591::e035.003", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2203.03591::e054.003", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2203.03591::e087.001", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2203.03591::e118.001", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2206.04373::e001.003", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2206.04373::e002.002", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2206.04373::e006.003", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2206.04373::e008.002", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2206.04373::e018.003", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2206.04373::e019.002", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2206.04373::e020.002", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2206.04373::e045.002", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2206.04373::e055.002", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2206.04373::e063.003", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2206.04373::e064.002", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2206.04373::e065.002", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2206.04373::e078.003", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2206.04373::e084.001", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2206.04373::e086.001", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2206.04373::e088.001", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2206.04373::e090.001", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2206.04373::e091.001", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2206.04373::e102.001", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2206.04373::e109.001", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2208.02191::e052.003", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2208.02191::e094.001", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2208.02191::e100.001", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2210.13200::e115.001", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2303.02712::e024.002", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2303.02712::e097.001", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2303.03813::e097.001", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2303.08865::e102.001", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2306.04351::e050.002", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2306.04351::e098.001", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2306.05195::e113.001", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2307.04733::e082.002", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2307.04733::e093.001", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2309.15547::e006.003", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2309.15547::e082.002", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2310.02075::e052.003", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2310.14056::e009.002", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2310.14056::e016.003", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2310.14056::e059.002", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2401.06584::e065.002", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2403.09417::e118.001", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2404.09973::e008.002", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2404.18104::e107.001", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2405.04247::e114.001", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2405.06787::e021.002", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2405.06787::e054.003", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2405.06787::e058.002", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2409.01440::e050.002", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2411.08877::e007.002", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2411.08877::e106.001", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2501.14380::e100.001", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": true}
+{"pair_id": "qsl:2502.05284::e020.002", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2502.05284::e058.002", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2502.05284::e090.001", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2502.05284::e092.001", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2502.06717::e008.002", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2502.06717::e022.002", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2502.06717::e051.004", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2502.06717::e117.001", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2502.07150::e006.003", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2502.08594::e079.002", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2503.08403::e021.002", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2503.08403::e039.003", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2504.07732::e054.003", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2504.11552::e082.002", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2504.15410::e036.003", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2504.15410::e090.001", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2504.15410::e104.001", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2504.20989::e026.002", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2505.22217::e022.002", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2506.06835::e079.002", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2506.13264::e041.002", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2508.14672::e088.001", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2508.15743::e089.001", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2508.15743::e097.001", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2510.07240::e041.002", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2510.07240::e050.002", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2510.08548::e111.001", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2511.01845::e052.003", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2511.01845::e091.001", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2512.14449::e098.001", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2601.18680::e074.002", "selection": {"method": "curated_v0", "seed": null, "source": "archived build_calibration.py, corpus_snapshot e06671e"}, "worked_example": false}
+{"pair_id": "qsl:2604.14323::e041.002", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
+{"pair_id": "qsl:2604.14323::e107.001", "selection": {"method": "random", "seed": 20260612, "source": null}, "worked_example": false}
