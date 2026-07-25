@@ -252,6 +252,26 @@ def coverage_violations(led: ledger.Ledger, deployment: dict) -> list[str]:
     return []
 
 
+def guarded_violations(label: str, fn, *fn_args) -> list[str]:
+    """Run a violations-collecting function, turning a LedgerError raised by
+    ledger.canonical_by_series() (e.g. a duplicate canonical event) into a
+    single violation string instead of letting it propagate.
+
+    structural_violations() detects duplicate canonical events itself via a
+    non-raising manual scan, so that check always reports cleanly. But
+    baseline_violations() and coverage_violations() both call
+    led.canonical_by_series() internally, which raises LedgerError on the
+    same condition. Without this guard, a ledger defect that
+    structural_violations() already collected as a violation would instead
+    crash --check with an unhandled traceback and lose the rest of the
+    violation list.
+    """
+    try:
+        return fn(*fn_args)
+    except ledger.LedgerError as e:
+        return [f"[{label}] cannot evaluate: {e}"]
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--check", action="store_true")
@@ -265,9 +285,9 @@ def main() -> int:
         violations = structural_violations(led, ledger.LEDGER_DIR, BUILD_DIR)
         if args.baseline:
             baseline = json.loads(BASELINE_PATH.read_text())
-            violations += baseline_violations(led, baseline)
+            violations += guarded_violations("baseline", baseline_violations, led, baseline)
         deployment = yaml.safe_load(DEPLOYMENT_PATH.read_text())
-        coverage_issues = coverage_violations(led, deployment)
+        coverage_issues = guarded_violations("coverage", coverage_violations, led, deployment)
         if args.coverage:
             violations += coverage_issues
         elif coverage_issues:
