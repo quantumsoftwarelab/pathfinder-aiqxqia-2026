@@ -14,7 +14,7 @@
     "schema_version": {"const": 2},
     "pair_id": {"type": "string", "minLength": 1},
     "judge": {"type": "string", "pattern": "^(claude|codex):.+$"},
-    "prompt_version": {"type": "string", "minLength": 1},
+    "prompt_version": {"type": ["string", "null"]},
     "instrument_id": {
       "type": ["string", "null"],
       "pattern": "^[0-9a-f]{64}$",
