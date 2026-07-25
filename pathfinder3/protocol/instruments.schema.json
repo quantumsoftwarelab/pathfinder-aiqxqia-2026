@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leithdocs.com/qsl/schemas/pathfinder3/instruments.schema.json",
+  "title": "Pathfinder3 ledger instrument registry row",
+  "$comment": "One line of pathfinder3/ledger/instruments.jsonl, appended by judge_runner.py on first use of an instrument. See plans/pathfinder3-ledger-refactor-design.md.",
+  "type": "object",
+  "required": [
+    "instrument_id", "model_id", "role", "transport", "effort",
+    "prompt_sha256", "output_contract_sha256", "cli_version", "cli_sha256",
+    "registered_at", "first_run_id"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "instrument_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "model_id": {"type": "string", "minLength": 1},
+    "role": {"enum": ["cheap_selector", "cheap_candidate", "strong_opinion"]},
+    "transport": {"type": "string", "minLength": 1},
+    "effort": {"type": ["string", "null"]},
+    "prompt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "output_contract_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "cli_version": {"type": "string", "minLength": 1},
+    "cli_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "registered_at": {"type": "string", "format": "date"},
+    "first_run_id": {"type": "string", "minLength": 1}
+  }
+}

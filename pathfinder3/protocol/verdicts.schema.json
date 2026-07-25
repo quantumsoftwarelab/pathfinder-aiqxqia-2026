@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leithdocs.com/qsl/schemas/pathfinder3/verdicts.schema.json",
+  "title": "Pathfinder3 ledger verdict event",
+  "$comment": "One line of pathfinder3/ledger/verdicts.jsonl. See plans/pathfinder3-ledger-refactor-design.md. schema_version 2 replaces the pathfinder3/protocol/pair_matrix.schema.json v1 nested-verdict shape (archived).",
+  "type": "object",
+  "required": [
+    "schema_version", "pair_id", "judge", "prompt_version", "instrument_id",
+    "role", "corr", "int", "score_explanation", "derived_idea", "transport",
+    "effort", "run_id", "judged_at", "tokens_in", "tokens_out", "est_cost_usd"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": 2},
+    "pair_id": {"type": "string", "minLength": 1},
+    "judge": {"type": "string", "pattern": "^(claude|codex):.+$"},
+    "prompt_version": {"type": "string", "minLength": 1},
+    "instrument_id": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-f]{64}$",
+      "$comment": "null on migrated historical rows (legacy series identified by judge+prompt_version); the 64-char sha256 hex digest of the instrument's identity record for every new event."
+    },
+    "role": {"enum": ["cheap_selector", "cheap_candidate", "strong_opinion"]},
+    "corr": {"type": "number", "minimum": 0, "maximum": 1},
+    "int": {"type": "number", "minimum": 0, "maximum": 1},
+    "score_explanation": {
+      "type": ["string", "null"],
+      "$comment": "Why corr/int were assigned. Non-null required on events with a non-null instrument_id (enforced in code, not schema); migrated rows carry the historical rationale verbatim."
+    },
+    "derived_idea": {
+      "type": ["string", "null"],
+      "$comment": "One paragraph on the concrete connection/application the pair suggests, or null when the judge finds none. Key is always present; null on every historical row."
+    },
+    "transport": {"type": ["string", "null"]},
+    "effort": {"type": ["string", "null"]},
+    "run_id": {"type": ["string", "null"]},
+    "judged_at": {"type": "string", "format": "date"},
+    "tokens_in": {"type": ["integer", "null"]},
+    "tokens_out": {"type": ["integer", "null"]},
+    "est_cost_usd": {"type": ["number", "null"]},
+    "repeat": {
+      "type": "boolean",
+      "$comment": "Optional key, present and true ONLY on deliberate repeatability probes; absent otherwise."
+    }
+  }
+}
