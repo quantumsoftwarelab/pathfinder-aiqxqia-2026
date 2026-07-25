@@ -1,0 +1,14 @@
+{
+  "pairs": 10912,
+  "legacy_series": {
+    "claude:claude-haiku-4-5|v2": 10912,
+    "claude:claude-haiku-4-5|v1": 100,
+    "claude:claude-opus-4-8|v1": 100,
+    "claude:claude-opus-4-8|v2": 100,
+    "claude:claude-sonnet-4-6|v2": 100
+  },
+  "haiku_v2_survivors": {
+    "s_ge_0.05": 6051,
+    "s_ge_0.15": 1763
+  }
+}
