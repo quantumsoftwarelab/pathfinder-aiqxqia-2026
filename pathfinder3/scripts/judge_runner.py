@@ -1,52 +1,173 @@
-"""Run a registered judge over the calibration pairs.
+"""Run a registered judge over a set of pairs, appending to the ledger.
 
-For every pair lacking a verdict from the requested judge (matched on
-``(judge, prompt_version)``), renders ``judge_prompt_v1.md`` with the two
-title+abstract blocks (verifying each block's SHA-256 against the pair's
-recorded ``input_sha256`` first), calls the claude CLI with the judge's
-pinned model id, validates the strict-JSON verdict (ranges, rationale
-length), and appends it to the pair's ``verdicts`` array. Raw outputs go to
-``pathfinder3/logs/judge-<tier>-<date>.jsonl``.
+Every completed call appends one event to ledger/verdicts.jsonl; there is
+no whole-file rewrite. Safety contract:
 
-Out-of-contract output gets retries; a final failure is recorded in the
-log and the pair is left for a later run.
+  Locking: an advisory fcntl.flock on verdicts.jsonl, held for the whole
+  run; a second writer fails fast (LockHeldError).
+  Atomic writes: worker threads hand completed events to a single
+  mutex-guarded in-process writer; each event is one line, one write(),
+  fsync'd immediately.
+  Recovery: on startup, a torn trailing line halts the run and reports its
+  byte offset for operator truncation. The runner never auto-rewrites
+  history.
+  Resume: the worklist is every requested pair minus pairs whose exact
+  series key (instrument_id, not just judge+prompt_version) already has a
+  canonical event. --repeat bypasses the skip set and stamps repeat: true.
+  Registration: on first use, an instrument's full identity record is
+  appended to ledger/instruments.jsonl.
 
-The pairs file is rewritten atomically every 200 completed verdicts and at
-the end, so an interrupted run keeps its progress; re-running is idempotent
-on ``(judge, prompt_version)``.
+Token/cost capture is deliberately NOT wired here (Phase 2 Step 6, gated
+behind a live probe and a fake-executable test — this refactor makes no
+live calls). capture_usage() therefore refuses by default; tests
+monkeypatch it to exercise the rest of the append path. See
+plans/pathfinder3-ledger-refactor-design.md.
 
 Usage:
     python3 pathfinder3/scripts/judge_runner.py --judge cheap [--workers 4]
-    python3 pathfinder3/scripts/judge_runner.py --judge strong
-    python3 pathfinder3/scripts/judge_runner.py --judge cheap \
-        --pairs pathfinder3/phase1/pair_matrix.jsonl
+    python3 pathfinder3/scripts/judge_runner.py --judge cheap --pairs-file some-pairs.txt
+    python3 pathfinder3/scripts/judge_runner.py --judge cheap --repeat --run-id probe-1
 """
 from __future__ import annotations
 
 import argparse
-import concurrent.futures as cf
+import fcntl
 import json
+import os
 import subprocess
 import tempfile
 import threading
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 
 import yaml
 
-from _common import (P3, PROMPT_PATH, PROMPT_VERSION, corpus_by_item_id,
-                     dump_jsonl, item_block, load_jsonl, render_prompt,
-                     sha256_text)
+import ledger
+from _common import P3, PROMPT_PATH, corpus_by_item_id, item_block, render_prompt, sha256_text
+from _ledger_common import (dump_jsonl_sorted, instrument_id,
+                            instrument_identity_record, sha256_hex)
 
-PAIRS_PATH = P3 / "calibration" / "calibration_pairs.jsonl"
-LOG_DIR = P3 / "logs"
+OUTPUT_CONTRACT_V2 = json.dumps(
+    {"keys": sorted(["corr", "int", "rationale"])}, sort_keys=True
+).encode("utf-8")
+OUTPUT_CONTRACT_SHA256 = sha256_hex(OUTPUT_CONTRACT_V2)
+
+
+class LockHeldError(RuntimeError):
+    pass
+
+
+class TornTailError(RuntimeError):
+    pass
+
+
+class AppendLock:
+    def __init__(self, path: Path, blocking: bool = True):
+        self.path = path
+        self.blocking = blocking
+        self._fh = None
+
+    def __enter__(self) -> "AppendLock":
+        self._fh = self.path.open("a+")
+        flags = fcntl.LOCK_EX if self.blocking else (fcntl.LOCK_EX | fcntl.LOCK_NB)
+        try:
+            fcntl.flock(self._fh.fileno(), flags)
+        except BlockingIOError as e:
+            self._fh.close()
+            raise LockHeldError(f"another process holds the lock on {self.path}") from e
+        return self
+
+    def __exit__(self, *exc) -> None:
+        fcntl.flock(self._fh.fileno(), fcntl.LOCK_UN)
+        self._fh.close()
+
+    def append_line(self, obj: dict) -> None:
+        line = json.dumps(obj, ensure_ascii=False, sort_keys=True) + "\n"
+        self._fh.write(line)
+        self._fh.flush()
+        os.fsync(self._fh.fileno())
+
+
+def find_torn_tail(path: Path) -> int | None:
+    if not path.exists():
+        return None
+    data = path.read_bytes()
+    if not data:
+        return None
+    if not data.endswith(b"\n"):
+        return data.rfind(b"\n") + 1
+    offset = 0
+    for line in data.split(b"\n"):
+        if line.strip():
+            try:
+                json.loads(line)
+            except json.JSONDecodeError:
+                return offset
+        offset += len(line) + 1
+    return None
+
+
+def resolve_cli_identity() -> tuple[str, str]:
+    version = subprocess.run(["claude", "--version"], capture_output=True,
+                             text=True, check=True).stdout.strip()
+    import shutil
+    binary = shutil.which("claude")
+    if binary is None:
+        raise RuntimeError("claude executable not found on PATH")
+    # sha256 the raw binary bytes directly — do not decode/re-encode
+    # through a text codec first, which would corrupt any byte >= 0x80.
+    cli_sha256 = sha256_hex(Path(binary).read_bytes())
+    return version, cli_sha256
+
+
+def resolve_instrument_identity(judge_cfg: dict, model_id: str,
+                                prompt_path: Path = PROMPT_PATH) -> dict:
+    cli_version, cli_sha256 = resolve_cli_identity()
+    prompt_sha256 = sha256_text(prompt_path.read_text())
+    tier_to_role = {"cheap": "cheap_selector", "strong": "strong_opinion",
+                    "cheap_candidate": "cheap_candidate"}
+    return instrument_identity_record(
+        model_id=model_id, role=tier_to_role[judge_cfg.get("tier", "cheap")],
+        transport=judge_cfg.get("transport", "claude-cli"), effort=None,
+        prompt_sha256=prompt_sha256, output_contract_sha256=OUTPUT_CONTRACT_SHA256,
+        cli_version=cli_version, cli_sha256=cli_sha256,
+    )
+
+
+def register_instrument_if_new(identity: dict, led: ledger.Ledger,
+                               instruments_path: Path, run_id: str) -> str:
+    iid = instrument_id(identity)
+    if iid in led.instruments:
+        return iid
+    row = dict(identity)
+    row["instrument_id"] = iid
+    row["registered_at"] = date.today().isoformat()
+    row["first_run_id"] = run_id
+    with instruments_path.open("a") as f:
+        f.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+        f.flush()
+        os.fsync(f.fileno())
+    return iid
+
+
+def skip_pair_ids(led: ledger.Ledger, *, judge: str, prompt_version: str | None,
+                  instrument_id: str) -> set[str]:
+    return {e["pair_id"] for e in
+            led.canonical_for_series(judge=judge, instrument_id=instrument_id)}
+
+
+def _unwired_capture_usage(raw_output: str) -> dict:
+    raise NotImplementedError(
+        "token/cost capture not wired (Phase 2 Step 6); this refactor "
+        "intentionally cannot append new-instrument verdicts yet — see "
+        "plans/pathfinder3-ledger-refactor-design.md Non-goals. Tests "
+        "monkeypatch judge_runner.capture_usage to exercise the append path.")
+
+
+capture_usage = _unwired_capture_usage
 
 
 def _call_judge(model_id: str, prompt: str, timeout: int = 300) -> str:
-    # No permission bypass and no tools: the judge is a pure text call.
-    # cwd is a neutral directory so the CLI loads no project context
-    # (CLAUDE.md, AGENTS.md, repo hooks); with project context present the
-    # judge sometimes narrates a skill check instead of emitting bare JSON.
     proc = subprocess.run(
         ["claude", "--model", model_id, "--disallowedTools", "*",
          "--print", "--output-format", "text", "-p", prompt],
@@ -59,8 +180,6 @@ def _call_judge(model_id: str, prompt: str, timeout: int = 300) -> str:
 
 
 def _parse_verdict(raw: str) -> dict:
-    # Documented normalisation: strip a markdown fence if the model wrapped
-    # the object in one. Anything beyond that stays out-of-contract.
     if raw.startswith("```"):
         raw = raw.strip("`\n")
         raw = raw[4:].lstrip() if raw.startswith("json") else raw
@@ -74,114 +193,111 @@ def _parse_verdict(raw: str) -> dict:
             raise ValueError(f"{k} out of range: {obj[k]!r}")
     if not isinstance(obj["rationale"], str):
         raise ValueError("rationale missing")
-    # Documented normalisation: rationale is advisory metadata, so an
-    # over-long one is truncated rather than rejected. Scores are never
-    # coerced.
     obj["rationale"] = obj["rationale"][:140]
     return obj
 
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--judge", required=True,
-                    help="judge key from protocol/judges.yaml (e.g. cheap, "
-                         "strong, cheap_sonnet)")
+    ap.add_argument("--judge", required=True)
     ap.add_argument("--workers", type=int, default=4)
-    ap.add_argument("--limit", type=int, default=0,
-                    help="judge at most N pairs (0 = all)")
-    ap.add_argument("--pairs", type=Path, default=PAIRS_PATH,
-                    help="pairs file to judge (default: calibration set)")
+    ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--pair-ids", nargs="*", default=None,
+                    help="explicit pair ids to judge (default: full pairs.jsonl)")
+    ap.add_argument("--repeat", action="store_true",
+                    help="bypass the skip set; stamp repeat: true")
+    ap.add_argument("--run-id", default=None)
     args = ap.parse_args()
-    pairs_path = args.pairs
+
+    if capture_usage is _unwired_capture_usage:
+        raise SystemExit(
+            "judge_runner cannot append verdicts yet: token/cost capture is "
+            "deferred to Phase 2 Step 6 (see plans/pathfinder3-ledger-"
+            "refactor-design.md). This refusal is by design in this "
+            "refactor; inject judge_runner.capture_usage for testing.")
 
     registry = yaml.safe_load((P3 / "protocol" / "judges.yaml").read_text())
     if args.judge not in registry["judges"]:
-        raise SystemExit(f"unknown judge {args.judge!r}; registered: "
-                         f"{', '.join(sorted(registry['judges']))}")
+        raise SystemExit(f"unknown judge {args.judge!r}")
     judge_cfg = registry["judges"][args.judge]
     model_id = judge_cfg["model_id"]
-    judge_id = f"claude:{model_id}"
-    template = PROMPT_PATH.read_text()
-    items = corpus_by_item_id()
-    pairs = load_jsonl(pairs_path)
-    today = date.today().isoformat()
+    judge_full_id = f"claude:{model_id}"
+    run_id = args.run_id or datetime.now().strftime("%Y%m%d-%H%M%S") + f"-{os.getpid():04x}"
 
-    todo = []
-    for row in pairs:
-        if any(v["judge"] == judge_id and v["prompt_version"] == PROMPT_VERSION
-               for v in row["verdicts"]):
-            continue
-        q, p = items[row["c1"]["item_id"]], items[row["c2"]["item_id"]]
-        for side, item in (("c1", q), ("c2", p)):
-            got = sha256_text(item_block(item))
-            if got != row[side]["input_sha256"]:
-                raise SystemExit(
-                    f"provenance mismatch on {row['pair_id']} {side}: corpus "
-                    "text no longer matches the pair's input_sha256; rebuild "
-                    "the calibration set or restore the corpus snapshot")
-        todo.append((row, q, p))
-    if args.limit:
-        todo = todo[:args.limit]
-    print(f"{args.judge} judge ({judge_id}): {len(todo)} pairs to judge")
+    torn = find_torn_tail(ledger.VERDICTS_PATH)
+    if torn is not None:
+        raise SystemExit(
+            f"torn trailing line in {ledger.VERDICTS_PATH} at byte offset "
+            f"{torn}; back up the file, then truncate to that offset before "
+            f"resuming")
 
-    LOG_DIR.mkdir(exist_ok=True)
-    # Non-calibration runs get a directory-named prefix so that
-    # calibration_report.py's glob over judge-*.jsonl stays scoped to
-    # calibration logs.
-    prefix = ("judge" if pairs_path.resolve() == PAIRS_PATH.resolve()
-              else f"{pairs_path.parent.name}-judge")
-    log_path = LOG_DIR / f"{prefix}-{args.judge}-{today}.jsonl"
-    log_lock = threading.Lock()
-    failures = []
+    led = ledger.load_ledger()
+    identity = resolve_instrument_identity(judge_cfg, model_id)
 
-    def work(entry):
-        row, q, p = entry
-        prompt = render_prompt(template, q, p)
-        raw, verdict, error = None, None, None
-        for attempt in (1, 2, 3):
-            try:
-                raw = _call_judge(model_id, prompt)
-                verdict = _parse_verdict(raw)
-                break
-            except Exception as e:  # noqa: BLE001 - log and retry once
-                error = f"attempt {attempt}: {e}"
-        with log_lock, log_path.open("a") as f:
-            f.write(json.dumps({"pair_id": row["pair_id"], "judge": judge_id,
-                                "raw": raw, "error": None if verdict else error,
-                                "date": today}, ensure_ascii=False) + "\n")
-        return row["pair_id"], verdict, error
+    # blocking=False is load-bearing: the safety contract (see module
+    # docstring and plans/pathfinder3-ledger-refactor-design.md) requires a
+    # second writer to fail fast with LockHeldError, not queue up and wait
+    # for the first run to finish. A blocking acquire here would silently
+    # violate that contract (and, worse, let a second process act on a
+    # `led` snapshot taken before the first process's run committed its
+    # instrument registration, risking a duplicate instruments.jsonl row).
+    with AppendLock(ledger.VERDICTS_PATH, blocking=False) as lock:
+        iid = register_instrument_if_new(identity, led, ledger.INSTRUMENTS_PATH, run_id)
+        skip = set() if args.repeat else skip_pair_ids(
+            led, judge=judge_full_id, prompt_version=None, instrument_id=iid)
+        candidates = args.pair_ids if args.pair_ids else sorted(led.pairs)
+        todo = [pid for pid in candidates if pid not in skip]
+        if args.limit:
+            todo = todo[:args.limit]
+        print(f"{args.judge} ({judge_full_id}, instrument {iid[:12]}...): "
+             f"{len(todo)} pairs to judge")
 
-    by_id = {r["pair_id"]: r for r in pairs}
-    done = 0
-    checkpoint_every = 200
-    with cf.ThreadPoolExecutor(max_workers=args.workers) as ex:
-        futures = [ex.submit(work, entry) for entry in todo]
-        for i, fut in enumerate(cf.as_completed(futures), 1):
-            pair_id, verdict, error = fut.result()
+        items = corpus_by_item_id()
+        template = PROMPT_PATH.read_text()
+        write_mutex = threading.Lock()
+        today = date.today().isoformat()
+        failures = []
+
+        def work(pid: str) -> None:
+            q, p = items[led.pairs[pid]["c1"]["item_id"]], items[led.pairs[pid]["c2"]["item_id"]]
+            prompt = render_prompt(template, q, p)
+            raw, verdict, error = None, None, None
+            for attempt in (1, 2, 3):
+                try:
+                    raw = _call_judge(model_id, prompt)
+                    verdict = _parse_verdict(raw)
+                    break
+                except Exception as e:  # noqa: BLE001
+                    error = f"attempt {attempt}: {e}"
             if verdict is None:
-                failures.append((pair_id, error))
-                continue
-            by_id[pair_id]["verdicts"].append({
-                "judge": judge_id,
-                "tier": judge_cfg.get("tier", args.judge),
-                "prompt_version": PROMPT_VERSION,
-                "corr": float(verdict["corr"]),
-                "int": float(verdict["int"]),
-                "rationale": verdict["rationale"],
-                "settings": {"transport": judge_cfg.get("transport", "claude-cli")},
-                "judged_at": today,
-            })
-            done += 1
-            if done % checkpoint_every == 0:
-                dump_jsonl(pairs_path, pairs)
-                print(f"checkpoint: {done} judged, {i}/{len(todo)} processed",
-                      flush=True)
+                with write_mutex:
+                    failures.append((pid, error))
+                return
+            usage = capture_usage(raw)
+            event = {
+                "schema_version": 2, "pair_id": pid, "judge": judge_full_id,
+                "prompt_version": None, "instrument_id": iid,
+                "role": identity["role"], "corr": float(verdict["corr"]),
+                "int": float(verdict["int"]), "score_explanation": verdict["rationale"],
+                "derived_idea": None, "transport": identity["transport"],
+                "effort": identity["effort"], "run_id": run_id, "judged_at": today,
+                "tokens_in": usage["tokens_in"], "tokens_out": usage["tokens_out"],
+                "est_cost_usd": usage["est_cost_usd"],
+            }
+            if args.repeat:
+                event["repeat"] = True
+            with write_mutex:
+                lock.append_line(event)
 
-    dump_jsonl(pairs_path, pairs)
-    print(f"judged {done}/{len(todo)}; failures: {len(failures)}")
-    for pair_id, error in failures:
-        print(f"  FAILED {pair_id}: {error}")
-    return 1 if failures else 0
+        import concurrent.futures as cf
+        with cf.ThreadPoolExecutor(max_workers=args.workers) as ex:
+            list(ex.map(work, todo))
+
+        print(f"judged {len(todo) - len(failures)}/{len(todo)}; "
+             f"failures: {len(failures)}")
+        for pid, error in failures:
+            print(f"  FAILED {pid}: {error}")
+        return 1 if failures else 0
 
 
 if __name__ == "__main__":
