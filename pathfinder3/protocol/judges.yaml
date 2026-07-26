@@ -46,6 +46,26 @@ judges:
     prompt_file: judge_prompt_v2.md
     settings: {}
 
+  opus5:
+    # Phase A strong judge. Dry-run confirm the model id before first use.
+    alias: claude-opus-5
+    model_id: claude-opus-5
+    tier: strong
+    transport: pi
+    provider: anthropic
+    prompt_file: judge_prompt_v3.md
+    settings: {effort: xhigh}
+  gpt56:
+    # Phase A strong judge, second vendor. Independent rate limits are the
+    # point: a closed tap on one side must not idle the other.
+    alias: gpt-5.6-sol
+    model_id: gpt-5.6-sol
+    tier: strong
+    transport: pi
+    provider: openai-codex
+    prompt_file: judge_prompt_v3.md
+    settings: {effort: xhigh}
+
 # Escalation rule (plan item 2): if the cheap judge cannot offer a useful
 # tradeoff between strong-model recall and strong-pass volume, either
 # promote the cheap tier to claude-sonnet-4-6 and re-measure, or accept that

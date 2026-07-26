@@ -184,6 +184,30 @@ def skip_pair_ids(led: ledger.Ledger, *, judge: str, prompt_version: str | None,
             led.canonical_for_series(judge=judge, instrument_id=instrument_id)}
 
 
+def ordered_pair_ids(led: ledger.Ledger, candidates: list[str],
+                     deployment_path: Path | None = None) -> list[str]:
+    """Worklist ordered by the deployed cheap judge's score, descending.
+
+    The cheap judge is a good sort key and a bad filter: measured on the
+    100 pairs carrying both a Haiku-v2 and an Opus-4.8-v2 verdict, its
+    top 10 is 90% strong-positive against a 24% base rate, but no
+    threshold cuts volume without dropping positives. So order by it,
+    never exclude by it — pairs with no cheap verdict sort last rather
+    than being dropped. See plans/pathfinder3-strong-sweep-design.md.
+
+    Ordering never affects correctness: resume matches on series key.
+    """
+    if deployment_path is None:
+        deployment_path = P3 / "protocol" / "deployment.yaml"
+    dep = yaml.safe_load(deployment_path.read_text())["deployed_cheap_series"]
+    cheap = {e["pair_id"]: ledger.score(e) for e in led.canonical_for_series(
+        judge=dep["judge"], prompt_version=dep["prompt_version"],
+        instrument_id=dep["instrument_id"])}
+    # -1.0 default sorts unscored pairs last; the pair_id tie-break keeps
+    # the order deterministic across runs.
+    return sorted(candidates, key=lambda pid: (-cheap.get(pid, -1.0), pid))
+
+
 def check_provenance(pid: str, q: dict, p: dict, led: ledger.Ledger) -> None:
     """Verify the corpus text for both sides of pair ``pid`` still matches
     the SHA-256 recorded on the pair row before a judge call is spent on it.
@@ -340,7 +364,8 @@ def main() -> int:
         skip = set() if args.repeat else skip_pair_ids(
             led, judge=judge_full_id, prompt_version=None, instrument_id=iid)
         candidates = args.pair_ids if args.pair_ids else sorted(led.pairs)
-        todo = [pid for pid in candidates if pid not in skip]
+        todo = ordered_pair_ids(
+            led, [pid for pid in candidates if pid not in skip])
         if args.limit:
             todo = todo[:args.limit]
         print(f"{args.judge} ({judge_full_id}, instrument {iid[:12]}...): "
