@@ -278,8 +278,13 @@ def _call_judge(judge_cfg: dict, model_id: str, prompt: str,
     cmd = build_pi_command(
         provider=provider, model_id=model_id,
         effort=judge_cfg.get("settings", {}).get("effort"), prompt=prompt)
+    # stdin=DEVNULL is load-bearing, not tidiness: pi inherits the
+    # parent's stdin otherwise and blocks indefinitely when that is a
+    # pipe nobody closes — which is exactly the case under nohup. Found
+    # by a live probe that hung until stdin was redirected.
     proc = subprocess.run(cmd, capture_output=True, text=True,
-                          timeout=timeout, cwd=tempfile.gettempdir())
+                          timeout=timeout, cwd=tempfile.gettempdir(),
+                          stdin=subprocess.DEVNULL)
     try:
         return parse_pi_stream(proc.stdout, want_provider=provider,
                                want_model=model_id)
