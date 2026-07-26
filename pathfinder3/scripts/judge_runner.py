@@ -43,13 +43,14 @@ from pathlib import Path
 import yaml
 
 import ledger
-import pi_transport
+import judge_transport
 from _common import P3, corpus_by_item_id, item_block, render_prompt, sha256_text
 from _ledger_common import (dump_jsonl_sorted, instrument_id,
                             instrument_identity_record, sha256_hex)
-from pi_transport import (JUDGE_SYSTEM_PROMPT, PiError, RateLimited,
-                          RateLimitGate, build_pi_command, parse_pi_stream,
-                          rate_limit_wait_seconds)
+from judge_transport import (JUDGE_SYSTEM_PROMPT, RateLimited, RateLimitGate,
+                             TransportError, build_claude_command,
+                             build_pi_command, parse_claude_json,
+                             parse_pi_stream, rate_limit_wait_seconds)
 
 PROVIDER_JUDGE_PREFIX = {"anthropic": "claude", "openai-codex": "codex"}
 
@@ -272,13 +273,20 @@ def sum_usage(records: list[dict]) -> dict:
 
 
 def _call_judge(judge_cfg: dict, model_id: str, prompt: str,
-                timeout: int = 900) -> pi_transport.PiResult:
+                timeout: int = 900) -> judge_transport.JudgeResult:
     """One judge call. Raises RateLimited when the vendor closes the tap."""
     provider = judge_cfg["provider"]
-    cmd = build_pi_command(
-        provider=provider, model_id=model_id,
-        effort=judge_cfg.get("settings", {}).get("effort"), prompt=prompt)
-    # stdin=DEVNULL is load-bearing, not tidiness: pi inherits the
+    transport = judge_cfg.get("transport", "claude-cli")
+    if transport == "pi":
+        cmd = build_pi_command(
+            provider=provider, model_id=model_id,
+            effort=judge_cfg.get("settings", {}).get("effort"), prompt=prompt)
+    else:
+        cmd = build_claude_command(
+            model_id=model_id,
+            effort=judge_cfg.get("settings", {}).get("effort"),
+            prompt=prompt)
+    # stdin=DEVNULL is load-bearing, not tidiness: the child inherits the
     # parent's stdin otherwise and blocks indefinitely when that is a
     # pipe nobody closes — which is exactly the case under nohup. Found
     # by a live probe that hung until stdin was redirected.
@@ -286,15 +294,17 @@ def _call_judge(judge_cfg: dict, model_id: str, prompt: str,
                           timeout=timeout, cwd=tempfile.gettempdir(),
                           stdin=subprocess.DEVNULL)
     try:
-        return parse_pi_stream(proc.stdout, want_provider=provider,
-                               want_model=model_id)
-    except PiError as exc:
+        if transport == "pi":
+            return parse_pi_stream(proc.stdout, want_provider=provider,
+                                   want_model=model_id)
+        return parse_claude_json(proc.stdout, want_model=model_id)
+    except TransportError as exc:
         wait = rate_limit_wait_seconds(str(exc))
         if wait is not None:
             raise RateLimited(wait, str(exc)) from exc
         if proc.returncode != 0:
-            raise PiError(
-                f"pi rc={proc.returncode}: {proc.stderr[:300]}") from exc
+            raise TransportError(
+                f"{cmd[0]} rc={proc.returncode}: {proc.stderr[:300]}") from exc
         raise
 
 

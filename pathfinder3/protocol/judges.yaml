@@ -47,17 +47,29 @@ judges:
     settings: {}
 
   opus5:
-    # Phase A strong judge. Dry-run confirm the model id before first use.
+    # Phase A strong judge.
+    #
+    # transport is claude-cli, NOT pi: on 2026-07-26 a live probe found
+    # pi's anthropic provider refused outright on a Max subscription with
+    # 400 "Third-party apps now draw from your extra usage, not your plan
+    # limits" and zero tokens consumed. The claude CLI is first-party and
+    # draws on the plan (its json response reports provider firstParty).
     alias: claude-opus-5
     model_id: claude-opus-5
     tier: strong
-    transport: pi
+    transport: claude-cli
     provider: anthropic
     prompt_file: judge_prompt_v3.md
     settings: {effort: xhigh}
   gpt56:
     # Phase A strong judge, second vendor. Independent rate limits are the
     # point: a closed tap on one side must not idle the other.
+    #
+    # Dry run 2026-07-26: the model answers "unavailable" when asked to
+    # state its own ID, so unlike the Claude judges there is NO model
+    # self-attestation here. The only identity evidence is the transport
+    # echo (pi reports model: gpt-5.6-sol, responseModel: null). Treat the
+    # recorded model_id as the requested id, not a confirmed one.
     alias: gpt-5.6-sol
     model_id: gpt-5.6-sol
     tier: strong
