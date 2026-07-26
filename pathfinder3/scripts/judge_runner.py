@@ -53,6 +53,16 @@ OUTPUT_CONTRACT_V2 = json.dumps(
 OUTPUT_CONTRACT_SHA256 = sha256_hex(OUTPUT_CONTRACT_V2)
 
 
+def prompt_path_for(judge_cfg: dict) -> Path:
+    """The judge prompt named by this registry entry.
+
+    Replaces the module-level PROMPT_PATH constant: the cheap judge runs
+    v2 and the strong judges run v3, so the prompt is a property of the
+    judge, not of the runner.
+    """
+    return P3 / "protocol" / judge_cfg["prompt_file"]
+
+
 class LockHeldError(RuntimeError):
     pass
 
@@ -215,11 +225,18 @@ def _parse_verdict(raw: str) -> dict:
     if set(obj) != {"corr", "int", "rationale"}:
         raise ValueError(f"wrong keys: {sorted(obj)}")
     for k in ("corr", "int"):
-        if not isinstance(obj[k], (int, float)) or not 0 <= obj[k] <= 1:
-            raise ValueError(f"{k} out of range: {obj[k]!r}")
+        value = obj[k]
+        # bool is a subclass of int, so an unguarded isinstance check
+        # would accept {"corr": true} as a valid score.
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise ValueError(f"{k} not numeric: {value!r}")
+        if not 0 <= value <= 1:
+            raise ValueError(f"{k} out of range: {value!r}")
     if not isinstance(obj["rationale"], str):
         raise ValueError("rationale missing")
-    obj["rationale"] = obj["rationale"][:140]
+    # Deliberately not truncated. v2 capped the rationale at 140
+    # characters for the cheap tier, and the old [:140] here silently
+    # mangled anything longer; v3 asks for two or three sentences.
     return obj
 
 
