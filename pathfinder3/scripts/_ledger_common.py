@@ -14,8 +14,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import os
 import re
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -51,7 +53,7 @@ def json_dumps_pretty(data: Any) -> str:
 def instrument_identity_record(
     *, model_id: str, role: str, transport: str, effort: str | None,
     prompt_sha256: str, output_contract_sha256: str, cli_version: str,
-    cli_sha256: str, system_prompt_sha256: str | None,
+    cli_sha256: str,
 ) -> dict:
     return {
         "model_id": model_id,
@@ -62,9 +64,6 @@ def instrument_identity_record(
         "output_contract_sha256": output_contract_sha256,
         "cli_version": cli_version,
         "cli_sha256": cli_sha256,
-        # None for transports that pass no system prompt (claude-cli);
-        # the sha256 of the exact text sent for those that do (pi).
-        "system_prompt_sha256": system_prompt_sha256,
     }
 
 
@@ -112,6 +111,32 @@ def validate_schema(value: Any, schema: dict, *, context: str) -> None:
 
     if "pattern" in schema and isinstance(value, str) and not re.search(schema["pattern"], value):
         raise LedgerSchemaError(f"{context}: {value!r} does not match {schema['pattern']!r}")
+
+    if "minLength" in schema and isinstance(value, str):
+        if len(value) < schema["minLength"]:
+            raise LedgerSchemaError(
+                f"{context}: length {len(value)} is below minimum "
+                f"{schema['minLength']}")
+
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        if isinstance(value, float) and not math.isfinite(value):
+            raise LedgerSchemaError(f"{context}: number must be finite")
+        if "minimum" in schema and value < schema["minimum"]:
+            raise LedgerSchemaError(
+                f"{context}: {value!r} is below minimum {schema['minimum']}")
+        if "maximum" in schema and value > schema["maximum"]:
+            raise LedgerSchemaError(
+                f"{context}: {value!r} is above maximum {schema['maximum']}")
+
+    if schema.get("format") == "date" and isinstance(value, str):
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
+            raise LedgerSchemaError(
+                f"{context}: {value!r} is not an ISO date (YYYY-MM-DD)")
+        try:
+            date.fromisoformat(value)
+        except ValueError as e:
+            raise LedgerSchemaError(
+                f"{context}: {value!r} is not a valid calendar date") from e
 
     if isinstance(value, dict):
         required = schema.get("required", [])

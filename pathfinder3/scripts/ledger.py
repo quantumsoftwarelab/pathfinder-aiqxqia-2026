@@ -28,6 +28,17 @@ class LedgerError(RuntimeError):
     pass
 
 
+def _unique_by(rows: list[dict], key: str, *, source: str) -> dict[str, dict]:
+    out: dict[str, dict] = {}
+    for row in rows:
+        value = row[key]
+        if value in out:
+            raise LedgerError(
+                f"{source} contains duplicate {key} {value!r}")
+        out[value] = row
+    return out
+
+
 def series_key(event: dict) -> tuple:
     if event["instrument_id"] is not None:
         return ("instrument", event["pair_id"], event["instrument_id"])
@@ -88,12 +99,17 @@ def load_ledger(ledger_dir: Path | None = None) -> Ledger:
     if ledger_dir is None:
         ledger_dir = LEDGER_DIR
     verdicts = load_jsonl(ledger_dir / "verdicts.jsonl")
-    pairs = {r["pair_id"]: r for r in load_jsonl(ledger_dir / "pairs.jsonl")}
-    manifest = {r["pair_id"]: r
-                for r in load_jsonl(ledger_dir / "calibration_manifest.jsonl")}
+    pairs = _unique_by(
+        load_jsonl(ledger_dir / "pairs.jsonl"), "pair_id",
+        source="pairs.jsonl")
+    manifest = _unique_by(
+        load_jsonl(ledger_dir / "calibration_manifest.jsonl"), "pair_id",
+        source="calibration_manifest.jsonl")
     instruments_path = ledger_dir / "instruments.jsonl"
-    instruments = ({r["instrument_id"]: r for r in load_jsonl(instruments_path)}
-                   if instruments_path.exists() else {})
+    instruments = (_unique_by(
+        load_jsonl(instruments_path), "instrument_id",
+        source="instruments.jsonl")
+        if instruments_path.exists() else {})
     for event in verdicts:
         if event["pair_id"] not in pairs:
             raise LedgerError(
