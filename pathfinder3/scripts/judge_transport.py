@@ -12,11 +12,13 @@ plans/pathfinder3-strong-sweep-design.md.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import threading
 import time
 from dataclasses import dataclass
+from pathlib import Path
 
 JUDGE_SYSTEM_PROMPT = (
     "You are a strict evaluator. Follow the output contract in the user "
@@ -216,17 +218,59 @@ class RateLimitGate:
 # it needs its own parser rather than parse_pi_stream.
 
 
-def build_claude_command(*, model_id: str, effort: str | None,
-                         prompt: str) -> list[str]:
+def claude_ambient_context_paths() -> list[Path]:
+    """CLAUDE.md files the claude CLI will read into a judge call.
+
+    Judge calls run with cwd=tempfile.gettempdir(), so no project
+    CLAUDE.md is discovered — but the user-global file always is.
+    Verified live on 2026-07-26: a judge call from /tmp answered a
+    question using a preference that exists only in
+    ~/.claude/CLAUDE.md, and it did so even with an explicit
+    --system-prompt. There is no flag that suppresses it while keeping
+    subscription auth (--bare would, but forces ANTHROPIC_API_KEY).
+    """
+    return [Path.home() / ".claude" / "CLAUDE.md"]
+
+
+def claude_system_prompt_digest(system_prompt: str = JUDGE_SYSTEM_PROMPT) -> str:
+    """sha256 over everything that conditions a claude judge call.
+
+    Covers our explicit system prompt AND the ambient CLAUDE.md content,
+    because the CLI injects the latter and we cannot turn it off. Hashing
+    it is what keeps the instrument honest: editing ~/.claude/CLAUDE.md
+    now changes the instrument_id, so verdicts produced under a different
+    ambient context form a different series instead of silently joining
+    the old one.
+
+    Only the digest is retained; no file content enters the ledger.
+    """
+    parts = [system_prompt]
+    for path in claude_ambient_context_paths():
+        body = path.read_text() if path.exists() else ""
+        parts.append(f"\n<<{path.name}>>\n{body}")
+    return hashlib.sha256("".join(parts).encode("utf-8")).hexdigest()
+
+
+def build_claude_command(*, model_id: str, effort: str | None, prompt: str,
+                         system_prompt: str = JUDGE_SYSTEM_PROMPT) -> list[str]:
     """Argv for one judge call through the first-party claude CLI.
 
     --disallowedTools "*" is the claude-side equivalent of pi's -nt: the
     judge must not be able to touch the filesystem or the network.
 
+    --system-prompt pins the judge's system text to the same string pi
+    uses, rather than inheriting Claude Code's coding-assistant prompt.
+    That both removes ~7.5k tokens of harness preamble per call and makes
+    the two transports more comparable instruments.
+
+    --no-session-persistence stops a 10,912-pair sweep writing a session
+    transcript per call.
+
     --effort must be passed whenever the registry declares one, or the
     instrument identity would record an effort the call never requested.
     """
-    cmd = ["claude", "--model", model_id, "--disallowedTools", "*"]
+    cmd = ["claude", "--model", model_id, "--disallowedTools", "*",
+           "--system-prompt", system_prompt, "--no-session-persistence"]
     if effort:
         cmd += ["--effort", effort]
     cmd += ["--print", "--output-format", "json", "-p", prompt]
@@ -267,9 +311,16 @@ def parse_claude_json(stdout: str, *, want_model: str) -> JudgeResult:
     if not isinstance(cost, (int, float)):
         raise TransportError("claude response carries no total_cost_usd")
 
+    # Model identity must be evidenced, not assumed. An absent modelUsage
+    # previously meant the check was skipped and the requested id was
+    # recorded as if served — the ledger would then attest to a model
+    # nothing confirmed.
     models = obj.get("modelUsage") or {}
     served = next(iter(models), None)
-    if served is not None and not served.startswith(want_model):
+    if served is None:
+        raise TransportError(
+            "claude response carries no modelUsage; model identity unverifiable")
+    if not served.startswith(want_model):
         raise ModelMismatchError(
             f"requested {want_model}, claude ran {served}")
 
@@ -277,9 +328,16 @@ def parse_claude_json(stdout: str, *, want_model: str) -> JudgeResult:
     if not isinstance(result, str):
         raise TransportError("claude response carries no result string")
 
+    # Core token counts must be present. Defaulting them to 0 turned an
+    # empty usage block into a free-looking call. Cache fields legitimately
+    # default to 0 (a cold call writes and reads nothing).
+    for field in ("input_tokens", "output_tokens"):
+        if not isinstance(usage.get(field), int) or isinstance(usage.get(field), bool):
+            raise TransportError(
+                f"claude usage block missing integer {field!r}: {usage!r}")
     normalised = {
-        "input": int(usage.get("input_tokens", 0)),
-        "output": int(usage.get("output_tokens", 0)),
+        "input": int(usage["input_tokens"]),
+        "output": int(usage["output_tokens"]),
         "cacheRead": int(usage.get("cache_read_input_tokens", 0)),
         "cacheWrite": int(usage.get("cache_creation_input_tokens", 0)),
         "cost": {"total": float(cost)},

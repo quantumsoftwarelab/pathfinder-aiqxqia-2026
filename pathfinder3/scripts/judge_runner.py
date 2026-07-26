@@ -49,8 +49,9 @@ from _ledger_common import (dump_jsonl_sorted, instrument_id,
                             instrument_identity_record, sha256_hex)
 from judge_transport import (JUDGE_SYSTEM_PROMPT, RateLimited, RateLimitGate,
                              TransportError, build_claude_command,
-                             build_pi_command, parse_claude_json,
-                             parse_pi_stream, rate_limit_wait_seconds)
+                             build_pi_command, claude_system_prompt_digest,
+                             parse_claude_json, parse_pi_stream,
+                             rate_limit_wait_seconds)
 
 PROVIDER_JUDGE_PREFIX = {"anthropic": "claude", "openai-codex": "codex"}
 
@@ -145,10 +146,14 @@ def resolve_instrument_identity(judge_cfg: dict, model_id: str,
         prompt_path = prompt_path_for(judge_cfg)
     tier_to_role = {"cheap": "cheap_selector", "strong": "strong_opinion",
                     "cheap_candidate": "cheap_candidate"}
-    # claude-cli sends no system prompt of ours, so there is nothing
-    # honest to hash for it; pi is given an explicit one.
+    # Both transports now send an explicit system prompt. The claude
+    # digest additionally covers the ambient CLAUDE.md the CLI injects and
+    # that no flag suppresses while keeping subscription auth — without
+    # that, editing ~/.claude/CLAUDE.md would change what the judge sees
+    # while leaving instrument_id untouched.
     system_prompt_sha256 = (
-        sha256_text(JUDGE_SYSTEM_PROMPT) if transport == "pi" else None)
+        sha256_text(JUDGE_SYSTEM_PROMPT) if transport == "pi"
+        else claude_system_prompt_digest())
     return instrument_identity_record(
         model_id=model_id, role=tier_to_role[judge_cfg.get("tier", "cheap")],
         transport=transport, effort=judge_cfg.get("settings", {}).get("effort"),
@@ -299,9 +304,16 @@ def _call_judge(judge_cfg: dict, model_id: str, prompt: str,
                                    want_model=model_id)
         return parse_claude_json(proc.stdout, want_model=model_id)
     except TransportError as exc:
-        wait = rate_limit_wait_seconds(str(exc))
+        # Classify against everything the CLI said, not just the parse
+        # failure. A rate limit routinely arrives on stderr with empty
+        # stdout, in which case the parse error is merely "no output" and
+        # carries no rate-limit vocabulary at all. Checking it alone made
+        # a 429 look like a hard failure, burn all three retries, and drop
+        # the pair (found in review of 7c5a882).
+        evidence = f"{exc} | rc={proc.returncode} | {proc.stderr[:1000]}"
+        wait = rate_limit_wait_seconds(evidence)
         if wait is not None:
-            raise RateLimited(wait, str(exc)) from exc
+            raise RateLimited(wait, evidence) from exc
         if proc.returncode != 0:
             raise TransportError(
                 f"{cmd[0]} rc={proc.returncode}: {proc.stderr[:300]}") from exc
