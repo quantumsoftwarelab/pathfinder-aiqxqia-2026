@@ -182,6 +182,7 @@ def structural_violations(led: ledger.Ledger, ledger_dir: Path, build_dir: Path)
             prompt_sha256=identity["prompt_sha256"],
             output_contract_sha256=identity["output_contract_sha256"],
             cli_version=identity["cli_version"], cli_sha256=identity["cli_sha256"],
+            system_prompt_sha256=identity["system_prompt_sha256"],
         )
         recomputed = instrument_id(record)
         if recomputed != iid:

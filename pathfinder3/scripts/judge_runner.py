@@ -131,6 +131,7 @@ def resolve_instrument_identity(judge_cfg: dict, model_id: str,
         transport=judge_cfg.get("transport", "claude-cli"), effort=None,
         prompt_sha256=prompt_sha256, output_contract_sha256=OUTPUT_CONTRACT_SHA256,
         cli_version=cli_version, cli_sha256=cli_sha256,
+        system_prompt_sha256=None,
     )
 
 
