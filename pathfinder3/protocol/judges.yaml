@@ -21,12 +21,16 @@ judges:
     model_id: claude-haiku-4-5   # dry-run confirmed 2026-06-12
     tier: cheap
     transport: claude-cli        # batch API deferred; CLI suffices at calibration scale
+    provider: anthropic
+    prompt_file: judge_prompt_v2.md
     settings: {}
   strong:
     alias: claude-opus-4-8
     model_id: claude-opus-4-8    # dry-run confirmed 2026-06-12
     tier: strong
     transport: claude-cli
+    provider: anthropic
+    prompt_file: judge_prompt_v2.md
     settings: {}
   cheap_sonnet:
     # Escalation candidate for the cheap tier (escalation rule below). Run on
@@ -38,7 +42,29 @@ judges:
     model_id: claude-sonnet-4-6  # dry-run confirmed 2026-06-12
     tier: cheap_candidate
     transport: claude-cli
+    provider: anthropic
+    prompt_file: judge_prompt_v2.md
     settings: {}
+
+  opus5:
+    # Phase A strong judge. Dry-run confirm the model id before first use.
+    alias: claude-opus-5
+    model_id: claude-opus-5
+    tier: strong
+    transport: pi
+    provider: anthropic
+    prompt_file: judge_prompt_v3.md
+    settings: {effort: xhigh}
+  gpt56:
+    # Phase A strong judge, second vendor. Independent rate limits are the
+    # point: a closed tap on one side must not idle the other.
+    alias: gpt-5.6-sol
+    model_id: gpt-5.6-sol
+    tier: strong
+    transport: pi
+    provider: openai-codex
+    prompt_file: judge_prompt_v3.md
+    settings: {effort: xhigh}
 
 # Escalation rule (plan item 2): if the cheap judge cannot offer a useful
 # tradeoff between strong-model recall and strong-pass volume, either

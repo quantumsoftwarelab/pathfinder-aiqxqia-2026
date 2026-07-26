@@ -53,7 +53,7 @@ def json_dumps_pretty(data: Any) -> str:
 def instrument_identity_record(
     *, model_id: str, role: str, transport: str, effort: str | None,
     prompt_sha256: str, output_contract_sha256: str, cli_version: str,
-    cli_sha256: str,
+    cli_sha256: str, system_prompt_sha256: str | None,
 ) -> dict:
     return {
         "model_id": model_id,
@@ -64,6 +64,9 @@ def instrument_identity_record(
         "output_contract_sha256": output_contract_sha256,
         "cli_version": cli_version,
         "cli_sha256": cli_sha256,
+        # None for transports that pass no system prompt (claude-cli);
+        # the sha256 of the exact text sent for those that do (pi).
+        "system_prompt_sha256": system_prompt_sha256,
     }
 
 

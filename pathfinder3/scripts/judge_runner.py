@@ -43,14 +43,30 @@ from pathlib import Path
 import yaml
 
 import ledger
-from _common import P3, PROMPT_PATH, corpus_by_item_id, item_block, render_prompt, sha256_text
+import pi_transport
+from _common import P3, corpus_by_item_id, item_block, render_prompt, sha256_text
 from _ledger_common import (dump_jsonl_sorted, instrument_id,
                             instrument_identity_record, sha256_hex)
+from pi_transport import (JUDGE_SYSTEM_PROMPT, PiError, RateLimited,
+                          RateLimitGate, build_pi_command, parse_pi_stream,
+                          rate_limit_wait_seconds)
+
+PROVIDER_JUDGE_PREFIX = {"anthropic": "claude", "openai-codex": "codex"}
 
 OUTPUT_CONTRACT_V2 = json.dumps(
     {"keys": sorted(["corr", "int", "rationale"])}, sort_keys=True
 ).encode("utf-8")
 OUTPUT_CONTRACT_SHA256 = sha256_hex(OUTPUT_CONTRACT_V2)
+
+
+def prompt_path_for(judge_cfg: dict) -> Path:
+    """The judge prompt named by this registry entry.
+
+    Replaces the module-level PROMPT_PATH constant: the cheap judge runs
+    v2 and the strong judges run v3, so the prompt is a property of the
+    judge, not of the runner.
+    """
+    return P3 / "protocol" / judge_cfg["prompt_file"]
 
 
 class LockHeldError(RuntimeError):
@@ -107,30 +123,38 @@ def find_torn_tail(path: Path) -> int | None:
     return None
 
 
-def resolve_cli_identity() -> tuple[str, str]:
-    version = subprocess.run(["claude", "--version"], capture_output=True,
+def resolve_cli_identity(binary: str) -> tuple[str, str]:
+    version = subprocess.run([binary, "--version"], capture_output=True,
                              text=True, check=True).stdout.strip()
     import shutil
-    binary = shutil.which("claude")
-    if binary is None:
-        raise RuntimeError("claude executable not found on PATH")
+    path = shutil.which(binary)
+    if path is None:
+        raise RuntimeError(f"{binary} executable not found on PATH")
     # sha256 the raw binary bytes directly — do not decode/re-encode
     # through a text codec first, which would corrupt any byte >= 0x80.
-    cli_sha256 = sha256_hex(Path(binary).read_bytes())
-    return version, cli_sha256
+    return version, sha256_hex(Path(path).read_bytes())
 
 
 def resolve_instrument_identity(judge_cfg: dict, model_id: str,
-                                prompt_path: Path = PROMPT_PATH) -> dict:
-    cli_version, cli_sha256 = resolve_cli_identity()
-    prompt_sha256 = sha256_text(prompt_path.read_text())
+                                prompt_path: Path | None = None) -> dict:
+    transport = judge_cfg.get("transport", "claude-cli")
+    binary = "pi" if transport == "pi" else "claude"
+    cli_version, cli_sha256 = resolve_cli_identity(binary)
+    if prompt_path is None:
+        prompt_path = prompt_path_for(judge_cfg)
     tier_to_role = {"cheap": "cheap_selector", "strong": "strong_opinion",
                     "cheap_candidate": "cheap_candidate"}
+    # claude-cli sends no system prompt of ours, so there is nothing
+    # honest to hash for it; pi is given an explicit one.
+    system_prompt_sha256 = (
+        sha256_text(JUDGE_SYSTEM_PROMPT) if transport == "pi" else None)
     return instrument_identity_record(
         model_id=model_id, role=tier_to_role[judge_cfg.get("tier", "cheap")],
-        transport=judge_cfg.get("transport", "claude-cli"), effort=None,
-        prompt_sha256=prompt_sha256, output_contract_sha256=OUTPUT_CONTRACT_SHA256,
+        transport=transport, effort=judge_cfg.get("settings", {}).get("effort"),
+        prompt_sha256=sha256_text(prompt_path.read_text()),
+        output_contract_sha256=OUTPUT_CONTRACT_SHA256,
         cli_version=cli_version, cli_sha256=cli_sha256,
+        system_prompt_sha256=system_prompt_sha256,
     )
 
 
@@ -160,6 +184,30 @@ def skip_pair_ids(led: ledger.Ledger, *, judge: str, prompt_version: str | None,
             led.canonical_for_series(judge=judge, instrument_id=instrument_id)}
 
 
+def ordered_pair_ids(led: ledger.Ledger, candidates: list[str],
+                     deployment_path: Path | None = None) -> list[str]:
+    """Worklist ordered by the deployed cheap judge's score, descending.
+
+    The cheap judge is a good sort key and a bad filter: measured on the
+    100 pairs carrying both a Haiku-v2 and an Opus-4.8-v2 verdict, its
+    top 10 is 90% strong-positive against a 24% base rate, but no
+    threshold cuts volume without dropping positives. So order by it,
+    never exclude by it — pairs with no cheap verdict sort last rather
+    than being dropped. See plans/pathfinder3-strong-sweep-design.md.
+
+    Ordering never affects correctness: resume matches on series key.
+    """
+    if deployment_path is None:
+        deployment_path = P3 / "protocol" / "deployment.yaml"
+    dep = yaml.safe_load(deployment_path.read_text())["deployed_cheap_series"]
+    cheap = {e["pair_id"]: ledger.score(e) for e in led.canonical_for_series(
+        judge=dep["judge"], prompt_version=dep["prompt_version"],
+        instrument_id=dep["instrument_id"])}
+    # -1.0 default sorts unscored pairs last; the pair_id tie-break keeps
+    # the order deterministic across runs.
+    return sorted(candidates, key=lambda pid: (-cheap.get(pid, -1.0), pid))
+
+
 def check_provenance(pid: str, q: dict, p: dict, led: ledger.Ledger) -> None:
     """Verify the corpus text for both sides of pair ``pid`` still matches
     the SHA-256 recorded on the pair row before a judge call is spent on it.
@@ -181,27 +229,68 @@ def check_provenance(pid: str, q: dict, p: dict, led: ledger.Ledger) -> None:
                 "ledger pairs or restore the corpus snapshot")
 
 
-def _unwired_capture_usage(raw_output: str) -> dict:
-    raise NotImplementedError(
-        "token/cost capture not wired (Phase 2 Step 6); this refactor "
-        "intentionally cannot append new-instrument verdicts yet — see "
-        "plans/pathfinder3-ledger-refactor-design.md Non-goals. Tests "
-        "monkeypatch judge_runner.capture_usage to exercise the append path.")
+def capture_usage(usage: dict) -> dict:
+    """Ledger token/cost fields from one pi usage block.
+
+    Cache reads and writes are input tokens that were billed at a
+    different rate; the ledger records total tokens consumed, so they
+    belong in tokens_in. est_cost_usd is pi's own computed total — do
+    not recompute it from a price table, and in particular do not read
+    ~/.pi/agent/models-store.json, which is a refresh cache that need
+    not contain built-in models.
+
+    On subscription auth this figure is notional, not a bill. It is
+    recorded because it is the only consumption measure comparable
+    across two vendors with different, unpublished plan accounting.
+    """
+    for key in ("input", "output", "cacheRead", "cacheWrite"):
+        value = usage.get(key)
+        if not isinstance(value, int) or isinstance(value, bool):
+            raise ValueError(f"pi usage block missing integer {key!r}: {usage!r}")
+    cost = usage.get("cost")
+    if not isinstance(cost, dict) or not isinstance(cost.get("total"), (int, float)):
+        raise ValueError(f"pi usage block missing cost.total: {usage!r}")
+    return {
+        "tokens_in": usage["input"] + usage["cacheRead"] + usage["cacheWrite"],
+        "tokens_out": usage["output"],
+        "est_cost_usd": float(cost["total"]),
+    }
 
 
-capture_usage = _unwired_capture_usage
+def sum_usage(records: list[dict]) -> dict:
+    """Total usage across every attempt that was actually paid for.
+
+    A call that returned malformed JSON still consumed tokens. Summing
+    them into the accepted verdict keeps the recorded consumption
+    honest; without it a retried pair understates what it cost.
+    """
+    return {
+        "tokens_in": sum(r["tokens_in"] for r in records),
+        "tokens_out": sum(r["tokens_out"] for r in records),
+        "est_cost_usd": sum(r["est_cost_usd"] for r in records),
+    }
 
 
-def _call_judge(model_id: str, prompt: str, timeout: int = 300) -> str:
-    proc = subprocess.run(
-        ["claude", "--model", model_id, "--disallowedTools", "*",
-         "--print", "--output-format", "text", "-p", prompt],
-        capture_output=True, text=True, timeout=timeout,
-        cwd=tempfile.gettempdir(),
-    )
-    if proc.returncode != 0:
-        raise RuntimeError(f"claude rc={proc.returncode}: {proc.stderr[:300]}")
-    return proc.stdout.strip()
+def _call_judge(judge_cfg: dict, model_id: str, prompt: str,
+                timeout: int = 900) -> pi_transport.PiResult:
+    """One judge call. Raises RateLimited when the vendor closes the tap."""
+    provider = judge_cfg["provider"]
+    cmd = build_pi_command(
+        provider=provider, model_id=model_id,
+        effort=judge_cfg.get("settings", {}).get("effort"), prompt=prompt)
+    proc = subprocess.run(cmd, capture_output=True, text=True,
+                          timeout=timeout, cwd=tempfile.gettempdir())
+    try:
+        return parse_pi_stream(proc.stdout, want_provider=provider,
+                               want_model=model_id)
+    except PiError as exc:
+        wait = rate_limit_wait_seconds(str(exc))
+        if wait is not None:
+            raise RateLimited(wait, str(exc)) from exc
+        if proc.returncode != 0:
+            raise PiError(
+                f"pi rc={proc.returncode}: {proc.stderr[:300]}") from exc
+        raise
 
 
 def _parse_verdict(raw: str) -> dict:
@@ -214,11 +303,18 @@ def _parse_verdict(raw: str) -> dict:
     if set(obj) != {"corr", "int", "rationale"}:
         raise ValueError(f"wrong keys: {sorted(obj)}")
     for k in ("corr", "int"):
-        if not isinstance(obj[k], (int, float)) or not 0 <= obj[k] <= 1:
-            raise ValueError(f"{k} out of range: {obj[k]!r}")
+        value = obj[k]
+        # bool is a subclass of int, so an unguarded isinstance check
+        # would accept {"corr": true} as a valid score.
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise ValueError(f"{k} not numeric: {value!r}")
+        if not 0 <= value <= 1:
+            raise ValueError(f"{k} out of range: {value!r}")
     if not isinstance(obj["rationale"], str):
         raise ValueError("rationale missing")
-    obj["rationale"] = obj["rationale"][:140]
+    # Deliberately not truncated. v2 capped the rationale at 140
+    # characters for the cheap tier, and the old [:140] here silently
+    # mangled anything longer; v3 asks for two or three sentences.
     return obj
 
 
@@ -234,19 +330,12 @@ def main() -> int:
     ap.add_argument("--run-id", default=None)
     args = ap.parse_args()
 
-    if capture_usage is _unwired_capture_usage:
-        raise SystemExit(
-            "judge_runner cannot append verdicts yet: token/cost capture is "
-            "deferred to Phase 2 Step 6 (see plans/pathfinder3-ledger-"
-            "refactor-design.md). This refusal is by design in this "
-            "refactor; inject judge_runner.capture_usage for testing.")
-
     registry = yaml.safe_load((P3 / "protocol" / "judges.yaml").read_text())
     if args.judge not in registry["judges"]:
         raise SystemExit(f"unknown judge {args.judge!r}")
     judge_cfg = registry["judges"][args.judge]
     model_id = judge_cfg["model_id"]
-    judge_full_id = f"claude:{model_id}"
+    judge_full_id = f"{PROVIDER_JUDGE_PREFIX[judge_cfg['provider']]}:{model_id}"
     run_id = args.run_id or datetime.now().strftime("%Y%m%d-%H%M%S") + f"-{os.getpid():04x}"
 
     torn = find_torn_tail(ledger.VERDICTS_PATH)
@@ -275,27 +364,51 @@ def main() -> int:
         skip = set() if args.repeat else skip_pair_ids(
             led, judge=judge_full_id, prompt_version=None, instrument_id=iid)
         candidates = args.pair_ids if args.pair_ids else sorted(led.pairs)
-        todo = [pid for pid in candidates if pid not in skip]
+        todo = ordered_pair_ids(
+            led, [pid for pid in candidates if pid not in skip])
         if args.limit:
             todo = todo[:args.limit]
         print(f"{args.judge} ({judge_full_id}, instrument {iid[:12]}...): "
              f"{len(todo)} pairs to judge")
 
         items = corpus_by_item_id()
-        template = PROMPT_PATH.read_text()
+        template = prompt_path_for(judge_cfg).read_text()
         write_mutex = threading.Lock()
         today = date.today().isoformat()
         failures = []
+        gate = RateLimitGate()
 
         def work(pid: str) -> None:
             q, p = items[led.pairs[pid]["c1"]["item_id"]], items[led.pairs[pid]["c2"]["item_id"]]
             check_provenance(pid, q, p, led)
             prompt = render_prompt(template, q, p)
-            raw, verdict, error = None, None, None
-            for attempt in (1, 2, 3):
+            spent, verdict, error = [], None, None
+            attempt = 0
+            # Rate-limit pauses are deliberately unbounded: pausing until
+            # the tap reopens IS the drip feed, and a weekly limit can
+            # close for hours. This cannot spin, because every pause is
+            # at least DEFAULT_BACKOFF_SECONDS. A run that looks hung
+            # during a long closure is behaving correctly; the printed
+            # pause line is how an operator tells that from a crash.
+            while attempt < 3:
+                gate.wait()
                 try:
-                    raw = _call_judge(model_id, prompt)
-                    verdict = _parse_verdict(raw)
+                    result = _call_judge(judge_cfg, model_id, prompt)
+                except RateLimited as e:
+                    # Not an attempt: the vendor never looked at the
+                    # prompt, so this must not consume a retry.
+                    gate.close_for(e.wait_seconds)
+                    print(f"  rate limited on {pid}; pausing "
+                          f"{e.wait_seconds:.0f}s", flush=True)
+                    continue
+                except Exception as e:  # noqa: BLE001
+                    attempt += 1
+                    error = f"attempt {attempt}: {e}"
+                    continue
+                attempt += 1
+                try:
+                    spent.append(capture_usage(result.usage))
+                    verdict = _parse_verdict(result.text)
                     break
                 except Exception as e:  # noqa: BLE001
                     error = f"attempt {attempt}: {e}"
@@ -303,7 +416,7 @@ def main() -> int:
                 with write_mutex:
                     failures.append((pid, error))
                 return
-            usage = capture_usage(raw)
+            usage = sum_usage(spent)
             event = {
                 "schema_version": 2, "pair_id": pid, "judge": judge_full_id,
                 "prompt_version": None, "instrument_id": iid,

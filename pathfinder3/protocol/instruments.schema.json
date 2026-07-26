@@ -7,7 +7,7 @@
   "required": [
     "instrument_id", "model_id", "role", "transport", "effort",
     "prompt_sha256", "output_contract_sha256", "cli_version", "cli_sha256",
-    "registered_at", "first_run_id"
+    "system_prompt_sha256", "registered_at", "first_run_id"
   ],
   "additionalProperties": false,
   "properties": {
@@ -20,6 +20,11 @@
     "output_contract_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
     "cli_version": {"type": "string", "minLength": 1},
     "cli_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "system_prompt_sha256": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-f]{64}$",
+      "$comment": "sha256 of the exact system prompt sent to the model; null for transports that send none (claude-cli). Part of the instrument identity record."
+    },
     "registered_at": {"type": "string", "format": "date"},
     "first_run_id": {"type": "string", "minLength": 1}
   }
