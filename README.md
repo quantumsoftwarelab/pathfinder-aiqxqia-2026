@@ -278,6 +278,10 @@ uv run pytest tests/portability -q
 
 Some Ezratty bot tests depend on optional plumbing packages that are installed in the bot/container environment. They are skipped when those optional dependencies are absent.
 
+## Built with Shipshape
+
+This repository uses [Shipshape](https://github.com/dmytri/shipshape), a context-isolated spec-driven workflow for coding agents. Install with `npx skills add dmytri/shipshape --skill '*'`, or the experimental open-plugin build with `npx plugins add dmytri/shipshape`.
+
 ## Conventions
 
 - Use British English in Markdown and project prose.
