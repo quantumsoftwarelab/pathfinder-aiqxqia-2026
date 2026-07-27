@@ -420,7 +420,11 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--judge", required=True)
     ap.add_argument("--workers", type=int, default=4)
-    ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--limit", type=int, default=0,
+                    help="judge at most this many pairs THIS run. The cap is "
+                         "applied after the resume skip, so it bounds the "
+                         "work remaining, not the series total: a smoke run "
+                         "of 3 followed by --limit 1000 leaves 1,003 judged")
     ap.add_argument("--pair-ids", nargs="*", default=None,
                     help="explicit pair ids to judge (default: full pairs.jsonl)")
     ap.add_argument("--repeat", action="store_true",
