@@ -228,12 +228,16 @@ def baseline_violations(led: ledger.Ledger, baseline: dict) -> list[str]:
                 if e["judge"] == "claude:claude-haiku-4-5" and e["prompt_version"] == "v2"]
     c005 = sum(1 for e in haiku_v2 if ledger.score(e) >= 0.05)
     c015 = sum(1 for e in haiku_v2 if ledger.score(e) >= 0.15)
+    c025 = sum(1 for e in haiku_v2 if ledger.score(e) >= 0.25)
     if c005 != baseline["haiku_v2_survivors"]["s_ge_0.05"]:
         violations.append(f"[baseline] s>=0.05 survivors {c005} != frozen "
                           f"{baseline['haiku_v2_survivors']['s_ge_0.05']}")
     if c015 != baseline["haiku_v2_survivors"]["s_ge_0.15"]:
         violations.append(f"[baseline] s>=0.15 survivors {c015} != frozen "
                           f"{baseline['haiku_v2_survivors']['s_ge_0.15']}")
+    if c025 != baseline["haiku_v2_survivors"]["s_ge_0.25"]:
+        violations.append(f"[baseline] s>=0.25 survivors {c025} != frozen "
+                          f"{baseline['haiku_v2_survivors']['s_ge_0.25']}")
     return violations
 
 

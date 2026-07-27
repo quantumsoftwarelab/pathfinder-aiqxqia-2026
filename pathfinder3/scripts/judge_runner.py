@@ -55,27 +55,6 @@ from judge_transport import (JUDGE_SYSTEM_PROMPT, RateLimited, RateLimitGate,
 
 PROVIDER_JUDGE_PREFIX = {"anthropic": "claude", "openai-codex": "codex"}
 
-# Output contracts, by name. A judge's registry entry names the one it uses;
-# the hash enters the instrument identity, so changing a contract yields a new
-# series rather than silently extending an old one.
-#
-# v4's axes are feasibility and gain, but they are stored in the corr and int
-# fields: verdicts.schema.json fixes those two names, bounds them to [0,1] and
-# forbids additional properties. The mapping is feasibility -> corr,
-# gain -> int, each divided by 100. It is recorded in judges.yaml beside the
-# judge, and the prompt hash makes the series unmistakable.
-OUTPUT_CONTRACTS = {
-    "v2": ("corr", "int", "rationale"),
-    "v4": ("feasibility", "gain", "rationale"),
-}
-
-
-def contract_sha256(name: str) -> str:
-    return sha256_hex(json.dumps({"keys": sorted(OUTPUT_CONTRACTS[name])},
-                                 sort_keys=True).encode("utf-8"))
-
-
-# preserved so existing v2 instruments keep their identity
 OUTPUT_CONTRACT_V2 = json.dumps(
     {"keys": sorted(["corr", "int", "rationale"])}, sort_keys=True
 ).encode("utf-8")
@@ -179,8 +158,7 @@ def resolve_instrument_identity(judge_cfg: dict, model_id: str,
         model_id=model_id, role=tier_to_role[judge_cfg.get("tier", "cheap")],
         transport=transport, effort=judge_cfg.get("settings", {}).get("effort"),
         prompt_sha256=sha256_text(prompt_path.read_text()),
-        output_contract_sha256=contract_sha256(
-            judge_cfg.get("output_contract", "v2")),
+        output_contract_sha256=OUTPUT_CONTRACT_SHA256,
         cli_version=cli_version, cli_sha256=cli_sha256,
         system_prompt_sha256=system_prompt_sha256,
     )
@@ -213,8 +191,7 @@ def skip_pair_ids(led: ledger.Ledger, *, judge: str, prompt_version: str | None,
 
 
 def ordered_pair_ids(led: ledger.Ledger, candidates: list[str],
-                     deployment_path: Path | None = None,
-                     order_by: str | None = None) -> list[str]:
+                     deployment_path: Path | None = None) -> list[str]:
     """Worklist ordered by the deployed cheap judge's score, descending.
 
     The cheap judge is a good sort key and a bad filter: measured on the
@@ -226,21 +203,12 @@ def ordered_pair_ids(led: ledger.Ledger, candidates: list[str],
 
     Ordering never affects correctness: resume matches on series key.
     """
-    if order_by:
-        # order by an arbitrary completed judge rather than the deployed cheap
-        # selector -- e.g. rank by a strong judge once its sweep has finished.
-        cheap = {e["pair_id"]: ledger.score(e)
-                 for e in led.canonical_by_series().values()
-                 if e["judge"] == order_by}
-        if not cheap:
-            raise SystemExit(f"--order-by {order_by!r} has no canonical verdicts")
-    else:
-        if deployment_path is None:
-            deployment_path = P3 / "protocol" / "deployment.yaml"
-        dep = yaml.safe_load(deployment_path.read_text())["deployed_cheap_series"]
-        cheap = {e["pair_id"]: ledger.score(e) for e in led.canonical_for_series(
-            judge=dep["judge"], prompt_version=dep["prompt_version"],
-            instrument_id=dep["instrument_id"])}
+    if deployment_path is None:
+        deployment_path = P3 / "protocol" / "deployment.yaml"
+    dep = yaml.safe_load(deployment_path.read_text())["deployed_cheap_series"]
+    cheap = {e["pair_id"]: ledger.score(e) for e in led.canonical_for_series(
+        judge=dep["judge"], prompt_version=dep["prompt_version"],
+        instrument_id=dep["instrument_id"])}
     # -1.0 default sorts unscored pairs last; the pair_id tie-break keeps
     # the order deterministic across runs.
     return sorted(candidates, key=lambda pid: (-cheap.get(pid, -1.0), pid))
@@ -352,48 +320,29 @@ def _call_judge(judge_cfg: dict, model_id: str, prompt: str,
         raise
 
 
-def _parse_verdict(raw: str, contract: str = "v2") -> dict:
-    """Parse one verdict into the ledger's normalised shape.
-
-    Returns corr, int and rationale whatever the contract. v4 reports
-    feasibility and gain as integers 0-100; they are divided by 100 and
-    stored in corr and int respectively, because verdicts.schema.json fixes
-    those field names and bounds them to [0,1].
-    """
+def _parse_verdict(raw: str) -> dict:
     if raw.startswith("```"):
         raw = raw.strip("`\n")
         raw = raw[4:].lstrip() if raw.startswith("json") else raw
     if not (raw.startswith("{") and raw.endswith("}")):
         raise ValueError(f"not a bare JSON object: {raw[:120]!r}")
     obj = json.loads(raw)
-    expected = set(OUTPUT_CONTRACTS[contract])
-    if set(obj) != expected:
-        raise ValueError(f"wrong keys for contract {contract}: {sorted(obj)}")
+    if set(obj) != {"corr", "int", "rationale"}:
+        raise ValueError(f"wrong keys: {sorted(obj)}")
+    for k in ("corr", "int"):
+        value = obj[k]
+        # bool is a subclass of int, so an unguarded isinstance check
+        # would accept {"corr": true} as a valid score.
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise ValueError(f"{k} not numeric: {value!r}")
+        if not 0 <= value <= 1:
+            raise ValueError(f"{k} out of range: {value!r}")
     if not isinstance(obj["rationale"], str):
         raise ValueError("rationale missing")
-
-    if contract == "v2":
-        for k in ("corr", "int"):
-            value = obj[k]
-            # bool is a subclass of int, so an unguarded isinstance check
-            # would accept {"corr": true} as a valid score.
-            if isinstance(value, bool) or not isinstance(value, (int, float)):
-                raise ValueError(f"{k} not numeric: {value!r}")
-            if not 0 <= value <= 1:
-                raise ValueError(f"{k} out of range: {value!r}")
-        return obj
-
-    out = {"rationale": obj["rationale"]}
-    for src, dst in (("feasibility", "corr"), ("gain", "int")):
-        value = obj[src]
-        # integers only: the 0-100 grid is the point of this contract, and a
-        # float would mean the judge ignored it.
-        if isinstance(value, bool) or not isinstance(value, int):
-            raise ValueError(f"{src} must be an integer 0-100: {value!r}")
-        if not 0 <= value <= 100:
-            raise ValueError(f"{src} out of range: {value!r}")
-        out[dst] = value / 100.0
-    return out
+    # Deliberately not truncated. v2 capped the rationale at 140
+    # characters for the cheap tier, and the old [:140] here silently
+    # mangled anything longer; v3 asks for two or three sentences.
+    return obj
 
 
 def main() -> int:
@@ -406,9 +355,6 @@ def main() -> int:
     ap.add_argument("--repeat", action="store_true",
                     help="bypass the skip set; stamp repeat: true")
     ap.add_argument("--run-id", default=None)
-    ap.add_argument("--order-by", default=None, metavar="JUDGE",
-                    help="rank the worklist by this judge's scores instead of "
-                         "the deployed cheap selector, e.g. codex:gpt-5.6-sol")
     args = ap.parse_args()
 
     registry = yaml.safe_load((P3 / "protocol" / "judges.yaml").read_text())
@@ -446,8 +392,7 @@ def main() -> int:
             led, judge=judge_full_id, prompt_version=None, instrument_id=iid)
         candidates = args.pair_ids if args.pair_ids else sorted(led.pairs)
         todo = ordered_pair_ids(
-            led, [pid for pid in candidates if pid not in skip],
-            order_by=args.order_by)
+            led, [pid for pid in candidates if pid not in skip])
         if args.limit:
             todo = todo[:args.limit]
         print(f"{args.judge} ({judge_full_id}, instrument {iid[:12]}...): "
@@ -490,8 +435,7 @@ def main() -> int:
                 attempt += 1
                 try:
                     spent.append(capture_usage(result.usage))
-                    verdict = _parse_verdict(
-                        result.text, judge_cfg.get("output_contract", "v2"))
+                    verdict = _parse_verdict(result.text)
                     break
                 except Exception as e:  # noqa: BLE001
                     error = f"attempt {attempt}: {e}"

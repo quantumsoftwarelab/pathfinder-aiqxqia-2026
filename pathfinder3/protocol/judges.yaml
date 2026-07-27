@@ -23,7 +23,6 @@ judges:
     transport: claude-cli        # batch API deferred; CLI suffices at calibration scale
     provider: anthropic
     prompt_file: judge_prompt_v2.md
-    output_contract: v2
     settings: {}
   strong:
     alias: claude-opus-4-8
@@ -32,7 +31,6 @@ judges:
     transport: claude-cli
     provider: anthropic
     prompt_file: judge_prompt_v2.md
-    output_contract: v2
     settings: {}
   cheap_sonnet:
     # Escalation candidate for the cheap tier (escalation rule below). Run on
@@ -46,7 +44,6 @@ judges:
     transport: claude-cli
     provider: anthropic
     prompt_file: judge_prompt_v2.md
-    output_contract: v2
     settings: {}
 
   opus5:
@@ -63,7 +60,6 @@ judges:
     transport: claude-cli
     provider: anthropic
     prompt_file: judge_prompt_v3.md
-    output_contract: v2
     settings: {effort: xhigh}
   gpt56:
     # Phase A strong judge, second vendor. Independent rate limits are the
@@ -80,41 +76,7 @@ judges:
     transport: pi
     provider: openai-codex
     prompt_file: judge_prompt_v3.md
-    output_contract: v2
     settings: {effort: xhigh}
-
-  opus5_fg:
-    # Feasibility/gain instrument. v4 replaces the corr/int axes, which the
-    # completed sweep showed the judges collapse into one (Spearman +0.974),
-    # with two the judges hold apart by construction: could the implied
-    # experiment be run, and would its outcome teach anything.
-    #
-    # Scores are integers 0-100, giving ~100 usable levels against v2's ~20 -
-    # the coarse grid left Opus with only 14 distinct values across its own
-    # top 100, so any ranking inside a shortlist was mostly tie-break.
-    #
-    # AXIS MAPPING: feasibility is stored in `corr`, gain in `int`, each
-    # divided by 100. verdicts.schema.json fixes those field names and bounds
-    # them to [0,1]. Read a v4 series accordingly.
-    alias: claude-opus-5
-    model_id: claude-opus-5
-    tier: strong
-    transport: claude-cli
-    provider: anthropic
-    prompt_file: judge_prompt_v4.md
-    output_contract: v4
-    settings: {effort: xhigh}
-  gpt56_fg:
-    # Second vendor, same v4 instrument. See opus5_fg for the axis mapping.
-    alias: gpt-5.6-sol
-    model_id: gpt-5.6-sol
-    tier: strong
-    transport: pi
-    provider: openai-codex
-    prompt_file: judge_prompt_v4.md
-    output_contract: v4
-    settings: {effort: xhigh}
-
 
 # Escalation rule (plan item 2): if the cheap judge cannot offer a useful
 # tradeoff between strong-model recall and strong-pass volume, either
