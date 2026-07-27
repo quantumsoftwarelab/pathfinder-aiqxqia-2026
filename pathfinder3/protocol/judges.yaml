@@ -96,6 +96,16 @@ judges:
     # AXIS MAPPING: feasibility is stored in `corr`, gain in `int`, each
     # divided by 100. verdicts.schema.json fixes those field names and bounds
     # them to [0,1]. Read a v4 series accordingly.
+    #
+    # WORDING REVISED 2026-07-27. The first v4 text (prompt sha256
+    # db111b02a6b9..., instruments 425d1c378968 for Opus and 60ed46389e21 for
+    # GPT, 1,003 verdicts each) said "do not round to multiples of five". Both
+    # judges obeyed it absolutely: zero of 1,003 scores were multiples of
+    # five, so 21 of the 101 available values were unreachable. The revision
+    # asks for the same thing it meant -- do not snap to a round number
+    # because it looks tidy -- without forbidding the values. New prompt
+    # hash, so the runner registers a new instrument and the earlier series
+    # stays intact rather than being extended under a different rule.
     alias: claude-opus-5
     model_id: claude-opus-5
     tier: strong

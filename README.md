@@ -8,6 +8,7 @@ The repository is deliberately filesystem-first: generated outputs should be reb
 
 | Workflow | Source of truth | Main outputs |
 |---|---|---|
+| QSL paper inventory | `pathfinder/qsl_sources.csv` | `qsl-papers/`, `pathfinder/qsl_techniques.json`, Pathfinder3 Q corpus |
 | Vendor/application graph | `vendor-app/edges.json` | `vendor-app/quantum_algorithm_portfolio.md`, `vendor-app/vendor_application_matrix.html` |
 | Vendor capability and supplier DB | `vendor-db/*.json`, `vendor-db/*.jsonl`, `vendor-notes/substrate_note_map.json` | `vendor-db/exports/*.json`, `vendor-db/*_matrix.html`, `vendor-db/lookup.py` answers |
 | Portability dossiers | `vendor-app/edges.json` (queue + portability metadata), `dossiers/<slug>/dossier.md`, `dossiers/<slug>/extraction.md` | Per-paper `dossier.md`; generated `dossiers/_queue.md`; local ignored `dossier.pdf` |
@@ -40,6 +41,43 @@ The repository is deliberately filesystem-first: generated outputs should be reb
 
 The former `quantum-wars/` and `vq-slides/` material now lives in the standalone
 [`qwQSL`](https://github.com/vd1/qwQSL) repository.
+
+## QSL Paper SSIB
+
+[`pathfinder/qsl_sources.csv`](pathfinder/qsl_sources.csv) is the canonical QSL
+paper inventory. Ingestion uses an explicit Scan, Sort, Insert and Build (SSIB)
+boundary:
+
+```bash
+# Discover into the review queue; never changes the canonical CSV.
+python3 -m scripts.pathfinder.qsl_ingest scan --round YYYY-MM-DD --dry-run
+python3 -m scripts.pathfinder.qsl_ingest scan --round YYYY-MM-DD
+
+# Apply deterministic identity/provenance decisions to the queue only.
+python3 -m scripts.pathfinder.qsl_ingest sort --round YYYY-MM-DD
+
+# Review the candidate JSONL, then preview and explicitly insert accepted rows.
+python3 -m scripts.pathfinder.qsl_ingest apply --round YYYY-MM-DD --dry-run
+python3 -m scripts.pathfinder.qsl_ingest apply --round YYYY-MM-DD
+
+# Read-only integrity and downstream-readiness reports.
+python3 -m scripts.pathfinder.qsl_ingest check
+python3 -m scripts.pathfinder.qsl_ingest build-status --round YYYY-MM-DD
+```
+
+Candidates live in `pathfinder/qsl_scan_candidates.jsonl`; immutable scan/apply
+events live in `pathfinder/qsl_ingestion_events.jsonl`. A publications-page
+round never deletes rows. New disappearance flags require `--allow-drops`, and
+brochure-sourced rows are outside publications-page presence reconciliation.
+The old `scripts.pathfinder.scan` executable can no longer write the canonical
+CSV.
+
+After insertion, build work is explicit. Bootstrap a paper by immutable arXiv
+identity with `python3 -m scripts.pathfinder.bootstrap <arxiv-id>`; technique
+extraction/harvest and Pathfinder3 corpus-release judging remain separate
+reviewed operations. `vendor-app/qsl_sources_qec.csv` is a generated filtered
+view whose builder reads the canonical inventory rather than scraping the
+website independently.
 
 ## Vendor/Application Graph
 
@@ -239,10 +277,6 @@ uv run pytest tests/portability -q
 ```
 
 Some Ezratty bot tests depend on optional plumbing packages that are installed in the bot/container environment. They are skipped when those optional dependencies are absent.
-
-## Built with Shipshape
-
-This repository uses [Shipshape](https://github.com/dmytri/shipshape), a context-isolated spec-driven workflow for coding agents. Install with `npx skills add dmytri/shipshape --skill '*'`, or the experimental open-plugin build with `npx plugins add dmytri/shipshape`.
 
 ## Conventions
 
