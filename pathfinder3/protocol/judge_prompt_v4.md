@@ -89,10 +89,8 @@ Do not let one drag the other.
 
 - Score the strongest experiment you can construct from the texts, not the
   average reading of the pair.
-- Use the full 0–100 range, and let neighbouring integers mean something.
-  Round numbers are ordinary scores: pick 40, 75 or 90 whenever that is the
-  value. What to avoid is reaching for one because it looks tidy, and
-  clustering on 50 when the pair is merely hard to place.
+- Use the full 0–100 range. Neighbouring integers should mean something; do
+  not round to multiples of five, and do not cluster on 50.
 - Do not inflate scores to be safe. Thresholds are handled downstream.
 - A pairing may be sound and still score low on both axes. That is the
   common case and is not a criticism of either paper.

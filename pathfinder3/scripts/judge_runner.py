@@ -212,14 +212,6 @@ def skip_pair_ids(led: ledger.Ledger, *, judge: str, prompt_version: str | None,
             led.canonical_for_series(judge=judge, instrument_id=instrument_id)}
 
 
-def series_tag(event: dict) -> str:
-    """A series' identity with the pair dropped: an instrument_id for events
-    minted by this runner, and judge+prompt_version for migrated legacy rows,
-    which predate instruments and carry instrument_id null."""
-    return (event["instrument_id"]
-            or f"legacy:{event['judge']}:{event['prompt_version']}")
-
-
 def ordered_pair_ids(led: ledger.Ledger, candidates: list[str],
                      deployment_path: Path | None = None,
                      order_by: str | None = None) -> list[str]:
@@ -235,25 +227,13 @@ def ordered_pair_ids(led: ledger.Ledger, candidates: list[str],
     Ordering never affects correctness: resume matches on series key.
     """
     if order_by:
-        # Order by an arbitrary completed series rather than the deployed
-        # cheap selector -- e.g. rank by a strong judge once its sweep has
-        # finished. `order_by` is a judge name, or a series tag prefix when
-        # one judge has run more than one instrument: judge names are not
-        # unique across instruments (v3 and v4 both write judge
-        # "codex:gpt-5.6-sol"), and collapsing two scales into one pair_id
-        # map would silently rank on whichever event happened to land last.
-        events = [e for e in led.canonical_by_series().values()
-                  if e["judge"] == order_by
-                  or (len(order_by) >= 8 and series_tag(e).startswith(order_by))]
-        if not events:
+        # order by an arbitrary completed judge rather than the deployed cheap
+        # selector -- e.g. rank by a strong judge once its sweep has finished.
+        cheap = {e["pair_id"]: ledger.score(e)
+                 for e in led.canonical_by_series().values()
+                 if e["judge"] == order_by}
+        if not cheap:
             raise SystemExit(f"--order-by {order_by!r} has no canonical verdicts")
-        tags = {series_tag(e) for e in events}
-        if len(tags) > 1:
-            raise SystemExit(
-                f"--order-by {order_by!r} is ambiguous: it spans "
-                f"{len(tags)} series ({', '.join(sorted(t[:16] for t in tags))}). "
-                "Pass a series tag prefix instead.")
-        cheap = {e["pair_id"]: ledger.score(e) for e in events}
     else:
         if deployment_path is None:
             deployment_path = P3 / "protocol" / "deployment.yaml"
@@ -426,11 +406,9 @@ def main() -> int:
     ap.add_argument("--repeat", action="store_true",
                     help="bypass the skip set; stamp repeat: true")
     ap.add_argument("--run-id", default=None)
-    ap.add_argument("--order-by", default=None, metavar="SERIES",
-                    help="rank the worklist by this series' scores instead of "
-                         "the deployed cheap selector: a judge name "
-                         "(codex:gpt-5.6-sol) when that judge has run one "
-                         "instrument, else an instrument_id prefix")
+    ap.add_argument("--order-by", default=None, metavar="JUDGE",
+                    help="rank the worklist by this judge's scores instead of "
+                         "the deployed cheap selector, e.g. codex:gpt-5.6-sol")
     args = ap.parse_args()
 
     registry = yaml.safe_load((P3 / "protocol" / "judges.yaml").read_text())
