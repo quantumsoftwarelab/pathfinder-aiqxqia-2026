@@ -95,33 +95,41 @@ judges:
     #
     # AXIS MAPPING: feasibility is stored in `corr`, gain in `int`, each
     # divided by 100. verdicts.schema.json fixes those field names and bounds
-    # them to [0,1]. Read a v4 series accordingly.
+    # them to [0,1]. Read a v4 or v5 series accordingly.
     #
-    # WORDING REVISED 2026-07-27. The first v4 text (prompt sha256
-    # db111b02a6b9..., instruments 425d1c378968 for Opus and 60ed46389e21 for
-    # GPT, 1,003 verdicts each) said "do not round to multiples of five". Both
+    # v5 SUPERSEDES v4, 2026-07-27. judge_prompt_v4.md (sha256
+    # db111b02a6b9..., instruments 425d1c378968 Opus / 60ed46389e21 GPT,
+    # 1,003 verdicts each) said "do not round to multiples of five". Both
     # judges obeyed it absolutely: zero of 1,003 scores were multiples of
-    # five, so 21 of the 101 available values were unreachable. The revision
-    # asks for the same thing it meant -- do not snap to a round number
-    # because it looks tidy -- without forbidding the values. New prompt
-    # hash, so the runner registers a new instrument and the earlier series
-    # stays intact rather than being extended under a different rule.
+    # five, so 21 of the 101 available values were unreachable.
+    # judge_prompt_v5.md (sha256 2fe11bc807ad..., instruments b99996c890be
+    # Opus / d19bb7d063eb GPT) asks for what that meant -- do not snap to a
+    # round number because it looks tidy -- while leaving the values in play.
+    # v4 is kept unmodified beside it so both series remain readable.
+    #
+    # The v5 file's own heading still reads "prompt v4". That is deliberate:
+    # instrument_id hashes the file's bytes, so editing the heading would
+    # mint a third instrument and orphan the verdicts already judged under
+    # this text. The filename is free to change; the contents are not.
     alias: claude-opus-5
     model_id: claude-opus-5
     tier: strong
     transport: claude-cli
     provider: anthropic
-    prompt_file: judge_prompt_v4.md
+    prompt_file: judge_prompt_v5.md
+    # output_contract names the OUTPUT SHAPE, not the prompt: the keys
+    # feasibility/gain/rationale, introduced with v4 and unchanged by v5.
+    # Its hash covers the key set alone, so both prompts share it.
     output_contract: v4
     settings: {effort: xhigh}
   gpt56_fg:
-    # Second vendor, same v4 instrument. See opus5_fg for the axis mapping.
+    # Second vendor, same v5 instrument. See opus5_fg for the axis mapping.
     alias: gpt-5.6-sol
     model_id: gpt-5.6-sol
     tier: strong
     transport: pi
     provider: openai-codex
-    prompt_file: judge_prompt_v4.md
+    prompt_file: judge_prompt_v5.md
     output_contract: v4
     settings: {effort: xhigh}
 
