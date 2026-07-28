@@ -1,0 +1,81 @@
+{
+  "counterpart": {
+    "axes": {
+      "feasibility": {
+        "identical": 79,
+        "mean_abs_delta": 0.014000000000000002
+      },
+      "gain": {
+        "identical": 60,
+        "mean_abs_delta": 0.0241
+      }
+    },
+    "canonical_population": 1003,
+    "cost_usd": 6.7601085,
+    "d_within": 0.025902293120638086,
+    "d_within_max": 0.2377866400797607,
+    "d_within_median": 0.0,
+    "effort": "xhigh",
+    "identical_scores": 56,
+    "instrument_id": "b99996c890becb87ec59a144e419a013a8284c98bbf7e3656c830f52526ad5f0",
+    "judge": "claude:claude-opus-5",
+    "mean_abs_raw_delta": 0.019837999999999998,
+    "model_id": "claude-opus-5",
+    "n_pairs": 100,
+    "retention": {
+      "top_10_retained": 0.9,
+      "top_20_retained": 0.95,
+      "top_50_retained": 0.94
+    },
+    "run_prefix": "selfcons-v5",
+    "runs": [
+      "selfcons-v5-opus5-r1",
+      "selfcons-v5-opus5-r2"
+    ],
+    "spearman_canonical_repeat1": 0.7353872682608157,
+    "spearman_repeat1_repeat2": 0.9090735911180492
+  },
+  "cross": {
+    "d_cross_observed": 0.16688683948155533,
+    "d_cross_predicted_under_h0": 0.09064578924539465,
+    "n_pairs": 100,
+    "ratio_R": 1.8410876100351696,
+    "systematic_variance_share": 0.7049802509084362
+  },
+  "within": {
+    "axes": {
+      "feasibility": {
+        "identical": 24,
+        "mean_abs_delta": 0.03919999999999999
+      },
+      "gain": {
+        "identical": 13,
+        "mean_abs_delta": 0.0812
+      }
+    },
+    "canonical_population": 1003,
+    "cost_usd": 9.8742,
+    "d_within": 0.12554835493519442,
+    "d_within_max": 0.6176470588235293,
+    "d_within_median": 0.07527417746759724,
+    "effort": "xhigh",
+    "identical_scores": 3,
+    "instrument_id": "d19bb7d063eb10e65b6e8aa0944bc2a5767494a67c743d213268a6d365caa0b0",
+    "judge": "codex:gpt-5.6-sol",
+    "mean_abs_raw_delta": 0.070845,
+    "model_id": "gpt-5.6-sol",
+    "n_pairs": 100,
+    "retention": {
+      "top_10_retained": 0.4,
+      "top_20_retained": 0.5,
+      "top_50_retained": 0.7
+    },
+    "run_prefix": "selfcons-v5",
+    "runs": [
+      "selfcons-v5-gpt56-r1",
+      "selfcons-v5-gpt56-r2"
+    ],
+    "spearman_canonical_repeat1": 0.4849006030175614,
+    "spearman_repeat1_repeat2": 0.5392317244967807
+  }
+}
