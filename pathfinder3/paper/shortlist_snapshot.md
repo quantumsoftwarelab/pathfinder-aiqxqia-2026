@@ -2,7 +2,7 @@
 
 Generated from the committed ledger with explicit strong-judge instrument ids.
 
-- repo commit: `80db5f000e31436627b8be2b979c534b8b0edcb9`
+- repo commit: `b21c9f95f29a7ecffc9b0551e1430fed8ea43e52`
 - left instrument: `7f01f7e54dc02bbc59a447ea77c51c9fe8b16291b8d4e52e37ce1ed0b433b046` (`claude-opus-5`)
 - right instrument: `b2a053b3cd994b15dd9f976f8777479b6559e80391a840c1c39bd3dcdf8c7818` (`gpt-5.6-sol`)
 - left canonical pairs: 10912
