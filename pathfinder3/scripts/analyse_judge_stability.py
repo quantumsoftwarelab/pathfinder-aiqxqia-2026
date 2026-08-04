@@ -38,13 +38,22 @@ Usage:
         --instrument d19bb7d063eb --run-prefix selfcons-v5-gpt56
     python3 pathfinder3/scripts/analyse_judge_stability.py \\
         --instrument d19bb7d063eb --counterpart b99996c890be --json-out out.json
+    python3 pathfinder3/scripts/analyse_judge_stability.py \\
+        --instrument d19bb7d063eb \\
+        --repeat-run-id run-r1 --repeat-run-id run-r2 \\
+        --repeat-run-id run-r3 --repeat-run-id run-r4 \\
+        --canonical-run-id canonical-a --canonical-run-id canonical-b
 """
 from __future__ import annotations
 
 import argparse
+import hashlib
+import itertools
 import json
+import random
 from collections import defaultdict
 from pathlib import Path
+from statistics import median
 
 import ledger
 from build_shortlist_snapshot import spearman
@@ -83,6 +92,54 @@ def percentile_map(canonical_scores: list[float]):
     return rank
 
 
+def canonical_events(led: ledger.Ledger, instrument_id: str,
+                     run_ids: list[str] | None = None) -> dict[str, dict]:
+    """Canonical reference population, optionally frozen to exact runs."""
+    events = led.canonical_for_series(instrument_id=instrument_id)
+    if run_ids is not None:
+        wanted = set(run_ids)
+        events = [e for e in events if e.get("run_id") in wanted]
+        present = {str(e.get("run_id")) for e in events}
+        missing = wanted - present
+        if missing:
+            raise SystemExit(
+                "canonical reference has no rows for run(s): "
+                + ", ".join(sorted(missing)))
+    if not events:
+        raise SystemExit("instrument has no canonical verdicts to rank against")
+    return {e["pair_id"]: e for e in events}
+
+
+def repeat_reads(led: ledger.Ledger, instrument_id: str,
+                 run_ids: list[str]) -> dict[str, dict[str, dict]]:
+    """Return exact repeat runs and require the same unique pair set in each."""
+    if len(run_ids) != len(set(run_ids)):
+        raise SystemExit("repeat run IDs must be unique")
+    reads: dict[str, dict[str, dict]] = {run_id: {} for run_id in run_ids}
+    for event in led.repeats():
+        run_id = event.get("run_id")
+        if event.get("instrument_id") != instrument_id or run_id not in reads:
+            continue
+        pair_id = event["pair_id"]
+        if pair_id in reads[run_id]:
+            raise SystemExit(
+                f"repeat run {run_id!r} contains duplicate pair {pair_id!r}")
+        reads[run_id][pair_id] = event
+    missing_runs = [run_id for run_id, rows in reads.items() if not rows]
+    if missing_runs:
+        raise SystemExit(
+            "no repeat rows for run(s): " + ", ".join(missing_runs))
+    pair_sets = {run_id: set(rows) for run_id, rows in reads.items()}
+    first_run = run_ids[0]
+    mismatched = [run_id for run_id in run_ids[1:]
+                  if pair_sets[run_id] != pair_sets[first_run]]
+    if mismatched:
+        detail = ", ".join(
+            f"{run_id}={len(pair_sets[run_id])}" for run_id in run_ids)
+        raise SystemExit(f"repeat runs do not share an exact pair set ({detail})")
+    return reads
+
+
 def replicates(led: ledger.Ledger, instrument_id: str,
                run_prefix: str | None) -> dict[str, list[dict]]:
     out: dict[str, list[dict]] = defaultdict(list)
@@ -101,12 +158,28 @@ def mean_abs(values: list[float]) -> float:
     return sum(values) / len(values)
 
 
+def pair_set_sha256(pair_ids: list[str]) -> str:
+    payload = "".join(f"{pair_id}\n" for pair_id in sorted(pair_ids))
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
 def within_report(led: ledger.Ledger, instrument_id: str,
-                  run_prefix: str | None, ks: list[int]) -> dict:
-    canonical = {e["pair_id"]: e
-                 for e in led.canonical_for_series(instrument_id=instrument_id)}
+                  run_prefix: str | None, ks: list[int], *,
+                  repeat_run_ids: list[str] | None = None,
+                  canonical_run_ids: list[str] | None = None,
+                  bootstrap_samples: int = 10_000,
+                  bootstrap_seed: int = 56) -> dict:
+    canonical = canonical_events(led, instrument_id, canonical_run_ids)
     rank = percentile_map([ledger.score(e) for e in canonical.values()])
-    reps = replicates(led, instrument_id, run_prefix)
+    if repeat_run_ids is not None:
+        if len(repeat_run_ids) != 2:
+            raise SystemExit("a two-read report requires exactly two repeat run IDs")
+        reads = repeat_reads(led, instrument_id, repeat_run_ids)
+        pair_ids = sorted(reads[repeat_run_ids[0]])
+        reps = {p: [reads[run_id][p] for run_id in repeat_run_ids]
+                for p in pair_ids}
+    else:
+        reps = replicates(led, instrument_id, run_prefix)
     if not reps:
         raise SystemExit(
             f"instrument {instrument_id[:12]} has no pair with two repeat rows"
@@ -145,9 +218,17 @@ def within_report(led: ledger.Ledger, instrument_id: str,
         "model_id": led.instruments[instrument_id]["model_id"],
         "effort": led.instruments[instrument_id]["effort"],
         "run_prefix": run_prefix,
+        "canonical_run_ids": (sorted(canonical_run_ids)
+                              if canonical_run_ids is not None else None),
         "canonical_population": len(canonical),
+        "canonical_pair_set_sha256": pair_set_sha256(list(canonical)),
         "n_pairs": len(pair_ids),
+        "pair_set_sha256": pair_set_sha256(pair_ids),
         "d_within": mean_abs(gaps),
+        "d_within_ci95_pair_bootstrap": _bootstrap_mean_ci(
+            gaps, samples=bootstrap_samples, seed=bootstrap_seed),
+        "bootstrap_samples": bootstrap_samples,
+        "bootstrap_seed": bootstrap_seed,
         "d_within_median": sorted(gaps)[len(gaps) // 2],
         "d_within_max": max(gaps),
         "mean_abs_raw_delta": mean_abs(raw_gaps),
@@ -156,9 +237,11 @@ def within_report(led: ledger.Ledger, instrument_id: str,
             [first[p] for p in pair_ids], [second[p] for p in pair_ids]),
         "axes": axis,
         "retention": retention,
-        "runs": sorted({str(e.get("run_id")) for evs in reps.values() for e in evs}),
+        "runs": (list(repeat_run_ids) if repeat_run_ids is not None else
+                 sorted({str(e.get("run_id"))
+                         for evs in reps.values() for e in evs[:2]})),
         "cost_usd": sum((e.get("est_cost_usd") or 0.0)
-                        for evs in reps.values() for e in evs),
+                        for evs in reps.values() for e in evs[:2]),
     }
     # Canonical-vs-replicate correlation is reported for continuity with the
     # sweep, but it is NOT the stability figure: if the tested pairs were
@@ -169,6 +252,163 @@ def within_report(led: ledger.Ledger, instrument_id: str,
         out["spearman_canonical_repeat1"] = spearman(
             [ledger.score(canonical[p]) for p in shared],
             [first[p] for p in shared])
+    return out
+
+
+def _bootstrap_mean_ci(values: list[float], *, samples: int,
+                       seed: int) -> list[float]:
+    """Percentile interval from a cluster bootstrap over pair-level values."""
+    rng = random.Random(seed)
+    n = len(values)
+    draws = sorted(
+        sum(rng.choices(values, k=n)) / n for _ in range(samples))
+    lo = draws[int(0.025 * (samples - 1))]
+    hi = draws[int(0.975 * (samples - 1))]
+    return [lo, hi]
+
+
+def multi_read_report(led: ledger.Ledger, instrument_id: str,
+                      repeat_run_ids: list[str], ks: list[int], *,
+                      canonical_run_ids: list[str] | None = None,
+                      bootstrap_samples: int = 10_000,
+                      bootstrap_seed: int = 56) -> dict:
+    """Pool all unordered read pairs while retaining pair-level clustering."""
+    if len(repeat_run_ids) < 3:
+        raise SystemExit("a pooled report requires at least three repeat runs")
+    canonical = canonical_events(led, instrument_id, canonical_run_ids)
+    rank = percentile_map([ledger.score(e) for e in canonical.values()])
+    reads = repeat_reads(led, instrument_id, repeat_run_ids)
+    pair_ids = sorted(reads[repeat_run_ids[0]])
+    run_pairs = list(itertools.combinations(repeat_run_ids, 2))
+
+    scores = {
+        run_id: {p: ledger.score(reads[run_id][p]) for p in pair_ids}
+        for run_id in repeat_run_ids
+    }
+    ranks = {
+        run_id: {p: rank(scores[run_id][p]) for p in pair_ids}
+        for run_id in repeat_run_ids
+    }
+    pair_rank_gaps = {
+        p: [abs(ranks[left][p] - ranks[right][p])
+            for left, right in run_pairs]
+        for p in pair_ids
+    }
+    pair_raw_gaps = {
+        p: [abs(scores[left][p] - scores[right][p])
+            for left, right in run_pairs]
+        for p in pair_ids
+    }
+    pair_mean_rank_gaps = [mean_abs(pair_rank_gaps[p]) for p in pair_ids]
+    pair_mean_raw_gaps = [mean_abs(pair_raw_gaps[p]) for p in pair_ids]
+
+    pairwise_d = {
+        f"{left}__{right}": mean_abs(
+            [abs(ranks[left][p] - ranks[right][p]) for p in pair_ids])
+        for left, right in run_pairs
+    }
+    pairwise_raw_d = {
+        f"{left}__{right}": mean_abs(
+            [abs(scores[left][p] - scores[right][p]) for p in pair_ids])
+        for left, right in run_pairs
+    }
+    pairwise_identical = {
+        f"{left}__{right}": sum(
+            scores[left][p] == scores[right][p] for p in pair_ids)
+        for left, right in run_pairs
+    }
+
+    pairwise_spearman = {
+        f"{left}__{right}": spearman(
+            [scores[left][p] for p in pair_ids],
+            [scores[right][p] for p in pair_ids])
+        for left, right in run_pairs
+    }
+    retention: dict[str, dict] = {}
+    for k in ks:
+        if k > len(pair_ids):
+            continue
+        overlaps = {}
+        for left, right in run_pairs:
+            top_left = set(sorted(
+                pair_ids, key=lambda p: (-ranks[left][p], p))[:k])
+            top_right = set(sorted(
+                pair_ids, key=lambda p: (-ranks[right][p], p))[:k])
+            overlaps[f"{left}__{right}"] = len(top_left & top_right) / k
+        values = list(overlaps.values())
+        retention[f"top_{k}_retained"] = {
+            "mean": mean_abs(values), "min": min(values), "max": max(values),
+            "pairwise": overlaps,
+        }
+
+    contract = led.instruments[instrument_id]["output_contract_sha256"]
+    axis_names = AXIS_NAMES.get(contract, ("corr axis", "int axis"))
+    axis = {}
+    comparisons = len(pair_ids) * len(run_pairs)
+    for name, field in zip(axis_names, ("corr", "int")):
+        deltas = [abs(reads[left][p][field] - reads[right][p][field])
+                  for p in pair_ids for left, right in run_pairs]
+        axis[name] = {
+            "mean_abs_delta": mean_abs(deltas),
+            "identical_comparisons": sum(delta == 0 for delta in deltas),
+            "comparisons": comparisons,
+        }
+
+    all_raw_gaps = [gap for p in pair_ids for gap in pair_raw_gaps[p]]
+    spearman_values = list(pairwise_spearman.values())
+    out = {
+        "instrument_id": instrument_id,
+        "judge": next(iter(canonical.values()))["judge"],
+        "model_id": led.instruments[instrument_id]["model_id"],
+        "effort": led.instruments[instrument_id]["effort"],
+        "runs": list(repeat_run_ids),
+        "canonical_run_ids": (sorted(canonical_run_ids)
+                              if canonical_run_ids is not None else None),
+        "canonical_population": len(canonical),
+        "canonical_pair_set_sha256": pair_set_sha256(list(canonical)),
+        "n_pairs": len(pair_ids),
+        "pair_set_sha256": pair_set_sha256(pair_ids),
+        "n_reads": len(repeat_run_ids),
+        "read_pairs_per_item": len(run_pairs),
+        "pairwise_comparisons": comparisons,
+        "d_within": mean_abs(pair_mean_rank_gaps),
+        "d_within_pairwise": pairwise_d,
+        "d_within_ci95_pair_bootstrap": _bootstrap_mean_ci(
+            pair_mean_rank_gaps, samples=bootstrap_samples,
+            seed=bootstrap_seed),
+        "bootstrap_samples": bootstrap_samples,
+        "bootstrap_seed": bootstrap_seed,
+        "d_within_pair_median": median(pair_mean_rank_gaps),
+        "d_within_pair_max": max(pair_mean_rank_gaps),
+        "mean_abs_raw_delta": mean_abs(pair_mean_raw_gaps),
+        "mean_abs_raw_delta_pairwise": pairwise_raw_d,
+        "identical_score_comparisons": sum(gap == 0 for gap in all_raw_gaps),
+        "identical_scores_pairwise": pairwise_identical,
+        "spearman_pairwise": pairwise_spearman,
+        "spearman_pairwise_mean": mean_abs(spearman_values),
+        "spearman_pairwise_min": min(spearman_values),
+        "spearman_pairwise_max": max(spearman_values),
+        "axes": axis,
+        "retention": retention,
+        "cost_by_run_usd": {
+            run_id: sum((event.get("est_cost_usd") or 0.0)
+                        for event in reads[run_id].values())
+            for run_id in repeat_run_ids
+        },
+        "cost_usd": sum((event.get("est_cost_usd") or 0.0)
+                        for rows in reads.values() for event in rows.values()),
+    }
+    if len(repeat_run_ids) >= 4:
+        first_left, first_right = repeat_run_ids[:2]
+        last_left, last_right = repeat_run_ids[-2:]
+        changes = [
+            abs(ranks[last_left][p] - ranks[last_right][p])
+            - abs(ranks[first_left][p] - ranks[first_right][p])
+            for p in pair_ids
+        ]
+        out["replication_change_d_last_minus_first"] = mean_abs(changes)
+        out["replication_change_ci95_pair_bootstrap"] = _bootstrap_mean_ci(
+            changes, samples=bootstrap_samples, seed=bootstrap_seed + 1)
     return out
 
 
@@ -211,17 +451,66 @@ def main() -> int:
                     help="instrument_id or unique prefix")
     ap.add_argument("--counterpart", default=None,
                     help="second instrument, to report the cross-judge R")
-    ap.add_argument("--run-prefix", default=None,
-                    help="only count repeat rows whose run_id starts with this")
+    repeat_selection = ap.add_mutually_exclusive_group()
+    repeat_selection.add_argument(
+        "--run-prefix", default=None,
+        help="legacy: count repeat rows whose run_id starts with this")
+    repeat_selection.add_argument(
+        "--repeat-run-id", action="append", default=None,
+        help="select an exact repeat run ID, in read order (repeatable)")
+    ap.add_argument(
+        "--canonical-run-id", action="append", default=None,
+        help="freeze the percentile reference to an exact canonical run ID "
+             "(repeatable)")
     ap.add_argument("--k", action="append", type=int, default=None,
                     help="shortlist size for retention (repeatable; default 10 20)")
+    ap.add_argument("--bootstrap-samples", type=int, default=10_000,
+                    help="pair-cluster bootstrap draws for a pooled report")
+    ap.add_argument("--bootstrap-seed", type=int, default=56)
     ap.add_argument("--json-out", type=Path, default=None)
     args = ap.parse_args()
     ks = args.k or [10, 20]
+    if args.bootstrap_samples < 1:
+        raise SystemExit("--bootstrap-samples must be positive")
+    if args.repeat_run_id and len(args.repeat_run_id) < 2:
+        raise SystemExit("provide at least two --repeat-run-id values")
+    if args.counterpart and args.repeat_run_id and len(args.repeat_run_id) > 2:
+        raise SystemExit("a pooled multi-read report cannot update cross-judge R")
 
     led = ledger.load_ledger()
     iid = resolve_instrument(led, args.instrument)
-    report = within_report(led, iid, args.run_prefix, ks)
+    if args.repeat_run_id and len(args.repeat_run_id) > 2:
+        report = multi_read_report(
+            led, iid, args.repeat_run_id, ks,
+            canonical_run_ids=args.canonical_run_id,
+            bootstrap_samples=args.bootstrap_samples,
+            bootstrap_seed=args.bootstrap_seed)
+        print(f"\npooled test-retest stability, {report['model_id']} "
+              f"effort={report['effort']} (instrument {iid[:12]}...)")
+        print(f"  runs: {', '.join(report['runs'])}")
+        print(f"  {report['n_pairs']} pairs x {report['n_reads']} reads; "
+              f"{report['pairwise_comparisons']} pairwise comparisons")
+        print(f"  ranked within {report['canonical_population']:,} "
+              "canonical scores")
+        lo, hi = report["d_within_ci95_pair_bootstrap"]
+        print(f"  pooled D_within     {report['d_within']:.4f} "
+              f"(pair-bootstrap 95% CI {lo:.4f}--{hi:.4f})")
+        for key, value in report["d_within_pairwise"].items():
+            print(f"  D {key:43s} {value:.4f}")
+        print(f"  replicate cost      ${report['cost_usd']:.2f}")
+        out = {"pooled": report}
+        if args.json_out:
+            args.json_out.write_text(
+                json.dumps(out, indent=2, sort_keys=True) + "\n")
+            print(f"\nwrote {args.json_out}")
+        return 0
+
+    report = within_report(
+        led, iid, args.run_prefix, ks,
+        repeat_run_ids=args.repeat_run_id,
+        canonical_run_ids=args.canonical_run_id,
+        bootstrap_samples=args.bootstrap_samples,
+        bootstrap_seed=args.bootstrap_seed)
 
     print(f"\ntest-retest stability, {report['model_id']} "
           f"effort={report['effort']} (instrument {iid[:12]}...)")
@@ -243,7 +532,12 @@ def main() -> int:
     out = {"within": report}
     if args.counterpart:
         cid = resolve_instrument(led, args.counterpart)
-        other = within_report(led, cid, args.run_prefix, ks)
+        other = within_report(
+            led, cid, args.run_prefix, ks,
+            repeat_run_ids=args.repeat_run_id,
+            canonical_run_ids=args.canonical_run_id,
+            bootstrap_samples=args.bootstrap_samples,
+            bootstrap_seed=args.bootstrap_seed)
         cross = cross_report(led, report, other, iid, cid, args.run_prefix)
         out["counterpart"] = other
         out["cross"] = cross

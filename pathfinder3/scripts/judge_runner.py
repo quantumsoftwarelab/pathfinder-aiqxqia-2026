@@ -10,10 +10,11 @@ no whole-file rewrite. Safety contract:
   fsync'd immediately.
   Recovery: on startup, a torn trailing line halts the run and reports its
   byte offset for operator truncation. The runner never auto-rewrites
-  history.
+  history. Reusing an exact repeat run ID resumes after its completed pairs.
   Resume: the worklist is every requested pair minus pairs whose exact
   series key (instrument_id, not just judge+prompt_version) already has a
-  canonical event. --repeat bypasses the skip set and stamps repeat: true.
+  canonical event. --repeat uses an exact run-ID skip set and stamps
+  repeat: true, so an interrupted repeat run is safely resumable.
   Registration: on first use, an instrument's full identity record is
   appended to ledger/instruments.jsonl.
 
@@ -210,6 +211,26 @@ def skip_pair_ids(led: ledger.Ledger, *, judge: str, prompt_version: str | None,
                   instrument_id: str) -> set[str]:
     return {e["pair_id"] for e in
             led.canonical_for_series(judge=judge, instrument_id=instrument_id)}
+
+
+def skip_repeat_pair_ids(led: ledger.Ledger, *, instrument_id: str,
+                         run_id: str) -> set[str]:
+    """Completed rows for one repeat run, rejecting an ambiguous history."""
+    completed: set[str] = set()
+    for event in led.verdicts:
+        if (event.get("instrument_id") != instrument_id
+                or event.get("run_id") != run_id):
+            continue
+        if not event.get("repeat"):
+            raise SystemExit(
+                f"run ID {run_id!r} already names a canonical verdict")
+        pair_id = event["pair_id"]
+        if pair_id in completed:
+            raise SystemExit(
+                f"repeat run {run_id!r} already contains duplicate pair "
+                f"{pair_id!r}")
+        completed.add(pair_id)
+    return completed
 
 
 def series_tag(event: dict) -> str:
@@ -428,7 +449,7 @@ def main() -> int:
     ap.add_argument("--pair-ids", nargs="*", default=None,
                     help="explicit pair ids to judge (default: full pairs.jsonl)")
     ap.add_argument("--repeat", action="store_true",
-                    help="bypass the skip set; stamp repeat: true")
+                    help="stamp repeat: true; resume an exact run ID")
     ap.add_argument("--run-id", default=None)
     ap.add_argument("--order-by", default=None, metavar="SERIES",
                     help="rank the worklist by this series' scores instead of "
@@ -436,6 +457,9 @@ def main() -> int:
                          "(codex:gpt-5.6-sol) when that judge has run one "
                          "instrument, else an instrument_id prefix")
     args = ap.parse_args()
+
+    if args.pair_ids and len(args.pair_ids) != len(set(args.pair_ids)):
+        raise SystemExit("--pair-ids contains a duplicate pair ID")
 
     registry = yaml.safe_load((P3 / "protocol" / "judges.yaml").read_text())
     if args.judge not in registry["judges"]:
@@ -468,8 +492,10 @@ def main() -> int:
         # process's (successful) lock acquisition.
         led = ledger.load_ledger()
         iid = register_instrument_if_new(identity, led, ledger.INSTRUMENTS_PATH, run_id)
-        skip = set() if args.repeat else skip_pair_ids(
-            led, judge=judge_full_id, prompt_version=None, instrument_id=iid)
+        skip = (skip_repeat_pair_ids(led, instrument_id=iid, run_id=run_id)
+                if args.repeat else skip_pair_ids(
+                    led, judge=judge_full_id, prompt_version=None,
+                    instrument_id=iid))
         candidates = args.pair_ids if args.pair_ids else sorted(led.pairs)
         todo = ordered_pair_ids(
             led, [pid for pid in candidates if pid not in skip],
