@@ -1,0 +1,353 @@
+{
+  "comparison": {
+    "ks": [
+      10,
+      20,
+      50
+    ],
+    "one_read_policies": {
+      "ordered_assignments": 12,
+      "policies": {
+        "equal_mean_rank": {
+          "top_10": {
+            "by_ordered_assignment": {
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r2": 0.6,
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r3": 0.6,
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r4": 0.8,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r1": 0.6,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r3": 0.6,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r4": 0.7,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r1": 0.6,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r2": 0.6,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r4": 0.7,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r1": 0.8,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r2": 0.7,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r3": 0.7
+            },
+            "max": 0.8,
+            "mean": 0.6666666666666666,
+            "min": 0.6
+          },
+          "top_20": {
+            "by_ordered_assignment": {
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r2": 0.45,
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r3": 0.65,
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r4": 0.65,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r1": 0.5,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r3": 0.55,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r4": 0.65,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r1": 0.6,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r2": 0.5,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r4": 0.65,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r1": 0.75,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r2": 0.65,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r3": 0.7
+            },
+            "max": 0.75,
+            "mean": 0.6083333333333333,
+            "min": 0.45
+          },
+          "top_50": {
+            "by_ordered_assignment": {
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r2": 0.74,
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r3": 0.7,
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r4": 0.76,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r1": 0.76,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r3": 0.68,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r4": 0.74,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r1": 0.7,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r2": 0.7,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r4": 0.72,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r1": 0.78,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r2": 0.72,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r3": 0.74
+            },
+            "max": 0.78,
+            "mean": 0.7283333333333334,
+            "min": 0.68
+          }
+        },
+        "gpt_alone": {
+          "top_10": {
+            "by_ordered_assignment": {
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r2": 0.4,
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r3": 0.6,
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r4": 0.4,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r1": 0.4,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r3": 0.4,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r4": 0.4,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r1": 0.6,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r2": 0.4,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r4": 0.5,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r1": 0.4,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r2": 0.4,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r3": 0.5
+            },
+            "max": 0.6,
+            "mean": 0.45,
+            "min": 0.4
+          },
+          "top_20": {
+            "by_ordered_assignment": {
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r2": 0.5,
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r3": 0.45,
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r4": 0.65,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r1": 0.5,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r3": 0.4,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r4": 0.55,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r1": 0.45,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r2": 0.4,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r4": 0.45,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r1": 0.65,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r2": 0.55,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r3": 0.45
+            },
+            "max": 0.65,
+            "mean": 0.5,
+            "min": 0.4
+          },
+          "top_50": {
+            "by_ordered_assignment": {
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r2": 0.7,
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r3": 0.72,
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r4": 0.76,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r1": 0.7,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r3": 0.72,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r4": 0.78,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r1": 0.72,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r2": 0.72,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r4": 0.72,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r1": 0.76,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r2": 0.78,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r3": 0.72
+            },
+            "max": 0.78,
+            "mean": 0.7333333333333334,
+            "min": 0.7
+          }
+        },
+        "inverse_variance_rank": {
+          "top_10": {
+            "by_ordered_assignment": {
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r2": 0.8,
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r3": 0.8,
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r4": 0.8,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r1": 0.9,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r3": 0.8,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r4": 0.7,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r1": 0.8,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r2": 0.7,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r4": 0.8,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r1": 0.7,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r2": 0.6,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r3": 0.6
+            },
+            "max": 0.9,
+            "mean": 0.75,
+            "min": 0.6
+          },
+          "top_20": {
+            "by_ordered_assignment": {
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r2": 0.8,
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r3": 0.9,
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r4": 0.9,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r1": 0.75,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r3": 0.75,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r4": 0.75,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r1": 0.85,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r2": 0.75,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r4": 0.85,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r1": 0.85,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r2": 0.75,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r3": 0.9
+            },
+            "max": 0.9,
+            "mean": 0.8166666666666668,
+            "min": 0.75
+          },
+          "top_50": {
+            "by_ordered_assignment": {
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r2": 0.88,
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r3": 0.88,
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r4": 0.9,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r1": 0.84,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r3": 0.84,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r4": 0.84,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r1": 0.88,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r2": 0.88,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r4": 0.9,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r1": 0.88,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r2": 0.84,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r3": 0.86
+            },
+            "max": 0.9,
+            "mean": 0.8683333333333333,
+            "min": 0.84
+          }
+        },
+        "opus_alone": {
+          "top_10": {
+            "by_ordered_assignment": {
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r2": 0.9,
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r3": 0.9,
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r4": 0.9,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r1": 0.9,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r3": 0.9,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r4": 0.9,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r1": 0.9,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r2": 0.9,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r4": 0.9,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r1": 0.9,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r2": 0.9,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r3": 0.9
+            },
+            "max": 0.9,
+            "mean": 0.9,
+            "min": 0.9
+          },
+          "top_20": {
+            "by_ordered_assignment": {
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r2": 0.95,
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r3": 0.95,
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r4": 0.95,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r1": 0.95,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r3": 0.95,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r4": 0.95,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r1": 0.95,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r2": 0.95,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r4": 0.95,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r1": 0.95,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r2": 0.95,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r3": 0.95
+            },
+            "max": 0.95,
+            "mean": 0.9499999999999998,
+            "min": 0.95
+          },
+          "top_50": {
+            "by_ordered_assignment": {
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r2": 0.94,
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r3": 0.94,
+              "selfcons-v5-gpt56-r1__selfcons-v5-gpt56-r4": 0.94,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r1": 0.94,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r3": 0.94,
+              "selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r4": 0.94,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r1": 0.94,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r2": 0.94,
+              "selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r4": 0.94,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r1": 0.94,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r2": 0.94,
+              "selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r3": 0.94
+            },
+            "max": 0.94,
+            "mean": 0.94,
+            "min": 0.94
+          }
+        }
+      },
+      "unique_gpt_contrasts": 6,
+      "unique_opus_contrasts": 1
+    },
+    "two_gpt_average_policy": {
+      "gpt_averaging": "average two mapped frozen-canonical percentiles",
+      "ordered_assignments": 6,
+      "policy": "equal_mean_rank_with_two_gpt_reads",
+      "retention": {
+        "top_10": {
+          "by_ordered_assignment": {
+            "selfcons-v5-gpt56-r1+selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r3+selfcons-v5-gpt56-r4": 0.8,
+            "selfcons-v5-gpt56-r1+selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r2+selfcons-v5-gpt56-r4": 0.7,
+            "selfcons-v5-gpt56-r1+selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r2+selfcons-v5-gpt56-r3": 0.7,
+            "selfcons-v5-gpt56-r2+selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r1+selfcons-v5-gpt56-r4": 0.7,
+            "selfcons-v5-gpt56-r2+selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r1+selfcons-v5-gpt56-r3": 0.7,
+            "selfcons-v5-gpt56-r3+selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r1+selfcons-v5-gpt56-r2": 0.8
+          },
+          "max": 0.8,
+          "mean": 0.7333333333333334,
+          "min": 0.7
+        },
+        "top_20": {
+          "by_ordered_assignment": {
+            "selfcons-v5-gpt56-r1+selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r3+selfcons-v5-gpt56-r4": 0.7,
+            "selfcons-v5-gpt56-r1+selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r2+selfcons-v5-gpt56-r4": 0.65,
+            "selfcons-v5-gpt56-r1+selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r2+selfcons-v5-gpt56-r3": 0.7,
+            "selfcons-v5-gpt56-r2+selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r1+selfcons-v5-gpt56-r4": 0.7,
+            "selfcons-v5-gpt56-r2+selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r1+selfcons-v5-gpt56-r3": 0.7,
+            "selfcons-v5-gpt56-r3+selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r1+selfcons-v5-gpt56-r2": 0.65
+          },
+          "max": 0.7,
+          "mean": 0.6833333333333332,
+          "min": 0.65
+        },
+        "top_50": {
+          "by_ordered_assignment": {
+            "selfcons-v5-gpt56-r1+selfcons-v5-gpt56-r2__selfcons-v5-gpt56-r3+selfcons-v5-gpt56-r4": 0.8,
+            "selfcons-v5-gpt56-r1+selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r2+selfcons-v5-gpt56-r4": 0.82,
+            "selfcons-v5-gpt56-r1+selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r2+selfcons-v5-gpt56-r3": 0.78,
+            "selfcons-v5-gpt56-r2+selfcons-v5-gpt56-r3__selfcons-v5-gpt56-r1+selfcons-v5-gpt56-r4": 0.78,
+            "selfcons-v5-gpt56-r2+selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r1+selfcons-v5-gpt56-r3": 0.82,
+            "selfcons-v5-gpt56-r3+selfcons-v5-gpt56-r4__selfcons-v5-gpt56-r1+selfcons-v5-gpt56-r2": 0.78
+          },
+          "max": 0.82,
+          "mean": 0.7966666666666667,
+          "min": 0.78
+        }
+      },
+      "unique_gpt_partitions": 3
+    }
+  },
+  "decision": {
+    "membership": "reproduce the audited canonical v5 equal-mean-rank top 100",
+    "population_wide_membership_stability": "unevaluated",
+    "priority": "order the frozen tranche by Opus canonical midrank percentile; tie-break by ascending pair_id",
+    "status": "provisional versioned initial-tranche policy",
+    "use_of_gpt": "membership input plus descriptive percentile and observed gap metadata; no automatic within-tranche reprioritisation"
+  },
+  "estimator": {
+    "assignment_interpretation": "exact sensitivity summaries, not independent trials or confidence intervals",
+    "measurement_noise_variance": "mean pair-level unbiased sample variance across repeat reads in frozen-percentile units",
+    "percentile_formula": "(below + (1 + equal) / 2) / N",
+    "two_gpt_average": "map each read to its frozen percentile, average two GPT reads, then combine equally with Opus"
+  },
+  "evidence": {
+    "canonical_pair_set_sha256": "2b505ee3d5a1e443be8e19a808fc2d3984e96d28b798f858cf788482dd23a7ff",
+    "canonical_population": 1003,
+    "gpt_repeat_runs": [
+      "selfcons-v5-gpt56-r1",
+      "selfcons-v5-gpt56-r2",
+      "selfcons-v5-gpt56-r3",
+      "selfcons-v5-gpt56-r4"
+    ],
+    "opus_repeat_runs": [
+      "selfcons-v5-opus5-r1",
+      "selfcons-v5-opus5-r2"
+    ],
+    "repeat_panel_pair_set_sha256": "86326cc29b3e11003d4d92ee43ef03a515608ba7c3f5e15b54b71369b85f1d7b",
+    "repeat_panel_pairs": 100
+  },
+  "limitations": [
+    "The repeat panel contains no candidates below the original top-100 cutoff.",
+    "Opus priority repeatability is observed from one repeat contrast.",
+    "The observed inter-judge percentile gap is noisy pair-level metadata.",
+    "Inverse-variance weighting is a panel diagnostic, not an optimal truth estimator.",
+    "The analysis does not establish that K=100 is optimal."
+  ],
+  "manifest": {
+    "body_sha256": "8d42b2b961859358e70e2f2b76bebdf31b5e64625e0a2051bcafe4d3f429208c",
+    "ordered_pair_list_sha256": "b0e05974e00e4633c1fd2a4217db0b47d0fee073dac19de6143f19fb02fee198",
+    "path": "pathfinder3/manifests/phase-b-initial-tranche-v1-8d42b2b961859358.json",
+    "selected_pair_set_sha256": "86326cc29b3e11003d4d92ee43ef03a515608ba7c3f5e15b54b71369b85f1d7b"
+  },
+  "noise_diagnostic": {
+    "gpt_d_within": 0.1211897640412097,
+    "gpt_measurement_variance": 0.018333409542061748,
+    "inverse_variance_weights": {
+      "gpt": 0.06801301901208316,
+      "opus": 0.9319869809879168
+    },
+    "opus_d_within": 0.025902293120638086,
+    "opus_measurement_variance": 0.001337905525696092
+  },
+  "report_type": "phase_b_within_panel_priority_stability",
+  "schema_version": 1
+}

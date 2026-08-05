@@ -1,0 +1,2725 @@
+{
+  "body": {
+    "description": "Initial Phase B tranche with within-panel priority stability evidence",
+    "evidence": {
+      "gpt": {
+        "instrument_id": "d19bb7d063eb10e65b6e8aa0944bc2a5767494a67c743d213268a6d365caa0b0",
+        "model_id": "gpt-5.6-sol",
+        "output_contract_sha256": "2ae297b3c6ea5ea31ba25339c390b3d93a8e126775a19fe27c0117280a192f72",
+        "runs": {
+          "canonical": {
+            "fg2-gpt56_fg": {
+              "count": 912,
+              "pair_set_sha256": "198597d5495bee2a697637a68e6c8bd2491eab3e09078ee50536417b85a154a8",
+              "semantic_evidence_sha256": "a90410e454a6fe5ce1b63d931d2106bf5d2332ac2a82d07989f436ee99de8253"
+            },
+            "fg2-gpt56_fg-resume": {
+              "count": 88,
+              "pair_set_sha256": "e4a2c2de91c199597724ddf101f4e665d3718ff7b346cf4ce51b51f4000c4eb6",
+              "semantic_evidence_sha256": "a3c308e4399e689da27e4e0045ddee578d77aa21f8285c5caff960142868fe80"
+            },
+            "fg2-smoke-gpt56_fg": {
+              "count": 3,
+              "pair_set_sha256": "5cb4cadaf5f330f2d6f13e3b0958bb3662aa9c6872b369d5807407e915142eee",
+              "semantic_evidence_sha256": "f6b6f69e728e5a97165fc7079209a542b0b46a19284e7b305a3aa869be527d9e"
+            }
+          },
+          "repeat": {
+            "selfcons-v5-gpt56-r1": {
+              "count": 100,
+              "pair_set_sha256": "86326cc29b3e11003d4d92ee43ef03a515608ba7c3f5e15b54b71369b85f1d7b",
+              "semantic_evidence_sha256": "690aa7fe85f7d84aa3d718783a4161632dd371c5c0db5467ad4f42bf9088c08f"
+            },
+            "selfcons-v5-gpt56-r2": {
+              "count": 100,
+              "pair_set_sha256": "86326cc29b3e11003d4d92ee43ef03a515608ba7c3f5e15b54b71369b85f1d7b",
+              "semantic_evidence_sha256": "299c977c9d8c5f7a57fc0907dec95a79225afe9d4a52d17b21a189fa034773ca"
+            },
+            "selfcons-v5-gpt56-r3": {
+              "count": 100,
+              "pair_set_sha256": "86326cc29b3e11003d4d92ee43ef03a515608ba7c3f5e15b54b71369b85f1d7b",
+              "semantic_evidence_sha256": "d125be0ebd3fc3cfbc527daab73a7c24cd759ba010fc760e5280621ea074cc87"
+            },
+            "selfcons-v5-gpt56-r4": {
+              "count": 100,
+              "pair_set_sha256": "86326cc29b3e11003d4d92ee43ef03a515608ba7c3f5e15b54b71369b85f1d7b",
+              "semantic_evidence_sha256": "56f0ac74ddb273f090e17f317ce38b0aa07e9bc3151aced96e58960a66182a2a"
+            }
+          }
+        }
+      },
+      "opus": {
+        "instrument_id": "b99996c890becb87ec59a144e419a013a8284c98bbf7e3656c830f52526ad5f0",
+        "model_id": "claude-opus-5",
+        "output_contract_sha256": "2ae297b3c6ea5ea31ba25339c390b3d93a8e126775a19fe27c0117280a192f72",
+        "runs": {
+          "canonical": {
+            "fg2-opus5_fg": {
+              "count": 1000,
+              "pair_set_sha256": "cb5ec5dcba7d9bf86517ac7490a02d077776194f653fa0d85f69916a339d60ff",
+              "semantic_evidence_sha256": "d89a4ec493e90c4e2372cefd54fb72e31bf225a37fd55e5049876728eed63c2d"
+            },
+            "fg2-smoke-opus5_fg": {
+              "count": 3,
+              "pair_set_sha256": "5cb4cadaf5f330f2d6f13e3b0958bb3662aa9c6872b369d5807407e915142eee",
+              "semantic_evidence_sha256": "b6e2772f27404820da281535617ff6ce81c6bf00eee7282e25a5d3e4ba5b6773"
+            }
+          },
+          "repeat": {
+            "selfcons-v5-opus5-r1": {
+              "count": 100,
+              "pair_set_sha256": "86326cc29b3e11003d4d92ee43ef03a515608ba7c3f5e15b54b71369b85f1d7b",
+              "semantic_evidence_sha256": "af0f2ed38e3d1e517b0b923902abf52bad64f43d2976380c646f07e8985cc348"
+            },
+            "selfcons-v5-opus5-r2": {
+              "count": 100,
+              "pair_set_sha256": "86326cc29b3e11003d4d92ee43ef03a515608ba7c3f5e15b54b71369b85f1d7b",
+              "semantic_evidence_sha256": "71cabf73f0622e9295819409132ac209a79f2d8955c6898412d42105fb6b35ac"
+            }
+          }
+        }
+      },
+      "supporting_repeat_manifest": {
+        "path": "pathfinder3/protocol/judge_stability_gpt_v5_manifest.json",
+        "sha256": "d5619c09ce2e726989c92eb269563e499bbcc8dee99bd77a5e4077f937f865c9"
+      }
+    },
+    "limitations": {
+      "membership_stability": "unevaluated outside the selected 100-pair panel",
+      "pair_level_gap": "descriptive only; not confirmed pair-level disagreement",
+      "priority_stability": "observed on one Opus repeat contrast in this panel",
+      "shortlist_size": "K=100 is an operational initial tranche, not an optimum"
+    },
+    "manifest_name": "phase_b_initial_tranche_v1_manifest",
+    "membership": {
+      "k": 100,
+      "population_count": 1003,
+      "population_pair_set_sha256": "2b505ee3d5a1e443be8e19a808fc2d3984e96d28b798f858cf788482dd23a7ff",
+      "rule": "descending equal mean of Opus and GPT midrank percentiles",
+      "status": "deterministic operational reproduction of the audited selection",
+      "tie_break": "ascending pair_id"
+    },
+    "pair_digests": {
+      "ordered_pair_list_serialisation": "UTF-8 pair_id plus LF, in priority order",
+      "ordered_pair_list_sha256": "b0e05974e00e4633c1fd2a4217db0b47d0fee073dac19de6143f19fb02fee198",
+      "selected_pair_set_serialisation": "UTF-8 pair_id plus LF, sorted ascending",
+      "selected_pair_set_sha256": "86326cc29b3e11003d4d92ee43ef03a515608ba7c3f5e15b54b71369b85f1d7b"
+    },
+    "pairs": [
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.6215999999999999,
+          "feasibility": 0.74,
+          "gain": 0.84,
+          "midrank_percentile": 0.9840478564307079
+        },
+        "mean_membership_percentile": 0.9910269192422732,
+        "membership_rank": 3,
+        "observed_inter_judge_percentile_gap": 0.01395812562313059,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.7215999999999999,
+          "feasibility": 0.88,
+          "gain": 0.82,
+          "midrank_percentile": 0.9980059820538385
+        },
+        "pair_id": "qsl:2210.13200::e036.004",
+        "priority_rank": 1,
+        "qsl_input_sha256": "8e24528f1f8e6ec88044fc3e0b07002324fa1689f39f7fe6193e50918dafdb14",
+        "qsl_item_id": "qsl:2210.13200",
+        "vendor_input_sha256": "226a47a35e8f0fd3a80a53e2480b70d355e2d3b1570dae9bf3136982688374e4",
+        "vendor_item_id": "e036.004"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.6708000000000001,
+          "feasibility": 0.78,
+          "gain": 0.86,
+          "midrank_percentile": 0.9970089730807578
+        },
+        "mean_membership_percentile": 0.9975074775672981,
+        "membership_rank": 2,
+        "observed_inter_judge_percentile_gap": 0.0009970089730807485,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.7215999999999999,
+          "feasibility": 0.88,
+          "gain": 0.82,
+          "midrank_percentile": 0.9980059820538385
+        },
+        "pair_id": "qsl:2210.13200::e116.001",
+        "priority_rank": 2,
+        "qsl_input_sha256": "8e24528f1f8e6ec88044fc3e0b07002324fa1689f39f7fe6193e50918dafdb14",
+        "qsl_item_id": "qsl:2210.13200",
+        "vendor_input_sha256": "edbf1a52c98eababde82f1addde255f874b1b05c48901ab2ed3f345885c98834",
+        "vendor_item_id": "e116.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.7020000000000001,
+          "feasibility": 0.78,
+          "gain": 0.9,
+          "midrank_percentile": 0.9990029910269193
+        },
+        "mean_membership_percentile": 0.9975074775672981,
+        "membership_rank": 1,
+        "observed_inter_judge_percentile_gap": 0.0029910269192422456,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.6888,
+          "feasibility": 0.82,
+          "gain": 0.84,
+          "midrank_percentile": 0.996011964107677
+        },
+        "pair_id": "qsl:2210.13200::e036.003",
+        "priority_rank": 3,
+        "qsl_input_sha256": "8e24528f1f8e6ec88044fc3e0b07002324fa1689f39f7fe6193e50918dafdb14",
+        "qsl_item_id": "qsl:2210.13200",
+        "vendor_input_sha256": "b3204d97050b081ef3d843b9c0ffd184af6a01f66e201f0a78f141bfbaca0e76",
+        "vendor_item_id": "e036.003"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.4128,
+          "feasibility": 0.48,
+          "gain": 0.86,
+          "midrank_percentile": 0.715852442671984
+        },
+        "mean_membership_percentile": 0.8544366899302094,
+        "membership_rank": 77,
+        "observed_inter_judge_percentile_gap": 0.27716849451645065,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.6864,
+          "feasibility": 0.88,
+          "gain": 0.78,
+          "midrank_percentile": 0.9930209371884346
+        },
+        "pair_id": "qsl:1809.01953::e051.004",
+        "priority_rank": 4,
+        "qsl_input_sha256": "d1186f80bcbdef6b53a26cba2b704faca2f073df7dfe574782bad439bd0b42bf",
+        "qsl_item_id": "qsl:1809.01953",
+        "vendor_input_sha256": "03fbf9a245bc9e683a4be1af3d3a4d2317d733023a682327d0e1d2a5e802e600",
+        "vendor_item_id": "e051.004"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5928,
+          "feasibility": 0.78,
+          "gain": 0.76,
+          "midrank_percentile": 0.9750747756729811
+        },
+        "mean_membership_percentile": 0.9840478564307078,
+        "membership_rank": 7,
+        "observed_inter_judge_percentile_gap": 0.017946161515453585,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.6864,
+          "feasibility": 0.88,
+          "gain": 0.78,
+          "midrank_percentile": 0.9930209371884346
+        },
+        "pair_id": "qsl:2403.09417::e087.001",
+        "priority_rank": 5,
+        "qsl_input_sha256": "222eef020d312072fc4ec41cd6b49814a7effb32f1a59cdde8aca6de5d29913c",
+        "qsl_item_id": "qsl:2403.09417",
+        "vendor_input_sha256": "84bc5a6807fa13f5851d28fc8c481552865534e58cec1a9001d94d4b818b31cc",
+        "vendor_item_id": "e087.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.4964,
+          "feasibility": 0.68,
+          "gain": 0.73,
+          "midrank_percentile": 0.8808574277168495
+        },
+        "mean_membership_percentile": 0.9369391824526421,
+        "membership_rank": 22,
+        "observed_inter_judge_percentile_gap": 0.11216350947158515,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.6864,
+          "feasibility": 0.88,
+          "gain": 0.78,
+          "midrank_percentile": 0.9930209371884346
+        },
+        "pair_id": "qsl:2403.09417::e089.001",
+        "priority_rank": 6,
+        "qsl_input_sha256": "222eef020d312072fc4ec41cd6b49814a7effb32f1a59cdde8aca6de5d29913c",
+        "qsl_item_id": "qsl:2403.09417",
+        "vendor_input_sha256": "b3171c2aa16b539d4d89fa2622f3d7e4e742d93450b3986812dd112060eef96a",
+        "vendor_item_id": "e089.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.576,
+          "feasibility": 0.72,
+          "gain": 0.8,
+          "midrank_percentile": 0.9695912263210369
+        },
+        "mean_membership_percentile": 0.9793120638085743,
+        "membership_rank": 9,
+        "observed_inter_judge_percentile_gap": 0.019441674975074763,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.6396,
+          "feasibility": 0.82,
+          "gain": 0.78,
+          "midrank_percentile": 0.9890329012961117
+        },
+        "pair_id": "qsl:2403.09417::e099.012",
+        "priority_rank": 7,
+        "qsl_input_sha256": "222eef020d312072fc4ec41cd6b49814a7effb32f1a59cdde8aca6de5d29913c",
+        "qsl_item_id": "qsl:2403.09417",
+        "vendor_input_sha256": "b4bef466b4b7da8f0e43479f80f8d3a3c7df2ec1f20a5c41733dd4c9b906af0e",
+        "vendor_item_id": "e099.012"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.4288,
+          "feasibility": 0.64,
+          "gain": 0.67,
+          "midrank_percentile": 0.7572283150548355
+        },
+        "mean_membership_percentile": 0.8731306081754735,
+        "membership_rank": 64,
+        "observed_inter_judge_percentile_gap": 0.2318045862412762,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.6396,
+          "feasibility": 0.82,
+          "gain": 0.78,
+          "midrank_percentile": 0.9890329012961117
+        },
+        "pair_id": "qsl:2403.09417::e104.001",
+        "priority_rank": 8,
+        "qsl_input_sha256": "222eef020d312072fc4ec41cd6b49814a7effb32f1a59cdde8aca6de5d29913c",
+        "qsl_item_id": "qsl:2403.09417",
+        "vendor_input_sha256": "1c5f11fd5df448811115ced9a0179e327fff58879b69a6143ce210b97d0327e3",
+        "vendor_item_id": "e104.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.47040000000000004,
+          "feasibility": 0.56,
+          "gain": 0.84,
+          "midrank_percentile": 0.8379860418743769
+        },
+        "mean_membership_percentile": 0.9120139581256231,
+        "membership_rank": 30,
+        "observed_inter_judge_percentile_gap": 0.14805583250249255,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.6335999999999999,
+          "feasibility": 0.88,
+          "gain": 0.72,
+          "midrank_percentile": 0.9860418743768694
+        },
+        "pair_id": "qsl:2210.13200::e039.004",
+        "priority_rank": 9,
+        "qsl_input_sha256": "8e24528f1f8e6ec88044fc3e0b07002324fa1689f39f7fe6193e50918dafdb14",
+        "qsl_item_id": "qsl:2210.13200",
+        "vendor_input_sha256": "d9b65976df8a7f96a6dce8f614dda7d2cfb719a9963bde60b56ddde2d24686ab",
+        "vendor_item_id": "e039.004"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.6396,
+          "feasibility": 0.78,
+          "gain": 0.82,
+          "midrank_percentile": 0.9910269192422732
+        },
+        "mean_membership_percentile": 0.9885343968095712,
+        "membership_rank": 5,
+        "observed_inter_judge_percentile_gap": 0.004985044865403743,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.6335999999999999,
+          "feasibility": 0.88,
+          "gain": 0.72,
+          "midrank_percentile": 0.9860418743768694
+        },
+        "pair_id": "qsl:2309.15547::e118.001",
+        "priority_rank": 10,
+        "qsl_input_sha256": "f36173863d6215e885645837ef82a87da7cc580d25fa02feb90b777480a02b57",
+        "qsl_item_id": "qsl:2309.15547",
+        "vendor_input_sha256": "1af7de8e99f4830e2e4293f5b5fc756b873ab626da25c71fb9d4123a76a5e96e",
+        "vendor_item_id": "e118.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5372,
+          "feasibility": 0.68,
+          "gain": 0.79,
+          "midrank_percentile": 0.9322033898305084
+        },
+        "mean_membership_percentile": 0.959122632103689,
+        "membership_rank": 13,
+        "observed_inter_judge_percentile_gap": 0.053838484546360976,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.6335999999999999,
+          "feasibility": 0.88,
+          "gain": 0.72,
+          "midrank_percentile": 0.9860418743768694
+        },
+        "pair_id": "qsl:2508.05523::e101.001",
+        "priority_rank": 11,
+        "qsl_input_sha256": "f0e9269d1687bf26b2eb74d770e534ac797fd5f00ec2ea99ef18c3530ccb3171",
+        "qsl_item_id": "qsl:2508.05523",
+        "vendor_input_sha256": "9000bb3963a1a51f85b3df97c3b47d72a950cdd3963d0d1c2e99982343bc9d66",
+        "vendor_item_id": "e101.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg-resume",
+          "composite_score": 0.42160000000000003,
+          "feasibility": 0.62,
+          "gain": 0.68,
+          "midrank_percentile": 0.7432701894317049
+        },
+        "mean_membership_percentile": 0.8629112662013958,
+        "membership_rank": 73,
+        "observed_inter_judge_percentile_gap": 0.23928215353938187,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.5903999999999999,
+          "feasibility": 0.82,
+          "gain": 0.72,
+          "midrank_percentile": 0.9825523429710867
+        },
+        "pair_id": "qsl:2403.09417::e036.003",
+        "priority_rank": 12,
+        "qsl_input_sha256": "222eef020d312072fc4ec41cd6b49814a7effb32f1a59cdde8aca6de5d29913c",
+        "qsl_item_id": "qsl:2403.09417",
+        "vendor_input_sha256": "b3204d97050b081ef3d843b9c0ffd184af6a01f66e201f0a78f141bfbaca0e76",
+        "vendor_item_id": "e036.003"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.6232,
+          "feasibility": 0.76,
+          "gain": 0.82,
+          "midrank_percentile": 0.9860418743768694
+        },
+        "mean_membership_percentile": 0.984297108673978,
+        "membership_rank": 6,
+        "observed_inter_judge_percentile_gap": 0.0034895314057826754,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.5903999999999999,
+          "feasibility": 0.82,
+          "gain": 0.72,
+          "midrank_percentile": 0.9825523429710867
+        },
+        "pair_id": "qsl:2508.15743::e099.009",
+        "priority_rank": 13,
+        "qsl_input_sha256": "639241df292892468e53234f519255affe6d01df20f43b394811c0ee345500e6",
+        "qsl_item_id": "qsl:2508.15743",
+        "vendor_input_sha256": "4f43c35668a39480d64611a7519ad37730dae71d46b6a1cadd28a38e8c5e8bbe",
+        "vendor_item_id": "e099.009"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5772,
+          "feasibility": 0.78,
+          "gain": 0.74,
+          "midrank_percentile": 0.9715852442671984
+        },
+        "mean_membership_percentile": 0.9770687936191426,
+        "membership_rank": 10,
+        "observed_inter_judge_percentile_gap": 0.010967098703888345,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.5903999999999999,
+          "feasibility": 0.82,
+          "gain": 0.72,
+          "midrank_percentile": 0.9825523429710867
+        },
+        "pair_id": "qsl:2511.01845::e083.002",
+        "priority_rank": 14,
+        "qsl_input_sha256": "5658ae2f381ba9b1f2b884bdfec9e7a710dbcb11fd56ff11fe712a83ccb6d001",
+        "qsl_item_id": "qsl:2511.01845",
+        "vendor_input_sha256": "33e5766432ed658a62f9c9642b1a95bff951d81435cfd2d7e8117ff0edfc7f0a",
+        "vendor_item_id": "e083.002"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.48719999999999997,
+          "feasibility": 0.58,
+          "gain": 0.84,
+          "midrank_percentile": 0.8594217347956131
+        },
+        "mean_membership_percentile": 0.9194915254237288,
+        "membership_rank": 28,
+        "observed_inter_judge_percentile_gap": 0.12013958125623136,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.5616,
+          "feasibility": 0.78,
+          "gain": 0.72,
+          "midrank_percentile": 0.9795613160518445
+        },
+        "pair_id": "qsl:2210.13200::e039.003",
+        "priority_rank": 15,
+        "qsl_input_sha256": "8e24528f1f8e6ec88044fc3e0b07002324fa1689f39f7fe6193e50918dafdb14",
+        "qsl_item_id": "qsl:2210.13200",
+        "vendor_input_sha256": "9e7d67f0142b1580f16b94ba78471f7fa122f3a2641fe07981c185a2b94a872d",
+        "vendor_item_id": "e039.003"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.41759999999999997,
+          "feasibility": 0.58,
+          "gain": 0.72,
+          "midrank_percentile": 0.7288135593220338
+        },
+        "mean_membership_percentile": 0.8541874376869392,
+        "membership_rank": 78,
+        "observed_inter_judge_percentile_gap": 0.25074775672981064,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.5616,
+          "feasibility": 0.78,
+          "gain": 0.72,
+          "midrank_percentile": 0.9795613160518445
+        },
+        "pair_id": "qsl:2511.01845::e118.001",
+        "priority_rank": 16,
+        "qsl_input_sha256": "5658ae2f381ba9b1f2b884bdfec9e7a710dbcb11fd56ff11fe712a83ccb6d001",
+        "qsl_item_id": "qsl:2511.01845",
+        "vendor_input_sha256": "1af7de8e99f4830e2e4293f5b5fc756b873ab626da25c71fb9d4123a76a5e96e",
+        "vendor_item_id": "e118.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.6048,
+          "feasibility": 0.84,
+          "gain": 0.72,
+          "midrank_percentile": 0.9810568295114656
+        },
+        "mean_membership_percentile": 0.9793120638085743,
+        "membership_rank": 8,
+        "observed_inter_judge_percentile_gap": 0.0034895314057825644,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.5576,
+          "feasibility": 0.82,
+          "gain": 0.68,
+          "midrank_percentile": 0.977567298105683
+        },
+        "pair_id": "qsl:2208.02191::e050.002",
+        "priority_rank": 17,
+        "qsl_input_sha256": "fa6c1cbbbfb7caa1ca7d75f12ed551259a6533ff84a11b61ca22ed150145d1f3",
+        "qsl_item_id": "qsl:2208.02191",
+        "vendor_input_sha256": "195d08be7e55165123f9e7750bec54a000f5305de2909dadf7a9d17dfa655d63",
+        "vendor_item_id": "e050.002"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.738,
+          "feasibility": 0.9,
+          "gain": 0.82,
+          "midrank_percentile": 1.0
+        },
+        "mean_membership_percentile": 0.9887836490528414,
+        "membership_rank": 4,
+        "observed_inter_judge_percentile_gap": 0.02243270189431701,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.5576,
+          "feasibility": 0.82,
+          "gain": 0.68,
+          "midrank_percentile": 0.977567298105683
+        },
+        "pair_id": "qsl:2405.02278::e099.005",
+        "priority_rank": 18,
+        "qsl_input_sha256": "1e7d98aac47af1538a4642c19547f3ce33b39f5421c4c0c026e4acec77adbcb1",
+        "qsl_item_id": "qsl:2405.02278",
+        "vendor_input_sha256": "d07cd349709f2fc3eaa229a33378f6a8feb3e2fa60aa5454bd78e400845109ab",
+        "vendor_item_id": "e099.005"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.44079999999999997,
+          "feasibility": 0.58,
+          "gain": 0.76,
+          "midrank_percentile": 0.7901296111665005
+        },
+        "mean_membership_percentile": 0.88160518444666,
+        "membership_rank": 53,
+        "observed_inter_judge_percentile_gap": 0.18295114656031908,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.5084,
+          "feasibility": 0.82,
+          "gain": 0.62,
+          "midrank_percentile": 0.9730807577268196
+        },
+        "pair_id": "qsl:2502.05284::e090.002",
+        "priority_rank": 19,
+        "qsl_input_sha256": "d9dde2252cdc3bcb87b567369ee03566cb5c4549f6f6974343b19026a5689b54",
+        "qsl_item_id": "qsl:2502.05284",
+        "vendor_input_sha256": "877bec63cf773a0f293367ef0ba58ab042779cb73fce68d2f8ef6d4da28a4ebb",
+        "vendor_item_id": "e090.002"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.4928,
+          "feasibility": 0.64,
+          "gain": 0.77,
+          "midrank_percentile": 0.8748753738783649
+        },
+        "mean_membership_percentile": 0.9239780658025922,
+        "membership_rank": 26,
+        "observed_inter_judge_percentile_gap": 0.09820538384845467,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.5084,
+          "feasibility": 0.82,
+          "gain": 0.62,
+          "midrank_percentile": 0.9730807577268196
+        },
+        "pair_id": "qsl:2503.08403::e090.002",
+        "priority_rank": 20,
+        "qsl_input_sha256": "5aef0f90c51b7e0cbb0386e5b491919848aed58e3ce6614cffc7168b6c98812d",
+        "qsl_item_id": "qsl:2503.08403",
+        "vendor_input_sha256": "877bec63cf773a0f293367ef0ba58ab042779cb73fce68d2f8ef6d4da28a4ebb",
+        "vendor_item_id": "e090.002"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5700000000000001,
+          "feasibility": 0.76,
+          "gain": 0.75,
+          "midrank_percentile": 0.9661016949152542
+        },
+        "mean_membership_percentile": 0.9695912263210369,
+        "membership_rank": 12,
+        "observed_inter_judge_percentile_gap": 0.006979062811565351,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.5084,
+          "feasibility": 0.82,
+          "gain": 0.62,
+          "midrank_percentile": 0.9730807577268196
+        },
+        "pair_id": "qsl:2506.13264::e040.003",
+        "priority_rank": 21,
+        "qsl_input_sha256": "e60d818ef3b217312938629b71d854058a6bee4847334f567f5f7f29bc358b9b",
+        "qsl_item_id": "qsl:2506.13264",
+        "vendor_input_sha256": "ba0a12fa0266b7f47491c819eee7592ebdddf232c88562dae549133a87006466",
+        "vendor_item_id": "e040.003"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.49679999999999996,
+          "feasibility": 0.72,
+          "gain": 0.69,
+          "midrank_percentile": 0.8833499501495513
+        },
+        "mean_membership_percentile": 0.9262213359920239,
+        "membership_rank": 24,
+        "observed_inter_judge_percentile_gap": 0.08574277168494515,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.496,
+          "feasibility": 0.8,
+          "gain": 0.62,
+          "midrank_percentile": 0.9690927218344965
+        },
+        "pair_id": "qsl:2309.15547::e022.002",
+        "priority_rank": 22,
+        "qsl_input_sha256": "f36173863d6215e885645837ef82a87da7cc580d25fa02feb90b777480a02b57",
+        "qsl_item_id": "qsl:2309.15547",
+        "vendor_input_sha256": "64ddaff9b708fe05a62c12d0ba85bac01c95b6d685a1d8e6f763c133c1d64e09",
+        "vendor_item_id": "e022.002"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.41039999999999993,
+          "feasibility": 0.57,
+          "gain": 0.72,
+          "midrank_percentile": 0.7123629112662014
+        },
+        "mean_membership_percentile": 0.8332502492522433,
+        "membership_rank": 94,
+        "observed_inter_judge_percentile_gap": 0.24177467597208369,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.48360000000000003,
+          "feasibility": 0.78,
+          "gain": 0.62,
+          "midrank_percentile": 0.9541375872382851
+        },
+        "pair_id": "qsl:1809.01953::e052.004",
+        "priority_rank": 23,
+        "qsl_input_sha256": "d1186f80bcbdef6b53a26cba2b704faca2f073df7dfe574782bad439bd0b42bf",
+        "qsl_item_id": "qsl:1809.01953",
+        "vendor_input_sha256": "470a89523089029da809ca1aa14b82dc9831e750f6dc6c275557a469da189774",
+        "vendor_item_id": "e052.004"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.48360000000000003,
+          "feasibility": 0.62,
+          "gain": 0.78,
+          "midrank_percentile": 0.8569292123629113
+        },
+        "mean_membership_percentile": 0.9055333998005982,
+        "membership_rank": 34,
+        "observed_inter_judge_percentile_gap": 0.09720837487537382,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.48360000000000003,
+          "feasibility": 0.78,
+          "gain": 0.62,
+          "midrank_percentile": 0.9541375872382851
+        },
+        "pair_id": "qsl:2011.10005::e099.014",
+        "priority_rank": 24,
+        "qsl_input_sha256": "f3292f423ad7fc16d07ad1e820fd916e741bb3ca0f425bcb1fb92b15c6ba244c",
+        "qsl_item_id": "qsl:2011.10005",
+        "vendor_input_sha256": "a0af7049a37b32df764e5fa0a3d9d33fb9074493268c616d571f5da0d453dd57",
+        "vendor_item_id": "e099.014"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5616,
+          "feasibility": 0.78,
+          "gain": 0.72,
+          "midrank_percentile": 0.9546360917248256
+        },
+        "mean_membership_percentile": 0.9543868394815553,
+        "membership_rank": 15,
+        "observed_inter_judge_percentile_gap": 0.0004985044865404298,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.48360000000000003,
+          "feasibility": 0.78,
+          "gain": 0.62,
+          "midrank_percentile": 0.9541375872382851
+        },
+        "pair_id": "qsl:2206.04373::e020.002",
+        "priority_rank": 25,
+        "qsl_input_sha256": "f83c6dcecc8038a3a0e01e0a44da83bd53e1dacad401026220b408aafd4aaad1",
+        "qsl_item_id": "qsl:2206.04373",
+        "vendor_input_sha256": "f4febcefef94db8b82c05c96383674ac78fc56598b1af786259e5277d8338137",
+        "vendor_item_id": "e020.002"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.43520000000000003,
+          "feasibility": 0.64,
+          "gain": 0.68,
+          "midrank_percentile": 0.7771684945164506
+        },
+        "mean_membership_percentile": 0.8656530408773679,
+        "membership_rank": 69,
+        "observed_inter_judge_percentile_gap": 0.17696909272183448,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.48360000000000003,
+          "feasibility": 0.78,
+          "gain": 0.62,
+          "midrank_percentile": 0.9541375872382851
+        },
+        "pair_id": "qsl:2206.04373::e040.003",
+        "priority_rank": 26,
+        "qsl_input_sha256": "f83c6dcecc8038a3a0e01e0a44da83bd53e1dacad401026220b408aafd4aaad1",
+        "qsl_item_id": "qsl:2206.04373",
+        "vendor_input_sha256": "ba0a12fa0266b7f47491c819eee7592ebdddf232c88562dae549133a87006466",
+        "vendor_item_id": "e040.003"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.42160000000000003,
+          "feasibility": 0.62,
+          "gain": 0.68,
+          "midrank_percentile": 0.7432701894317049
+        },
+        "mean_membership_percentile": 0.848703888334995,
+        "membership_rank": 82,
+        "observed_inter_judge_percentile_gap": 0.21086739780658026,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.48360000000000003,
+          "feasibility": 0.78,
+          "gain": 0.62,
+          "midrank_percentile": 0.9541375872382851
+        },
+        "pair_id": "qsl:2206.04373::e099.021",
+        "priority_rank": 27,
+        "qsl_input_sha256": "f83c6dcecc8038a3a0e01e0a44da83bd53e1dacad401026220b408aafd4aaad1",
+        "qsl_item_id": "qsl:2206.04373",
+        "vendor_input_sha256": "ae1e6fa394a257d346c94e4d66b044e61091012e5037a26dca857155d125dd5a",
+        "vendor_item_id": "e099.021"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.663,
+          "feasibility": 0.78,
+          "gain": 0.85,
+          "midrank_percentile": 0.996011964107677
+        },
+        "mean_membership_percentile": 0.9750747756729811,
+        "membership_rank": 11,
+        "observed_inter_judge_percentile_gap": 0.04187437686939188,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.48360000000000003,
+          "feasibility": 0.78,
+          "gain": 0.62,
+          "midrank_percentile": 0.9541375872382851
+        },
+        "pair_id": "qsl:2206.04373::e114.001",
+        "priority_rank": 28,
+        "qsl_input_sha256": "f83c6dcecc8038a3a0e01e0a44da83bd53e1dacad401026220b408aafd4aaad1",
+        "qsl_item_id": "qsl:2206.04373",
+        "vendor_input_sha256": "a05d5a30c88e63b2859f6306e3670c6245b9696ba1d2245b07161057b7e36d52",
+        "vendor_item_id": "e114.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5032,
+          "feasibility": 0.68,
+          "gain": 0.74,
+          "midrank_percentile": 0.8943170488534397
+        },
+        "mean_membership_percentile": 0.9242273180458624,
+        "membership_rank": 25,
+        "observed_inter_judge_percentile_gap": 0.05982053838484547,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.48360000000000003,
+          "feasibility": 0.78,
+          "gain": 0.62,
+          "midrank_percentile": 0.9541375872382851
+        },
+        "pair_id": "qsl:2303.02712::e114.001",
+        "priority_rank": 29,
+        "qsl_input_sha256": "fe627507d481458ad762f495927dbdefe367395108c68d310557dd0fd16fb5a8",
+        "qsl_item_id": "qsl:2303.02712",
+        "vendor_input_sha256": "a05d5a30c88e63b2859f6306e3670c6245b9696ba1d2245b07161057b7e36d52",
+        "vendor_item_id": "e114.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5459999999999999,
+          "feasibility": 0.7,
+          "gain": 0.78,
+          "midrank_percentile": 0.9366899302093719
+        },
+        "mean_membership_percentile": 0.9454137587238285,
+        "membership_rank": 19,
+        "observed_inter_judge_percentile_gap": 0.017447657028913266,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.48360000000000003,
+          "feasibility": 0.78,
+          "gain": 0.62,
+          "midrank_percentile": 0.9541375872382851
+        },
+        "pair_id": "qsl:2306.04351::e099.011",
+        "priority_rank": 30,
+        "qsl_input_sha256": "c2f56b1480ad149ec691669c5a9a4ec0a0b104d5fb25cf833611399b6be61a59",
+        "qsl_item_id": "qsl:2306.04351",
+        "vendor_input_sha256": "aab02a8a88a6f71158cb819e5557056dd824c6c4dd67b17961570ec05d5d2e56",
+        "vendor_item_id": "e099.011"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.48960000000000004,
+          "feasibility": 0.72,
+          "gain": 0.68,
+          "midrank_percentile": 0.865902293120638
+        },
+        "mean_membership_percentile": 0.9100199401794615,
+        "membership_rank": 32,
+        "observed_inter_judge_percentile_gap": 0.08823529411764708,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.48360000000000003,
+          "feasibility": 0.78,
+          "gain": 0.62,
+          "midrank_percentile": 0.9541375872382851
+        },
+        "pair_id": "qsl:2306.04351::e107.001",
+        "priority_rank": 31,
+        "qsl_input_sha256": "c2f56b1480ad149ec691669c5a9a4ec0a0b104d5fb25cf833611399b6be61a59",
+        "qsl_item_id": "qsl:2306.04351",
+        "vendor_input_sha256": "918ec18bf2ea84d42c0603c4e47f81a59b35bbeac65160dfc84365f92734c9a3",
+        "vendor_item_id": "e107.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5688,
+          "feasibility": 0.72,
+          "gain": 0.79,
+          "midrank_percentile": 0.963110667996012
+        },
+        "mean_membership_percentile": 0.9586241276171485,
+        "membership_rank": 14,
+        "observed_inter_judge_percentile_gap": 0.008973080757726848,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.48360000000000003,
+          "feasibility": 0.78,
+          "gain": 0.62,
+          "midrank_percentile": 0.9541375872382851
+        },
+        "pair_id": "qsl:2307.00054::e099.009",
+        "priority_rank": 32,
+        "qsl_input_sha256": "2f1b18bbf9000cd4770870f4dd7cdaecb2ab9a2a6f913fc92729d6782afac371",
+        "qsl_item_id": "qsl:2307.00054",
+        "vendor_input_sha256": "4f43c35668a39480d64611a7519ad37730dae71d46b6a1cadd28a38e8c5e8bbe",
+        "vendor_item_id": "e099.009"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.4402,
+          "feasibility": 0.62,
+          "gain": 0.71,
+          "midrank_percentile": 0.7876370887337986
+        },
+        "mean_membership_percentile": 0.8708873379860418,
+        "membership_rank": 67,
+        "observed_inter_judge_percentile_gap": 0.16650049850448656,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.48360000000000003,
+          "feasibility": 0.78,
+          "gain": 0.62,
+          "midrank_percentile": 0.9541375872382851
+        },
+        "pair_id": "qsl:2403.09417::e099.015",
+        "priority_rank": 33,
+        "qsl_input_sha256": "222eef020d312072fc4ec41cd6b49814a7effb32f1a59cdde8aca6de5d29913c",
+        "qsl_item_id": "qsl:2403.09417",
+        "vendor_input_sha256": "a817a34cb976f028c2ccdb83481bb3ce67076da922174f4a09df18592a8bd03a",
+        "vendor_item_id": "e099.015"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.4128,
+          "feasibility": 0.86,
+          "gain": 0.48,
+          "midrank_percentile": 0.715852442671984
+        },
+        "mean_membership_percentile": 0.8349950149551346,
+        "membership_rank": 93,
+        "observed_inter_judge_percentile_gap": 0.23828514456630112,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.48360000000000003,
+          "feasibility": 0.78,
+          "gain": 0.62,
+          "midrank_percentile": 0.9541375872382851
+        },
+        "pair_id": "qsl:2405.04247::e111.001",
+        "priority_rank": 34,
+        "qsl_input_sha256": "bddd0aa5e679170e180e3cd7338ff8aac7a22c670daffbc8bd84202d42a390b5",
+        "qsl_item_id": "qsl:2405.04247",
+        "vendor_input_sha256": "05146a746076b8507e40c63d7defe5cbf4a34fc5ad4b5e9b2e2c9b0a2e9d3a86",
+        "vendor_item_id": "e111.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.4712,
+          "feasibility": 0.62,
+          "gain": 0.76,
+          "midrank_percentile": 0.8409770687936191
+        },
+        "mean_membership_percentile": 0.8975573280159521,
+        "membership_rank": 41,
+        "observed_inter_judge_percentile_gap": 0.11316051844466601,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.48360000000000003,
+          "feasibility": 0.78,
+          "gain": 0.62,
+          "midrank_percentile": 0.9541375872382851
+        },
+        "pair_id": "qsl:2412.18007::e074.002",
+        "priority_rank": 35,
+        "qsl_input_sha256": "55427827fb2722ec216dc0b7cd6878e3d5b2d630171557aff33304237b9fe269",
+        "qsl_item_id": "qsl:2412.18007",
+        "vendor_input_sha256": "786ec5fc5159abdf81e0b4407333a9668f8cad2bbd832fde11a3302ceb562458",
+        "vendor_item_id": "e074.002"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.44639999999999996,
+          "feasibility": 0.72,
+          "gain": 0.62,
+          "midrank_percentile": 0.7991026919242273
+        },
+        "mean_membership_percentile": 0.8766201395812563,
+        "membership_rank": 58,
+        "observed_inter_judge_percentile_gap": 0.15503489531405779,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.48360000000000003,
+          "feasibility": 0.78,
+          "gain": 0.62,
+          "midrank_percentile": 0.9541375872382851
+        },
+        "pair_id": "qsl:2505.16715::e099.013",
+        "priority_rank": 36,
+        "qsl_input_sha256": "92ce6adc61175fbea76115ffe9abbc9aca8f4142d0f8e2d2aed1542562cb68f9",
+        "qsl_item_id": "qsl:2505.16715",
+        "vendor_input_sha256": "ed728290d5061bcff497d2c8d4381f181fe24f35524ae4ed5fae1508e3212264",
+        "vendor_item_id": "e099.013"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.4755999999999999,
+          "feasibility": 0.58,
+          "gain": 0.82,
+          "midrank_percentile": 0.8469591226321037
+        },
+        "mean_membership_percentile": 0.9005483549351945,
+        "membership_rank": 39,
+        "observed_inter_judge_percentile_gap": 0.10717846460618141,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.48360000000000003,
+          "feasibility": 0.78,
+          "gain": 0.62,
+          "midrank_percentile": 0.9541375872382851
+        },
+        "pair_id": "qsl:2508.15743::e050.002",
+        "priority_rank": 37,
+        "qsl_input_sha256": "639241df292892468e53234f519255affe6d01df20f43b394811c0ee345500e6",
+        "qsl_item_id": "qsl:2508.15743",
+        "vendor_input_sha256": "195d08be7e55165123f9e7750bec54a000f5305de2909dadf7a9d17dfa655d63",
+        "vendor_item_id": "e050.002"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.44099999999999995,
+          "feasibility": 0.63,
+          "gain": 0.7,
+          "midrank_percentile": 0.7926221335992024
+        },
+        "mean_membership_percentile": 0.8733798604187437,
+        "membership_rank": 63,
+        "observed_inter_judge_percentile_gap": 0.1615154536390827,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.48360000000000003,
+          "feasibility": 0.78,
+          "gain": 0.62,
+          "midrank_percentile": 0.9541375872382851
+        },
+        "pair_id": "qsl:2511.01845::e099.012",
+        "priority_rank": 38,
+        "qsl_input_sha256": "5658ae2f381ba9b1f2b884bdfec9e7a710dbcb11fd56ff11fe712a83ccb6d001",
+        "qsl_item_id": "qsl:2511.01845",
+        "vendor_input_sha256": "b4bef466b4b7da8f0e43479f80f8d3a3c7df2ec1f20a5c41733dd4c9b906af0e",
+        "vendor_item_id": "e099.012"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.4582,
+          "feasibility": 0.58,
+          "gain": 0.79,
+          "midrank_percentile": 0.8225324027916251
+        },
+        "mean_membership_percentile": 0.8756231306081754,
+        "membership_rank": 59,
+        "observed_inter_judge_percentile_gap": 0.10618145563310077,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.44639999999999996,
+          "feasibility": 0.72,
+          "gain": 0.62,
+          "midrank_percentile": 0.9287138584247259
+        },
+        "pair_id": "qsl:2206.04373::e090.002",
+        "priority_rank": 39,
+        "qsl_input_sha256": "f83c6dcecc8038a3a0e01e0a44da83bd53e1dacad401026220b408aafd4aaad1",
+        "qsl_item_id": "qsl:2206.04373",
+        "vendor_input_sha256": "877bec63cf773a0f293367ef0ba58ab042779cb73fce68d2f8ef6d4da28a4ebb",
+        "vendor_item_id": "e090.002"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.4755999999999999,
+          "feasibility": 0.58,
+          "gain": 0.82,
+          "midrank_percentile": 0.8469591226321037
+        },
+        "mean_membership_percentile": 0.8878364905284148,
+        "membership_rank": 47,
+        "observed_inter_judge_percentile_gap": 0.08175473579262216,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.44639999999999996,
+          "feasibility": 0.62,
+          "gain": 0.72,
+          "midrank_percentile": 0.9287138584247259
+        },
+        "pair_id": "qsl:2310.02075::e112.001",
+        "priority_rank": 40,
+        "qsl_input_sha256": "b0073c00043513ed47e8e0fec6e29552e03e3b9da3396a04abdc775f52b8e678",
+        "qsl_item_id": "qsl:2310.02075",
+        "vendor_input_sha256": "bb294b8219badfe22746c47cdec04152461c360673d2b7ff1dd880fb0841aa3d",
+        "vendor_item_id": "e112.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5928,
+          "feasibility": 0.76,
+          "gain": 0.78,
+          "midrank_percentile": 0.9750747756729811
+        },
+        "mean_membership_percentile": 0.9518943170488534,
+        "membership_rank": 16,
+        "observed_inter_judge_percentile_gap": 0.046360917248255196,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.44639999999999996,
+          "feasibility": 0.72,
+          "gain": 0.62,
+          "midrank_percentile": 0.9287138584247259
+        },
+        "pair_id": "qsl:2412.18007::e083.002",
+        "priority_rank": 41,
+        "qsl_input_sha256": "55427827fb2722ec216dc0b7cd6878e3d5b2d630171557aff33304237b9fe269",
+        "qsl_item_id": "qsl:2412.18007",
+        "vendor_input_sha256": "33e5766432ed658a62f9c9642b1a95bff951d81435cfd2d7e8117ff0edfc7f0a",
+        "vendor_item_id": "e083.002"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.576,
+          "feasibility": 0.72,
+          "gain": 0.8,
+          "midrank_percentile": 0.9695912263210369
+        },
+        "mean_membership_percentile": 0.9491525423728814,
+        "membership_rank": 18,
+        "observed_inter_judge_percentile_gap": 0.04087736789631102,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.44639999999999996,
+          "feasibility": 0.72,
+          "gain": 0.62,
+          "midrank_percentile": 0.9287138584247259
+        },
+        "pair_id": "qsl:2505.20261::e099.009",
+        "priority_rank": 42,
+        "qsl_input_sha256": "89c9a085c6cc0f0c9ae3eda212fc66c708cdcbbc6c5ea92711daa5c84d7c8800",
+        "qsl_item_id": "qsl:2505.20261",
+        "vendor_input_sha256": "4f43c35668a39480d64611a7519ad37730dae71d46b6a1cadd28a38e8c5e8bbe",
+        "vendor_item_id": "e099.009"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5928,
+          "feasibility": 0.78,
+          "gain": 0.76,
+          "midrank_percentile": 0.9750747756729811
+        },
+        "mean_membership_percentile": 0.9518943170488534,
+        "membership_rank": 17,
+        "observed_inter_judge_percentile_gap": 0.046360917248255196,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.44639999999999996,
+          "feasibility": 0.72,
+          "gain": 0.62,
+          "midrank_percentile": 0.9287138584247259
+        },
+        "pair_id": "qsl:2511.01845::e109.001",
+        "priority_rank": 43,
+        "qsl_input_sha256": "5658ae2f381ba9b1f2b884bdfec9e7a710dbcb11fd56ff11fe712a83ccb6d001",
+        "qsl_item_id": "qsl:2511.01845",
+        "vendor_input_sha256": "35a4a8a1265d32eaa8d21b07dd2bf926784b012cc0aabde33b901171e1803c6e",
+        "vendor_item_id": "e109.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.4608,
+          "feasibility": 0.64,
+          "gain": 0.72,
+          "midrank_percentile": 0.82901296111665
+        },
+        "mean_membership_percentile": 0.878863409770688,
+        "membership_rank": 57,
+        "observed_inter_judge_percentile_gap": 0.09970089730807585,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.44639999999999996,
+          "feasibility": 0.72,
+          "gain": 0.62,
+          "midrank_percentile": 0.9287138584247259
+        },
+        "pair_id": "qsl:2601.18680::e114.001",
+        "priority_rank": 44,
+        "qsl_input_sha256": "2ccd99fa0bf2f869692f7b4878bf70b2d1d24ef6b2408cbeda21c5f25762b60d",
+        "qsl_item_id": "qsl:2601.18680",
+        "vendor_input_sha256": "a05d5a30c88e63b2859f6306e3670c6245b9696ba1d2245b07161057b7e36d52",
+        "vendor_item_id": "e114.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5616,
+          "feasibility": 0.78,
+          "gain": 0.72,
+          "midrank_percentile": 0.9546360917248256
+        },
+        "mean_membership_percentile": 0.9371884346959123,
+        "membership_rank": 21,
+        "observed_inter_judge_percentile_gap": 0.03489531405782653,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.42900000000000005,
+          "feasibility": 0.78,
+          "gain": 0.55,
+          "midrank_percentile": 0.919740777666999
+        },
+        "pair_id": "qsl:2303.02712::e099.005",
+        "priority_rank": 45,
+        "qsl_input_sha256": "fe627507d481458ad762f495927dbdefe367395108c68d310557dd0fd16fb5a8",
+        "qsl_item_id": "qsl:2303.02712",
+        "vendor_input_sha256": "d07cd349709f2fc3eaa229a33378f6a8feb3e2fa60aa5454bd78e400845109ab",
+        "vendor_item_id": "e099.005"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.48960000000000004,
+          "feasibility": 0.72,
+          "gain": 0.68,
+          "midrank_percentile": 0.865902293120638
+        },
+        "mean_membership_percentile": 0.8928215353938185,
+        "membership_rank": 44,
+        "observed_inter_judge_percentile_gap": 0.053838484546360976,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.42900000000000005,
+          "feasibility": 0.78,
+          "gain": 0.55,
+          "midrank_percentile": 0.919740777666999
+        },
+        "pair_id": "qsl:2502.08594::e099.021",
+        "priority_rank": 46,
+        "qsl_input_sha256": "1a112f37b6b87fc15c26d64964180f110f62f474240a4510a00fe73a8179a0a4",
+        "qsl_item_id": "qsl:2502.08594",
+        "vendor_input_sha256": "ae1e6fa394a257d346c94e4d66b044e61091012e5037a26dca857155d125dd5a",
+        "vendor_item_id": "e099.021"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.45239999999999997,
+          "feasibility": 0.58,
+          "gain": 0.78,
+          "midrank_percentile": 0.8145563310069791
+        },
+        "mean_membership_percentile": 0.864406779661017,
+        "membership_rank": 70,
+        "observed_inter_judge_percentile_gap": 0.09970089730807574,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.42160000000000003,
+          "feasibility": 0.68,
+          "gain": 0.62,
+          "midrank_percentile": 0.9142572283150548
+        },
+        "pair_id": "qsl:2103.13994::e112.001",
+        "priority_rank": 47,
+        "qsl_input_sha256": "df92ac078e34283cc5b89f482d51c78a1704e827e03f67eefa348735a9ac1f3c",
+        "qsl_item_id": "qsl:2103.13994",
+        "vendor_input_sha256": "bb294b8219badfe22746c47cdec04152461c360673d2b7ff1dd880fb0841aa3d",
+        "vendor_item_id": "e112.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-smoke-gpt56_fg",
+          "composite_score": 0.42160000000000003,
+          "feasibility": 0.62,
+          "gain": 0.68,
+          "midrank_percentile": 0.7432701894317049
+        },
+        "mean_membership_percentile": 0.8287637088733799,
+        "membership_rank": 99,
+        "observed_inter_judge_percentile_gap": 0.17098703888334998,
+        "opus": {
+          "canonical_run_id": "fg2-smoke-opus5_fg",
+          "composite_score": 0.42160000000000003,
+          "feasibility": 0.68,
+          "gain": 0.62,
+          "midrank_percentile": 0.9142572283150548
+        },
+        "pair_id": "qsl:2104.04742::e113.001",
+        "priority_rank": 48,
+        "qsl_input_sha256": "da76dfd81e37ac17dad13c24b7743bb3176d6f41fd650933a5462cbabd06169c",
+        "qsl_item_id": "qsl:2104.04742",
+        "vendor_input_sha256": "2ac6796e91e8fe514a541d26d8287f11b74e904762e973f2258386a9a636bbce",
+        "vendor_item_id": "e113.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.4466,
+          "feasibility": 0.58,
+          "gain": 0.77,
+          "midrank_percentile": 0.8035892323030908
+        },
+        "mean_membership_percentile": 0.8589232303090728,
+        "membership_rank": 75,
+        "observed_inter_judge_percentile_gap": 0.11066799601196409,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.42160000000000003,
+          "feasibility": 0.62,
+          "gain": 0.68,
+          "midrank_percentile": 0.9142572283150548
+        },
+        "pair_id": "qsl:2502.06463::e114.001",
+        "priority_rank": 49,
+        "qsl_input_sha256": "3974990580fa4ec73d01b1143741c60eb264107507360191aff4f57d06ea8d98",
+        "qsl_item_id": "qsl:2502.06463",
+        "vendor_input_sha256": "a05d5a30c88e63b2859f6306e3670c6245b9696ba1d2245b07161057b7e36d52",
+        "vendor_item_id": "e114.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.45239999999999997,
+          "feasibility": 0.58,
+          "gain": 0.78,
+          "midrank_percentile": 0.8145563310069791
+        },
+        "mean_membership_percentile": 0.864406779661017,
+        "membership_rank": 71,
+        "observed_inter_judge_percentile_gap": 0.09970089730807574,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.42160000000000003,
+          "feasibility": 0.62,
+          "gain": 0.68,
+          "midrank_percentile": 0.9142572283150548
+        },
+        "pair_id": "qsl:2510.07240::e119.001",
+        "priority_rank": 50,
+        "qsl_input_sha256": "65eadcf611a354711a2b3dd98664c2f679267f6f0bfbfc1faa52397374d358f6",
+        "qsl_item_id": "qsl:2510.07240",
+        "vendor_input_sha256": "dbf01d2eb61c859e214d571eb384097c56847df012e18085e351aef23acfd35d",
+        "vendor_item_id": "e119.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5084,
+          "feasibility": 0.62,
+          "gain": 0.82,
+          "midrank_percentile": 0.901296111665005
+        },
+        "mean_membership_percentile": 0.9030408773678964,
+        "membership_rank": 37,
+        "observed_inter_judge_percentile_gap": 0.0034895314057826754,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.41759999999999997,
+          "feasibility": 0.72,
+          "gain": 0.58,
+          "midrank_percentile": 0.9047856430707877
+        },
+        "pair_id": "qsl:2011.10005::e099.008",
+        "priority_rank": 51,
+        "qsl_input_sha256": "f3292f423ad7fc16d07ad1e820fd916e741bb3ca0f425bcb1fb92b15c6ba244c",
+        "qsl_item_id": "qsl:2011.10005",
+        "vendor_input_sha256": "35e887fabee223c58a4ddfea1431c5f27f44ea52bd5b1600318872f61663066e",
+        "vendor_item_id": "e099.008"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.4536,
+          "feasibility": 0.63,
+          "gain": 0.72,
+          "midrank_percentile": 0.8190428713858424
+        },
+        "mean_membership_percentile": 0.861914257228315,
+        "membership_rank": 74,
+        "observed_inter_judge_percentile_gap": 0.08574277168494526,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.41759999999999997,
+          "feasibility": 0.72,
+          "gain": 0.58,
+          "midrank_percentile": 0.9047856430707877
+        },
+        "pair_id": "qsl:2206.04373::e040.004",
+        "priority_rank": 52,
+        "qsl_input_sha256": "f83c6dcecc8038a3a0e01e0a44da83bd53e1dacad401026220b408aafd4aaad1",
+        "qsl_item_id": "qsl:2206.04373",
+        "vendor_input_sha256": "3ba2fed06dd10482f589b20ae75c2ebed32c3aa97f4a68f300755cadfe81a93f",
+        "vendor_item_id": "e040.004"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.4898,
+          "feasibility": 0.62,
+          "gain": 0.79,
+          "midrank_percentile": 0.872382851445663
+        },
+        "mean_membership_percentile": 0.8885842472582253,
+        "membership_rank": 46,
+        "observed_inter_judge_percentile_gap": 0.032402791625124716,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.41759999999999997,
+          "feasibility": 0.72,
+          "gain": 0.58,
+          "midrank_percentile": 0.9047856430707877
+        },
+        "pair_id": "qsl:2303.02712::e099.008",
+        "priority_rank": 53,
+        "qsl_input_sha256": "fe627507d481458ad762f495927dbdefe367395108c68d310557dd0fd16fb5a8",
+        "qsl_item_id": "qsl:2303.02712",
+        "vendor_input_sha256": "35e887fabee223c58a4ddfea1431c5f27f44ea52bd5b1600318872f61663066e",
+        "vendor_item_id": "e099.008"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.4712,
+          "feasibility": 0.62,
+          "gain": 0.76,
+          "midrank_percentile": 0.8409770687936191
+        },
+        "mean_membership_percentile": 0.8728813559322034,
+        "membership_rank": 65,
+        "observed_inter_judge_percentile_gap": 0.06380857427716857,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.41759999999999997,
+          "feasibility": 0.72,
+          "gain": 0.58,
+          "midrank_percentile": 0.9047856430707877
+        },
+        "pair_id": "qsl:2309.15547::e104.001",
+        "priority_rank": 54,
+        "qsl_input_sha256": "f36173863d6215e885645837ef82a87da7cc580d25fa02feb90b777480a02b57",
+        "qsl_item_id": "qsl:2309.15547",
+        "vendor_input_sha256": "1c5f11fd5df448811115ced9a0179e327fff58879b69a6143ce210b97d0327e3",
+        "vendor_item_id": "e104.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.6232,
+          "feasibility": 0.76,
+          "gain": 0.82,
+          "midrank_percentile": 0.9860418743768694
+        },
+        "mean_membership_percentile": 0.9454137587238285,
+        "membership_rank": 20,
+        "observed_inter_judge_percentile_gap": 0.08125623130608173,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.41759999999999997,
+          "feasibility": 0.72,
+          "gain": 0.58,
+          "midrank_percentile": 0.9047856430707877
+        },
+        "pair_id": "qsl:2405.02277::e052.004",
+        "priority_rank": 55,
+        "qsl_input_sha256": "7b0047c919de5d4f24962e17bda150c58f6d27d5b85f3237010b146ddbf9d5b3",
+        "qsl_item_id": "qsl:2405.02277",
+        "vendor_input_sha256": "470a89523089029da809ca1aa14b82dc9831e750f6dc6c275557a469da189774",
+        "vendor_item_id": "e052.004"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5304000000000001,
+          "feasibility": 0.68,
+          "gain": 0.78,
+          "midrank_percentile": 0.9192422731804586
+        },
+        "mean_membership_percentile": 0.9090229312063809,
+        "membership_rank": 33,
+        "observed_inter_judge_percentile_gap": 0.02043868394815551,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.4056,
+          "feasibility": 0.78,
+          "gain": 0.52,
+          "midrank_percentile": 0.8988035892323031
+        },
+        "pair_id": "qsl:2303.02712::e099.009",
+        "priority_rank": 56,
+        "qsl_input_sha256": "fe627507d481458ad762f495927dbdefe367395108c68d310557dd0fd16fb5a8",
+        "qsl_item_id": "qsl:2303.02712",
+        "vendor_input_sha256": "4f43c35668a39480d64611a7519ad37730dae71d46b6a1cadd28a38e8c5e8bbe",
+        "vendor_item_id": "e099.009"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.44880000000000003,
+          "feasibility": 0.68,
+          "gain": 0.66,
+          "midrank_percentile": 0.8090727816550349
+        },
+        "mean_membership_percentile": 0.853938185443669,
+        "membership_rank": 79,
+        "observed_inter_judge_percentile_gap": 0.08973080757726815,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.4056,
+          "feasibility": 0.78,
+          "gain": 0.52,
+          "midrank_percentile": 0.8988035892323031
+        },
+        "pair_id": "qsl:2309.15547::e087.001",
+        "priority_rank": 57,
+        "qsl_input_sha256": "f36173863d6215e885645837ef82a87da7cc580d25fa02feb90b777480a02b57",
+        "qsl_item_id": "qsl:2309.15547",
+        "vendor_input_sha256": "84bc5a6807fa13f5851d28fc8c481552865534e58cec1a9001d94d4b818b31cc",
+        "vendor_item_id": "e087.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.4608,
+          "feasibility": 0.64,
+          "gain": 0.72,
+          "midrank_percentile": 0.82901296111665
+        },
+        "mean_membership_percentile": 0.8569292123629113,
+        "membership_rank": 76,
+        "observed_inter_judge_percentile_gap": 0.05583250249252247,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.396,
+          "feasibility": 0.72,
+          "gain": 0.55,
+          "midrank_percentile": 0.8848454636091725
+        },
+        "pair_id": "qsl:2206.04373::e022.002",
+        "priority_rank": 58,
+        "qsl_input_sha256": "f83c6dcecc8038a3a0e01e0a44da83bd53e1dacad401026220b408aafd4aaad1",
+        "qsl_item_id": "qsl:2206.04373",
+        "vendor_input_sha256": "64ddaff9b708fe05a62c12d0ba85bac01c95b6d685a1d8e6f763c133c1d64e09",
+        "vendor_item_id": "e022.002"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.45239999999999997,
+          "feasibility": 0.78,
+          "gain": 0.58,
+          "midrank_percentile": 0.8145563310069791
+        },
+        "mean_membership_percentile": 0.8497008973080757,
+        "membership_rank": 81,
+        "observed_inter_judge_percentile_gap": 0.07028913260219338,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.396,
+          "feasibility": 0.72,
+          "gain": 0.55,
+          "midrank_percentile": 0.8848454636091725
+        },
+        "pair_id": "qsl:2303.02712::e107.001",
+        "priority_rank": 59,
+        "qsl_input_sha256": "fe627507d481458ad762f495927dbdefe367395108c68d310557dd0fd16fb5a8",
+        "qsl_item_id": "qsl:2303.02712",
+        "vendor_input_sha256": "918ec18bf2ea84d42c0603c4e47f81a59b35bbeac65160dfc84365f92734c9a3",
+        "vendor_item_id": "e107.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5576,
+          "feasibility": 0.82,
+          "gain": 0.68,
+          "midrank_percentile": 0.9461615154536391
+        },
+        "mean_membership_percentile": 0.9155034895314058,
+        "membership_rank": 29,
+        "observed_inter_judge_percentile_gap": 0.061316051844466646,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.396,
+          "feasibility": 0.72,
+          "gain": 0.55,
+          "midrank_percentile": 0.8848454636091725
+        },
+        "pair_id": "qsl:2412.18007::e008.005",
+        "priority_rank": 60,
+        "qsl_input_sha256": "55427827fb2722ec216dc0b7cd6878e3d5b2d630171557aff33304237b9fe269",
+        "qsl_item_id": "qsl:2412.18007",
+        "vendor_input_sha256": "e881268bf9f0c546d592ee4c4fd14efcd146cd09774e152ec519e4e7aedf6618",
+        "vendor_item_id": "e008.005"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.44880000000000003,
+          "feasibility": 0.66,
+          "gain": 0.68,
+          "midrank_percentile": 0.8090727816550349
+        },
+        "mean_membership_percentile": 0.8469591226321037,
+        "membership_rank": 84,
+        "observed_inter_judge_percentile_gap": 0.07577268195413756,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.396,
+          "feasibility": 0.72,
+          "gain": 0.55,
+          "midrank_percentile": 0.8848454636091725
+        },
+        "pair_id": "qsl:2412.18007::e041.002",
+        "priority_rank": 61,
+        "qsl_input_sha256": "55427827fb2722ec216dc0b7cd6878e3d5b2d630171557aff33304237b9fe269",
+        "qsl_item_id": "qsl:2412.18007",
+        "vendor_input_sha256": "79558c82f2953da96ec8307682c352ddcf8f59b75e9e165fa870a9a33f480af9",
+        "vendor_item_id": "e041.002"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5168,
+          "feasibility": 0.68,
+          "gain": 0.76,
+          "midrank_percentile": 0.9077766699900299
+        },
+        "mean_membership_percentile": 0.8963110667996013,
+        "membership_rank": 42,
+        "observed_inter_judge_percentile_gap": 0.02293120638085744,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.396,
+          "feasibility": 0.72,
+          "gain": 0.55,
+          "midrank_percentile": 0.8848454636091725
+        },
+        "pair_id": "qsl:2412.18007::e073.003",
+        "priority_rank": 62,
+        "qsl_input_sha256": "55427827fb2722ec216dc0b7cd6878e3d5b2d630171557aff33304237b9fe269",
+        "qsl_item_id": "qsl:2412.18007",
+        "vendor_input_sha256": "18fdbef8542ad63043f230038c3131e4213eb2863729bc63b6c2f0f465760469",
+        "vendor_item_id": "e073.003"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.4964,
+          "feasibility": 0.68,
+          "gain": 0.73,
+          "midrank_percentile": 0.8808574277168495
+        },
+        "mean_membership_percentile": 0.882851445663011,
+        "membership_rank": 52,
+        "observed_inter_judge_percentile_gap": 0.003988035892322994,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.396,
+          "feasibility": 0.72,
+          "gain": 0.55,
+          "midrank_percentile": 0.8848454636091725
+        },
+        "pair_id": "qsl:2412.18007::e078.003",
+        "priority_rank": 63,
+        "qsl_input_sha256": "55427827fb2722ec216dc0b7cd6878e3d5b2d630171557aff33304237b9fe269",
+        "qsl_item_id": "qsl:2412.18007",
+        "vendor_input_sha256": "2163b8e5ccd413ed29f626a0c3f881d60134dd2e51db73ae90c2d0b1969e0ff3",
+        "vendor_item_id": "e078.003"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5327999999999999,
+          "feasibility": 0.74,
+          "gain": 0.72,
+          "midrank_percentile": 0.9257228315054835
+        },
+        "mean_membership_percentile": 0.905284147557328,
+        "membership_rank": 35,
+        "observed_inter_judge_percentile_gap": 0.04087736789631102,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.396,
+          "feasibility": 0.72,
+          "gain": 0.55,
+          "midrank_percentile": 0.8848454636091725
+        },
+        "pair_id": "qsl:2412.18007::e101.001",
+        "priority_rank": 64,
+        "qsl_input_sha256": "55427827fb2722ec216dc0b7cd6878e3d5b2d630171557aff33304237b9fe269",
+        "qsl_item_id": "qsl:2412.18007",
+        "vendor_input_sha256": "9000bb3963a1a51f85b3df97c3b47d72a950cdd3963d0d1c2e99982343bc9d66",
+        "vendor_item_id": "e101.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5928,
+          "feasibility": 0.78,
+          "gain": 0.76,
+          "midrank_percentile": 0.9750747756729811
+        },
+        "mean_membership_percentile": 0.9299601196410767,
+        "membership_rank": 23,
+        "observed_inter_judge_percentile_gap": 0.09022931206380858,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.396,
+          "feasibility": 0.72,
+          "gain": 0.55,
+          "midrank_percentile": 0.8848454636091725
+        },
+        "pair_id": "qsl:2412.18007::e102.001",
+        "priority_rank": 65,
+        "qsl_input_sha256": "55427827fb2722ec216dc0b7cd6878e3d5b2d630171557aff33304237b9fe269",
+        "qsl_item_id": "qsl:2412.18007",
+        "vendor_input_sha256": "13496eca23ea62815945cd23aa9b1a57d52dfcb5997a5e79192fa11b2367b256",
+        "vendor_item_id": "e102.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5616,
+          "feasibility": 0.72,
+          "gain": 0.78,
+          "midrank_percentile": 0.9546360917248256
+        },
+        "mean_membership_percentile": 0.919740777666999,
+        "membership_rank": 27,
+        "observed_inter_judge_percentile_gap": 0.06979062811565306,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.396,
+          "feasibility": 0.72,
+          "gain": 0.55,
+          "midrank_percentile": 0.8848454636091725
+        },
+        "pair_id": "qsl:2412.18007::e107.001",
+        "priority_rank": 66,
+        "qsl_input_sha256": "55427827fb2722ec216dc0b7cd6878e3d5b2d630171557aff33304237b9fe269",
+        "qsl_item_id": "qsl:2412.18007",
+        "vendor_input_sha256": "918ec18bf2ea84d42c0603c4e47f81a59b35bbeac65160dfc84365f92734c9a3",
+        "vendor_item_id": "e107.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.544,
+          "feasibility": 0.8,
+          "gain": 0.68,
+          "midrank_percentile": 0.9351944167497508
+        },
+        "mean_membership_percentile": 0.901296111665005,
+        "membership_rank": 38,
+        "observed_inter_judge_percentile_gap": 0.06779661016949157,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.369,
+          "feasibility": 0.82,
+          "gain": 0.45,
+          "midrank_percentile": 0.8673978065802592
+        },
+        "pair_id": "qsl:2206.04373::e086.001",
+        "priority_rank": 67,
+        "qsl_input_sha256": "f83c6dcecc8038a3a0e01e0a44da83bd53e1dacad401026220b408aafd4aaad1",
+        "qsl_item_id": "qsl:2206.04373",
+        "vendor_input_sha256": "d50ee7b57fcb287f5cd64fda4dc93c2a5f64e6ef5eb828cb8249be7d80f6eeeb",
+        "vendor_item_id": "e086.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5226000000000001,
+          "feasibility": 0.78,
+          "gain": 0.67,
+          "midrank_percentile": 0.9122632103688934
+        },
+        "mean_membership_percentile": 0.8898305084745763,
+        "membership_rank": 45,
+        "observed_inter_judge_percentile_gap": 0.04486540378863413,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.369,
+          "feasibility": 0.82,
+          "gain": 0.45,
+          "midrank_percentile": 0.8673978065802592
+        },
+        "pair_id": "qsl:2412.18007::e099.005",
+        "priority_rank": 68,
+        "qsl_input_sha256": "55427827fb2722ec216dc0b7cd6878e3d5b2d630171557aff33304237b9fe269",
+        "qsl_item_id": "qsl:2412.18007",
+        "vendor_input_sha256": "d07cd349709f2fc3eaa229a33378f6a8feb3e2fa60aa5454bd78e400845109ab",
+        "vendor_item_id": "e099.005"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5148,
+          "feasibility": 0.78,
+          "gain": 0.66,
+          "midrank_percentile": 0.9032901296111665
+        },
+        "mean_membership_percentile": 0.8853439680957129,
+        "membership_rank": 49,
+        "observed_inter_judge_percentile_gap": 0.03589232303090728,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.369,
+          "feasibility": 0.82,
+          "gain": 0.45,
+          "midrank_percentile": 0.8673978065802592
+        },
+        "pair_id": "qsl:2512.14449::e006.004",
+        "priority_rank": 69,
+        "qsl_input_sha256": "12d8676448efa9104bd25c21124563261ff5aa7363d016002e6c0048e842ac7e",
+        "qsl_item_id": "qsl:2512.14449",
+        "vendor_input_sha256": "01ff81cbeabcb0c64b4bfc0713e8ce5fbbe0e4620eda2ba1bb9e3950548b203d",
+        "vendor_item_id": "e006.004"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5576,
+          "feasibility": 0.68,
+          "gain": 0.82,
+          "midrank_percentile": 0.9461615154536391
+        },
+        "mean_membership_percentile": 0.9050348953140579,
+        "membership_rank": 36,
+        "observed_inter_judge_percentile_gap": 0.08225324027916259,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.3596,
+          "feasibility": 0.62,
+          "gain": 0.58,
+          "midrank_percentile": 0.8639082751744765
+        },
+        "pair_id": "qsl:2406.14445::e050.002",
+        "priority_rank": 70,
+        "qsl_input_sha256": "d0962be7b55f50e05bda4817095fa8e5b69eaf7f72b11afbfa744e13710f4ebe",
+        "qsl_item_id": "qsl:2406.14445",
+        "vendor_input_sha256": "195d08be7e55165123f9e7750bec54a000f5305de2909dadf7a9d17dfa655d63",
+        "vendor_item_id": "e050.002"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.44880000000000003,
+          "feasibility": 0.68,
+          "gain": 0.66,
+          "midrank_percentile": 0.8090727816550349
+        },
+        "mean_membership_percentile": 0.835493519441675,
+        "membership_rank": 92,
+        "observed_inter_judge_percentile_gap": 0.05284147557328012,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.3588,
+          "feasibility": 0.78,
+          "gain": 0.46,
+          "midrank_percentile": 0.861914257228315
+        },
+        "pair_id": "qsl:2412.18007::e088.001",
+        "priority_rank": 71,
+        "qsl_input_sha256": "55427827fb2722ec216dc0b7cd6878e3d5b2d630171557aff33304237b9fe269",
+        "qsl_item_id": "qsl:2412.18007",
+        "vendor_input_sha256": "96239a67c92d947844f4057602aefa215cde178ecd2e9178aaf1e5ac7bd9ef41",
+        "vendor_item_id": "e088.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5168,
+          "feasibility": 0.68,
+          "gain": 0.76,
+          "midrank_percentile": 0.9077766699900299
+        },
+        "mean_membership_percentile": 0.8793619142572283,
+        "membership_rank": 54,
+        "observed_inter_judge_percentile_gap": 0.05682951146560322,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.35100000000000003,
+          "feasibility": 0.78,
+          "gain": 0.45,
+          "midrank_percentile": 0.8509471585244267
+        },
+        "pair_id": "qsl:2303.02712::e088.001",
+        "priority_rank": 72,
+        "qsl_input_sha256": "fe627507d481458ad762f495927dbdefe367395108c68d310557dd0fd16fb5a8",
+        "qsl_item_id": "qsl:2303.02712",
+        "vendor_input_sha256": "96239a67c92d947844f4057602aefa215cde178ecd2e9178aaf1e5ac7bd9ef41",
+        "vendor_item_id": "e088.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5576,
+          "feasibility": 0.82,
+          "gain": 0.68,
+          "midrank_percentile": 0.9461615154536391
+        },
+        "mean_membership_percentile": 0.898554336989033,
+        "membership_rank": 40,
+        "observed_inter_judge_percentile_gap": 0.09521435692921243,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.35100000000000003,
+          "feasibility": 0.78,
+          "gain": 0.45,
+          "midrank_percentile": 0.8509471585244267
+        },
+        "pair_id": "qsl:2303.02712::e099.003",
+        "priority_rank": 73,
+        "qsl_input_sha256": "fe627507d481458ad762f495927dbdefe367395108c68d310557dd0fd16fb5a8",
+        "qsl_item_id": "qsl:2303.02712",
+        "vendor_input_sha256": "69a6fb2ded434677781e02c9fae61512a22851ffbfb97e50106e4a8d502e058d",
+        "vendor_item_id": "e099.003"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5168,
+          "feasibility": 0.76,
+          "gain": 0.68,
+          "midrank_percentile": 0.9077766699900299
+        },
+        "mean_membership_percentile": 0.8793619142572283,
+        "membership_rank": 55,
+        "observed_inter_judge_percentile_gap": 0.05682951146560322,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.35100000000000003,
+          "feasibility": 0.78,
+          "gain": 0.45,
+          "midrank_percentile": 0.8509471585244267
+        },
+        "pair_id": "qsl:2303.02712::e099.012",
+        "priority_rank": 74,
+        "qsl_input_sha256": "fe627507d481458ad762f495927dbdefe367395108c68d310557dd0fd16fb5a8",
+        "qsl_item_id": "qsl:2303.02712",
+        "vendor_input_sha256": "b4bef466b4b7da8f0e43479f80f8d3a3c7df2ec1f20a5c41733dd4c9b906af0e",
+        "vendor_item_id": "e099.012"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5168,
+          "feasibility": 0.68,
+          "gain": 0.76,
+          "midrank_percentile": 0.9077766699900299
+        },
+        "mean_membership_percentile": 0.8793619142572283,
+        "membership_rank": 56,
+        "observed_inter_judge_percentile_gap": 0.05682951146560322,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.35100000000000003,
+          "feasibility": 0.78,
+          "gain": 0.45,
+          "midrank_percentile": 0.8509471585244267
+        },
+        "pair_id": "qsl:2412.18007::e099.012",
+        "priority_rank": 75,
+        "qsl_input_sha256": "55427827fb2722ec216dc0b7cd6878e3d5b2d630171557aff33304237b9fe269",
+        "qsl_item_id": "qsl:2412.18007",
+        "vendor_input_sha256": "b4bef466b4b7da8f0e43479f80f8d3a3c7df2ec1f20a5c41733dd4c9b906af0e",
+        "vendor_item_id": "e099.012"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5304000000000001,
+          "feasibility": 0.78,
+          "gain": 0.68,
+          "midrank_percentile": 0.9192422731804586
+        },
+        "mean_membership_percentile": 0.8850947158524427,
+        "membership_rank": 50,
+        "observed_inter_judge_percentile_gap": 0.06829511465603189,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.35100000000000003,
+          "feasibility": 0.78,
+          "gain": 0.45,
+          "midrank_percentile": 0.8509471585244267
+        },
+        "pair_id": "qsl:2601.18680::e099.005",
+        "priority_rank": 76,
+        "qsl_input_sha256": "2ccd99fa0bf2f869692f7b4878bf70b2d1d24ef6b2408cbeda21c5f25762b60d",
+        "qsl_item_id": "qsl:2601.18680",
+        "vendor_input_sha256": "d07cd349709f2fc3eaa229a33378f6a8feb3e2fa60aa5454bd78e400845109ab",
+        "vendor_item_id": "e099.005"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.6120000000000001,
+          "feasibility": 0.9,
+          "gain": 0.68,
+          "midrank_percentile": 0.9830508474576272
+        },
+        "mean_membership_percentile": 0.9112662013958126,
+        "membership_rank": 31,
+        "observed_inter_judge_percentile_gap": 0.14356929212362912,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.3444,
+          "feasibility": 0.82,
+          "gain": 0.42,
+          "midrank_percentile": 0.839481555333998
+        },
+        "pair_id": "qsl:2405.05215::e099.017",
+        "priority_rank": 77,
+        "qsl_input_sha256": "d8dc20877b61f8992c1138178616a5792efb1a21c685385c84e9cb6bf25a1c9b",
+        "qsl_item_id": "qsl:2405.05215",
+        "vendor_input_sha256": "e98e21aa7db181789e178436f9c5347f092ff99792efeccacac5f47363ad5cf6",
+        "vendor_item_id": "e099.017"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.4712,
+          "feasibility": 0.62,
+          "gain": 0.76,
+          "midrank_percentile": 0.8409770687936191
+        },
+        "mean_membership_percentile": 0.838235294117647,
+        "membership_rank": 91,
+        "observed_inter_judge_percentile_gap": 0.0054835493519441725,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.341,
+          "feasibility": 0.62,
+          "gain": 0.55,
+          "midrank_percentile": 0.8354935194416749
+        },
+        "pair_id": "qsl:2505.16715::e114.001",
+        "priority_rank": 78,
+        "qsl_input_sha256": "92ce6adc61175fbea76115ffe9abbc9aca8f4142d0f8e2d2aed1542562cb68f9",
+        "qsl_item_id": "qsl:2505.16715",
+        "vendor_input_sha256": "a05d5a30c88e63b2859f6306e3670c6245b9696ba1d2245b07161057b7e36d52",
+        "vendor_item_id": "e114.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg-resume",
+          "composite_score": 0.5032,
+          "feasibility": 0.68,
+          "gain": 0.74,
+          "midrank_percentile": 0.8943170488534397
+        },
+        "mean_membership_percentile": 0.863160518444666,
+        "membership_rank": 72,
+        "observed_inter_judge_percentile_gap": 0.06231306081754728,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.3384,
+          "feasibility": 0.72,
+          "gain": 0.47,
+          "midrank_percentile": 0.8320039880358924
+        },
+        "pair_id": "qsl:2601.18680::e094.001",
+        "priority_rank": 79,
+        "qsl_input_sha256": "2ccd99fa0bf2f869692f7b4878bf70b2d1d24ef6b2408cbeda21c5f25762b60d",
+        "qsl_item_id": "qsl:2601.18680",
+        "vendor_input_sha256": "f57039fba198eccec2aa7dd27aed79e40fbd5119909b87bd53c1fe699377b52c",
+        "vendor_item_id": "e094.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5256,
+          "feasibility": 0.72,
+          "gain": 0.73,
+          "midrank_percentile": 0.9152542372881356
+        },
+        "mean_membership_percentile": 0.8726321036889332,
+        "membership_rank": 66,
+        "observed_inter_judge_percentile_gap": 0.08524426719840483,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.3312,
+          "feasibility": 0.72,
+          "gain": 0.46,
+          "midrank_percentile": 0.8300099700897308
+        },
+        "pair_id": "qsl:2412.18007::e099.003",
+        "priority_rank": 80,
+        "qsl_input_sha256": "55427827fb2722ec216dc0b7cd6878e3d5b2d630171557aff33304237b9fe269",
+        "qsl_item_id": "qsl:2412.18007",
+        "vendor_input_sha256": "69a6fb2ded434677781e02c9fae61512a22851ffbfb97e50106e4a8d502e058d",
+        "vendor_item_id": "e099.003"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.48960000000000004,
+          "feasibility": 0.68,
+          "gain": 0.72,
+          "midrank_percentile": 0.865902293120638
+        },
+        "mean_membership_percentile": 0.8389830508474576,
+        "membership_rank": 89,
+        "observed_inter_judge_percentile_gap": 0.053838484546360865,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.3276,
+          "feasibility": 0.78,
+          "gain": 0.42,
+          "midrank_percentile": 0.8120638085742772
+        },
+        "pair_id": "qsl:2101.05692::e112.001",
+        "priority_rank": 81,
+        "qsl_input_sha256": "56f8f5a25450075110a64f569260de26a6bcd311dbe87cf877bd10d332150627",
+        "qsl_item_id": "qsl:2101.05692",
+        "vendor_input_sha256": "bb294b8219badfe22746c47cdec04152461c360673d2b7ff1dd880fb0841aa3d",
+        "vendor_item_id": "e112.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.4824,
+          "feasibility": 0.72,
+          "gain": 0.67,
+          "midrank_percentile": 0.8544366899302094
+        },
+        "mean_membership_percentile": 0.8332502492522433,
+        "membership_rank": 95,
+        "observed_inter_judge_percentile_gap": 0.0423728813559322,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.3276,
+          "feasibility": 0.78,
+          "gain": 0.42,
+          "midrank_percentile": 0.8120638085742772
+        },
+        "pair_id": "qsl:2303.02712::e008.004",
+        "priority_rank": 82,
+        "qsl_input_sha256": "fe627507d481458ad762f495927dbdefe367395108c68d310557dd0fd16fb5a8",
+        "qsl_item_id": "qsl:2303.02712",
+        "vendor_input_sha256": "e688c7c78cd3e39d3cbd57d46d910bb200e082dbddd98b9dfc65a23e8931dfbe",
+        "vendor_item_id": "e008.004"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5616,
+          "feasibility": 0.78,
+          "gain": 0.72,
+          "midrank_percentile": 0.9546360917248256
+        },
+        "mean_membership_percentile": 0.8833499501495514,
+        "membership_rank": 51,
+        "observed_inter_judge_percentile_gap": 0.14257228315054837,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.3276,
+          "feasibility": 0.78,
+          "gain": 0.42,
+          "midrank_percentile": 0.8120638085742772
+        },
+        "pair_id": "qsl:2303.02712::e099.007",
+        "priority_rank": 83,
+        "qsl_input_sha256": "fe627507d481458ad762f495927dbdefe367395108c68d310557dd0fd16fb5a8",
+        "qsl_item_id": "qsl:2303.02712",
+        "vendor_input_sha256": "533e663803d781dfa89921cae199ae55da749589517be67732344dff91ac0287",
+        "vendor_item_id": "e099.007"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg-resume",
+          "composite_score": 0.476,
+          "feasibility": 0.68,
+          "gain": 0.7,
+          "midrank_percentile": 0.8504486540378864
+        },
+        "mean_membership_percentile": 0.8312562313060818,
+        "membership_rank": 97,
+        "observed_inter_judge_percentile_gap": 0.03838484546360921,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.3276,
+          "feasibility": 0.78,
+          "gain": 0.42,
+          "midrank_percentile": 0.8120638085742772
+        },
+        "pair_id": "qsl:2303.02712::e099.021",
+        "priority_rank": 84,
+        "qsl_input_sha256": "fe627507d481458ad762f495927dbdefe367395108c68d310557dd0fd16fb5a8",
+        "qsl_item_id": "qsl:2303.02712",
+        "vendor_input_sha256": "ae1e6fa394a257d346c94e4d66b044e61091012e5037a26dca857155d125dd5a",
+        "vendor_item_id": "e099.021"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5933999999999999,
+          "feasibility": 0.86,
+          "gain": 0.69,
+          "midrank_percentile": 0.9780658025922233
+        },
+        "mean_membership_percentile": 0.8950648055832502,
+        "membership_rank": 43,
+        "observed_inter_judge_percentile_gap": 0.16600199401794613,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.3276,
+          "feasibility": 0.78,
+          "gain": 0.42,
+          "midrank_percentile": 0.8120638085742772
+        },
+        "pair_id": "qsl:2309.15547::e055.002",
+        "priority_rank": 85,
+        "qsl_input_sha256": "f36173863d6215e885645837ef82a87da7cc580d25fa02feb90b777480a02b57",
+        "qsl_item_id": "qsl:2309.15547",
+        "vendor_input_sha256": "aa01897059ed7bbc7ee89f245dba9c7254cdedf9d780ee7f9c74a8b72a3dd909",
+        "vendor_item_id": "e055.002"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.48960000000000004,
+          "feasibility": 0.72,
+          "gain": 0.68,
+          "midrank_percentile": 0.865902293120638
+        },
+        "mean_membership_percentile": 0.8389830508474576,
+        "membership_rank": 90,
+        "observed_inter_judge_percentile_gap": 0.053838484546360865,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.3276,
+          "feasibility": 0.78,
+          "gain": 0.42,
+          "midrank_percentile": 0.8120638085742772
+        },
+        "pair_id": "qsl:2501.04526::e099.017",
+        "priority_rank": 86,
+        "qsl_input_sha256": "6703bff517aecdc256e2931ba05e927cdda0a910551f38b51eca115511c5d32f",
+        "qsl_item_id": "qsl:2501.04526",
+        "vendor_input_sha256": "e98e21aa7db181789e178436f9c5347f092ff99792efeccacac5f47363ad5cf6",
+        "vendor_item_id": "e099.017"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.48,
+          "feasibility": 0.75,
+          "gain": 0.64,
+          "midrank_percentile": 0.8524426719840479
+        },
+        "mean_membership_percentile": 0.8322532402791625,
+        "membership_rank": 96,
+        "observed_inter_judge_percentile_gap": 0.040378863409770704,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.3276,
+          "feasibility": 0.78,
+          "gain": 0.42,
+          "midrank_percentile": 0.8120638085742772
+        },
+        "pair_id": "qsl:2506.13264::e041.002",
+        "priority_rank": 87,
+        "qsl_input_sha256": "e60d818ef3b217312938629b71d854058a6bee4847334f567f5f7f29bc358b9b",
+        "qsl_item_id": "qsl:2506.13264",
+        "vendor_input_sha256": "79558c82f2953da96ec8307682c352ddcf8f59b75e9e165fa870a9a33f480af9",
+        "vendor_item_id": "e041.002"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5624,
+          "feasibility": 0.76,
+          "gain": 0.74,
+          "midrank_percentile": 0.9611166500498505
+        },
+        "mean_membership_percentile": 0.8865902293120638,
+        "membership_rank": 48,
+        "observed_inter_judge_percentile_gap": 0.1490528414755733,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.3276,
+          "feasibility": 0.78,
+          "gain": 0.42,
+          "midrank_percentile": 0.8120638085742772
+        },
+        "pair_id": "qsl:2512.14449::e098.001",
+        "priority_rank": 88,
+        "qsl_input_sha256": "12d8676448efa9104bd25c21124563261ff5aa7363d016002e6c0048e842ac7e",
+        "qsl_item_id": "qsl:2512.14449",
+        "vendor_input_sha256": "73347e3cb778a6ab1194355e34a2ff47d3b07a70777fe44f99390998af772e3f",
+        "vendor_item_id": "e098.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.6240000000000001,
+          "feasibility": 0.78,
+          "gain": 0.8,
+          "midrank_percentile": 0.9880358923230309
+        },
+        "mean_membership_percentile": 0.8733798604187437,
+        "membership_rank": 62,
+        "observed_inter_judge_percentile_gap": 0.22931206380857427,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.324,
+          "feasibility": 0.72,
+          "gain": 0.45,
+          "midrank_percentile": 0.7587238285144566
+        },
+        "pair_id": "qsl:2303.02712::e099.004",
+        "priority_rank": 89,
+        "qsl_input_sha256": "fe627507d481458ad762f495927dbdefe367395108c68d310557dd0fd16fb5a8",
+        "qsl_item_id": "qsl:2303.02712",
+        "vendor_input_sha256": "fa80061e976443b2262a25f2ad064afd08287dfa8edb6193568cedbf1cc6c68c",
+        "vendor_item_id": "e099.004"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.6314,
+          "feasibility": 0.77,
+          "gain": 0.82,
+          "midrank_percentile": 0.9890329012961117
+        },
+        "mean_membership_percentile": 0.8738783649052841,
+        "membership_rank": 61,
+        "observed_inter_judge_percentile_gap": 0.23030907278165502,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.324,
+          "feasibility": 0.72,
+          "gain": 0.45,
+          "midrank_percentile": 0.7587238285144566
+        },
+        "pair_id": "qsl:2306.04351::e099.004",
+        "priority_rank": 90,
+        "qsl_input_sha256": "c2f56b1480ad149ec691669c5a9a4ec0a0b104d5fb25cf833611399b6be61a59",
+        "qsl_item_id": "qsl:2306.04351",
+        "vendor_input_sha256": "fa80061e976443b2262a25f2ad064afd08287dfa8edb6193568cedbf1cc6c68c",
+        "vendor_item_id": "e099.004"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.6068,
+          "feasibility": 0.74,
+          "gain": 0.82,
+          "midrank_percentile": 0.9820538384845464
+        },
+        "mean_membership_percentile": 0.8703888334995016,
+        "membership_rank": 68,
+        "observed_inter_judge_percentile_gap": 0.22333000997008978,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.324,
+          "feasibility": 0.72,
+          "gain": 0.45,
+          "midrank_percentile": 0.7587238285144566
+        },
+        "pair_id": "qsl:2307.04733::e119.001",
+        "priority_rank": 91,
+        "qsl_input_sha256": "31ad50db66b6e1fba7673cc86d1a21df0ef624ec59c8f577687fc5265086f3d6",
+        "qsl_item_id": "qsl:2307.04733",
+        "vendor_input_sha256": "dbf01d2eb61c859e214d571eb384097c56847df012e18085e351aef23acfd35d",
+        "vendor_item_id": "e119.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5372,
+          "feasibility": 0.68,
+          "gain": 0.79,
+          "midrank_percentile": 0.9322033898305084
+        },
+        "mean_membership_percentile": 0.8454636091724825,
+        "membership_rank": 86,
+        "observed_inter_judge_percentile_gap": 0.1734795613160518,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.324,
+          "feasibility": 0.72,
+          "gain": 0.45,
+          "midrank_percentile": 0.7587238285144566
+        },
+        "pair_id": "qsl:2412.18007::e006.003",
+        "priority_rank": 92,
+        "qsl_input_sha256": "55427827fb2722ec216dc0b7cd6878e3d5b2d630171557aff33304237b9fe269",
+        "qsl_item_id": "qsl:2412.18007",
+        "vendor_input_sha256": "8ee8292f6fb3572ddef3f31c9200ac55ffebd45b77b06a36b2cb4ff61cc04611",
+        "vendor_item_id": "e006.003"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5332,
+          "feasibility": 0.62,
+          "gain": 0.86,
+          "midrank_percentile": 0.9292123629112662
+        },
+        "mean_membership_percentile": 0.8439680957128615,
+        "membership_rank": 87,
+        "observed_inter_judge_percentile_gap": 0.17048853439680955,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.324,
+          "feasibility": 0.72,
+          "gain": 0.45,
+          "midrank_percentile": 0.7587238285144566
+        },
+        "pair_id": "qsl:2412.18007::e011.002",
+        "priority_rank": 93,
+        "qsl_input_sha256": "55427827fb2722ec216dc0b7cd6878e3d5b2d630171557aff33304237b9fe269",
+        "qsl_item_id": "qsl:2412.18007",
+        "vendor_input_sha256": "6f82c7a1d3909ae7865c09835ac41ffb8a9cf635994e640972daa880333835f1",
+        "vendor_item_id": "e011.002"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5459999999999999,
+          "feasibility": 0.78,
+          "gain": 0.7,
+          "midrank_percentile": 0.9366899302093719
+        },
+        "mean_membership_percentile": 0.8477068793619142,
+        "membership_rank": 83,
+        "observed_inter_judge_percentile_gap": 0.17796610169491522,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.324,
+          "feasibility": 0.72,
+          "gain": 0.45,
+          "midrank_percentile": 0.7587238285144566
+        },
+        "pair_id": "qsl:2412.18007::e018.003",
+        "priority_rank": 94,
+        "qsl_input_sha256": "55427827fb2722ec216dc0b7cd6878e3d5b2d630171557aff33304237b9fe269",
+        "qsl_item_id": "qsl:2412.18007",
+        "vendor_input_sha256": "920e3b08776f531c0c72e48481cad5a8775e8471d07c54774fdb55398b20855e",
+        "vendor_item_id": "e018.003"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.504,
+          "feasibility": 0.72,
+          "gain": 0.7,
+          "midrank_percentile": 0.8978065802592223
+        },
+        "mean_membership_percentile": 0.8282652043868395,
+        "membership_rank": 100,
+        "observed_inter_judge_percentile_gap": 0.1390827517447657,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.324,
+          "feasibility": 0.72,
+          "gain": 0.45,
+          "midrank_percentile": 0.7587238285144566
+        },
+        "pair_id": "qsl:2412.18007::e024.003",
+        "priority_rank": 95,
+        "qsl_input_sha256": "55427827fb2722ec216dc0b7cd6878e3d5b2d630171557aff33304237b9fe269",
+        "qsl_item_id": "qsl:2412.18007",
+        "vendor_input_sha256": "dc8ba78dc11054c63ed5972603d5b942ddb657e512ed4813b24e01acb2a13bc5",
+        "vendor_item_id": "e024.003"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5327999999999999,
+          "feasibility": 0.72,
+          "gain": 0.74,
+          "midrank_percentile": 0.9257228315054835
+        },
+        "mean_membership_percentile": 0.8422233300099701,
+        "membership_rank": 88,
+        "observed_inter_judge_percentile_gap": 0.16699900299102688,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.324,
+          "feasibility": 0.72,
+          "gain": 0.45,
+          "midrank_percentile": 0.7587238285144566
+        },
+        "pair_id": "qsl:2412.18007::e099.009",
+        "priority_rank": 96,
+        "qsl_input_sha256": "55427827fb2722ec216dc0b7cd6878e3d5b2d630171557aff33304237b9fe269",
+        "qsl_item_id": "qsl:2412.18007",
+        "vendor_input_sha256": "4f43c35668a39480d64611a7519ad37730dae71d46b6a1cadd28a38e8c5e8bbe",
+        "vendor_item_id": "e099.009"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5599999999999999,
+          "feasibility": 0.7,
+          "gain": 0.8,
+          "midrank_percentile": 0.9491525423728814
+        },
+        "mean_membership_percentile": 0.853938185443669,
+        "membership_rank": 80,
+        "observed_inter_judge_percentile_gap": 0.19042871385842475,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.324,
+          "feasibility": 0.72,
+          "gain": 0.45,
+          "midrank_percentile": 0.7587238285144566
+        },
+        "pair_id": "qsl:2412.18007::e114.001",
+        "priority_rank": 97,
+        "qsl_input_sha256": "55427827fb2722ec216dc0b7cd6878e3d5b2d630171557aff33304237b9fe269",
+        "qsl_item_id": "qsl:2412.18007",
+        "vendor_input_sha256": "a05d5a30c88e63b2859f6306e3670c6245b9696ba1d2245b07161057b7e36d52",
+        "vendor_item_id": "e114.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.6335999999999999,
+          "feasibility": 0.88,
+          "gain": 0.72,
+          "midrank_percentile": 0.9900299102691924
+        },
+        "mean_membership_percentile": 0.8743768693918246,
+        "membership_rank": 60,
+        "observed_inter_judge_percentile_gap": 0.23130608175473577,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.324,
+          "feasibility": 0.72,
+          "gain": 0.45,
+          "midrank_percentile": 0.7587238285144566
+        },
+        "pair_id": "qsl:2501.04526::e113.001",
+        "priority_rank": 98,
+        "qsl_input_sha256": "6703bff517aecdc256e2931ba05e927cdda0a910551f38b51eca115511c5d32f",
+        "qsl_item_id": "qsl:2501.04526",
+        "vendor_input_sha256": "2ac6796e91e8fe514a541d26d8287f11b74e904762e973f2258386a9a636bbce",
+        "vendor_item_id": "e113.001"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.5698,
+          "feasibility": 0.74,
+          "gain": 0.77,
+          "midrank_percentile": 0.9651046859421735
+        },
+        "mean_membership_percentile": 0.8312562313060817,
+        "membership_rank": 98,
+        "observed_inter_judge_percentile_gap": 0.2676969092721835,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.3024,
+          "feasibility": 0.72,
+          "gain": 0.42,
+          "midrank_percentile": 0.69740777666999
+        },
+        "pair_id": "qsl:2303.02712::e083.002",
+        "priority_rank": 99,
+        "qsl_input_sha256": "fe627507d481458ad762f495927dbdefe367395108c68d310557dd0fd16fb5a8",
+        "qsl_item_id": "qsl:2303.02712",
+        "vendor_input_sha256": "33e5766432ed658a62f9c9642b1a95bff951d81435cfd2d7e8117ff0edfc7f0a",
+        "vendor_item_id": "e083.002"
+      },
+      {
+        "corpus_snapshot": "d8deb3c",
+        "gpt": {
+          "canonical_run_id": "fg2-gpt56_fg",
+          "composite_score": 0.6624,
+          "feasibility": 0.92,
+          "gain": 0.72,
+          "midrank_percentile": 0.9950149551345963
+        },
+        "mean_membership_percentile": 0.8462113659022932,
+        "membership_rank": 85,
+        "observed_inter_judge_percentile_gap": 0.29760717846460627,
+        "opus": {
+          "canonical_run_id": "fg2-opus5_fg",
+          "composite_score": 0.3024,
+          "feasibility": 0.72,
+          "gain": 0.42,
+          "midrank_percentile": 0.69740777666999
+        },
+        "pair_id": "qsl:2306.04351::e099.017",
+        "priority_rank": 100,
+        "qsl_input_sha256": "c2f56b1480ad149ec691669c5a9a4ec0a0b104d5fb25cf833611399b6be61a59",
+        "qsl_item_id": "qsl:2306.04351",
+        "vendor_input_sha256": "e98e21aa7db181789e178436f9c5347f092ff99792efeccacac5f47363ad5cf6",
+        "vendor_item_id": "e099.017"
+      }
+    ],
+    "percentile": {
+      "formula": "(below + (1 + equal) / 2) / N",
+      "reference": "each judge's exact frozen 1,003-row canonical run union"
+    },
+    "policy_version": 1,
+    "priority": {
+      "rule": "descending Opus canonical midrank percentile within frozen membership",
+      "status": "provisional, supported by within-panel repeat sensitivity",
+      "tie_break": "ascending pair_id"
+    }
+  },
+  "body_digest_contract": "SHA-256 of UTF-8 JSON(body) with sorted keys, no insignificant whitespace, ensure_ascii=false, and no non-finite numbers",
+  "body_sha256": "8d42b2b961859358e70e2f2b76bebdf31b5e64625e0a2051bcafe4d3f429208c",
+  "manifest_type": "phase_b_initial_tranche_v1_manifest",
+  "schema_version": 1
+}
