@@ -63,6 +63,30 @@ def fmt_ci(successes: int, n: int) -> str:
     return f"{successes / n:.3f} [{lo:.3f}, {hi:.3f}] ({successes}/{n})"
 
 
+def confusion(led: ledger.Ledger, pair_ids: set[str] | list[str], threshold: float) -> tuple[int, int, int, int]:
+    tp = fp = tn = fn = 0
+    for pair_id in pair_ids:
+        cheap = cheap_score(led, pair_id)
+        strong = strong_score(led, pair_id)
+        if cheap is None or strong is None:
+            continue
+        predicted = cheap >= threshold
+        reference = strong >= STRONG_REFERENCE_SCORE
+        if predicted and reference:
+            tp += 1
+        elif predicted:
+            fp += 1
+        elif reference:
+            fn += 1
+        else:
+            tn += 1
+    return tp, fp, tn, fn
+
+
+def fmt_rate(numerator: int, denominator: int) -> str:
+    return "n/a" if denominator == 0 else f"{numerator / denominator:.3f} ({numerator}/{denominator})"
+
+
 def eval_pair_ids(led: ledger.Ledger) -> set[str]:
     return {pid for pid, row in led.manifest.items() if not row["worked_example"]}
 
@@ -196,6 +220,34 @@ def main() -> None:
                          f"lowest with random-subset forwarding <= {FLAG_SHARE_CAP:.0%}; "
                          f"recall {fmt_ci(kept_ref, len(strong_ref))}.")
         lines.append("")
+
+        lines += [
+            "### Selected operating points", "",
+            "The strong-model rule above is treated as a reference label, not ground truth.",
+            "The full calibration set mixes 50 random pairs with curated pairs, so its",
+            "classification rates are in-sample operating-point measurements rather than",
+            "pair-universe estimates. The random stratum is an unbiased draw, but contains",
+            "only one reference-positive pair.", "",
+            "| set | threshold | TP | FP | TN | FN | sensitivity | specificity | precision | NPV |",
+            "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+        ]
+        for name, pair_ids in (("all calibration", cheap_judged),
+                               ("random stratum", random_judged)):
+            for threshold in (recall_choice, budget_choice):
+                if threshold is None:
+                    continue
+                tp, fp, tn, fn = confusion(led, pair_ids, threshold)
+                lines.append(
+                    f"| {name} | {threshold:.2f} | {tp} | {fp} | {tn} | {fn} | "
+                    f"{fmt_rate(tp, tp + fn)} | {fmt_rate(tn, tn + fp)} | "
+                    f"{fmt_rate(tp, tp + fp)} | {fmt_rate(tn, tn + fn)} |"
+                )
+        lines += [
+            "",
+            "These thresholds characterise possible cheap-stage gates. They did not exclude",
+            "pairs from the completed Phase A strong sweep: both strong judges scored all",
+            "10,912 pairs.", "",
+        ]
 
         lines += ["### Reference sensitivity", "",
                   "| reference rule | positives | recall at recall-first threshold |",
