@@ -13,8 +13,9 @@ Outputs:
 
 Usage:
     python3 pathfinder3/scripts/analyse_judge_agreement.py \\
-        --ledger .worktrees/sweep-opus5/pathfinder3/ledger \\
-        --ledger .worktrees/sweep-gpt56/pathfinder3/ledger \\
+        --ledger pathfinder3/ledger \\
+        --gpt-instrument b2a053b3cd994b15dd9f976f8777479b6559e80391a840c1c39bd3dcdf8c7818 \\
+        --opus-instrument 7f01f7e54dc02bbc59a447ea77c51c9fe8b16291b8d4e52e37ce1ed0b433b046 \\
         --json-out pathfinder3/build/judge-agreement-snapshot.json \\
         --tex-out notes/judge-agreement-results.tex \\
         --plot-out notes/judge-agreement-2026-07-27.png \\
@@ -24,6 +25,7 @@ from __future__ import annotations
 
 import argparse
 from collections import defaultdict
+from dataclasses import dataclass
 from datetime import datetime, timezone
 import json
 import math
@@ -41,6 +43,19 @@ HAIKU = "claude:claude-haiku-4-5"
 GPT = "codex:gpt-5.6-sol"
 OPUS = "claude:claude-opus-5"
 HAIKU_PROMPT = "v2"
+ROUND_DIGITS = 12
+
+
+@dataclass
+class TopKSelectionProfile:
+    cutoff: float
+    mandatory: set[str]
+    tie: set[str]
+    slots: int
+
+    @property
+    def band(self) -> set[str]:
+        return self.mandatory | self.tie
 
 
 def event_score(event: dict) -> float:
@@ -49,7 +64,7 @@ def event_score(event: dict) -> float:
 
 def rankdata(values: list[float]) -> list[float]:
     """Average ranks for ties, with rank one assigned to the smallest value."""
-    keys = [round(value, 12) for value in values]
+    keys = [round(value, ROUND_DIGITS) for value in values]
     order = sorted(range(len(keys)), key=keys.__getitem__)
     ranks = [0.0] * len(values)
     start = 0
@@ -103,18 +118,36 @@ def nominal_k_grid(n: int, max_points: int = 240) -> list[int]:
     return sorted(values)
 
 
-def tie_inclusive_prefix(scores: dict[str, float], k: int) -> set[str]:
-    """Top nominal k, admitting every item tied at the kth score."""
+def top_k_selection_profile(
+    scores: dict[str, float], k: int,
+) -> TopKSelectionProfile:
+    """Mandatory and cutoff-tied items for an exact size-k top selection."""
     if not scores:
-        return set()
+        return TopKSelectionProfile(0.0, set(), set(), 0)
     if not 1 <= k <= len(scores):
         raise ValueError("k must lie between one and the number of scores")
-    rounded = {pair_id: round(score, 12) for pair_id, score in scores.items()}
-    cutoff = sorted(rounded.values(), reverse=True)[k - 1]
-    return {
-        pair_id for pair_id, score in rounded.items()
-        if score >= cutoff
+    rounded = {
+        pair_id: round(score, ROUND_DIGITS)
+        for pair_id, score in scores.items()
     }
+    cutoff = sorted(rounded.values(), reverse=True)[k - 1]
+    mandatory = {
+        pair_id for pair_id, score in rounded.items()
+        if score > cutoff
+    }
+    tie = {
+        pair_id for pair_id, score in rounded.items()
+        if score == cutoff
+    }
+    slots = k - len(mandatory)
+    if not 0 <= slots <= len(tie):
+        raise ValueError("invalid cutoff-tie profile for exact size-k selection")
+    return TopKSelectionProfile(cutoff, mandatory, tie, slots)
+
+
+def tie_inclusive_prefix(scores: dict[str, float], k: int) -> set[str]:
+    """Top nominal k, admitting every item tied at the kth score."""
+    return top_k_selection_profile(scores, k).band
 
 
 def tail_spearman_curve(
@@ -237,26 +270,96 @@ def top_ids(scores: dict[str, float], k: int) -> list[str]:
     return sorted(scores, key=lambda pair_id: (-scores[pair_id], pair_id))[:k]
 
 
+def _feasible_overlap_bounds(
+    left: TopKSelectionProfile, right: TopKSelectionProfile,
+) -> tuple[int, int]:
+    fixed = len(left.mandatory & right.mandatory)
+    left_with_right_mandatory = len(left.tie & right.mandatory)
+    right_with_left_mandatory = len(right.tie & left.mandatory)
+    shared_tie = len(left.tie & right.tie)
+    left_only = len(left.tie - (right.mandatory | right.tie))
+    right_only = len(right.tie - (left.mandatory | left.tie))
+
+    left_shared_min = max(0, left.slots - left_with_right_mandatory - left_only)
+    left_shared_max = min(shared_tie, left.slots)
+    right_shared_min = max(
+        0, right.slots - right_with_left_mandatory - right_only)
+    right_shared_max = min(shared_tie, right.slots)
+
+    feasible_min = feasible_max = None
+    for left_shared in range(left_shared_min, left_shared_max + 1):
+        left_mandatory_min = max(0, left.slots - left_shared - left_only)
+        left_mandatory_max = min(
+            left_with_right_mandatory,
+            left.slots - left_shared,
+        )
+        for right_shared in range(right_shared_min, right_shared_max + 1):
+            right_mandatory_min = max(
+                0, right.slots - right_shared - right_only)
+            right_mandatory_max = min(
+                right_with_left_mandatory,
+                right.slots - right_shared,
+            )
+            overlap_min = (
+                fixed
+                + left_mandatory_min
+                + right_mandatory_min
+                + max(0, left_shared + right_shared - shared_tie)
+            )
+            overlap_max = (
+                fixed
+                + left_mandatory_max
+                + right_mandatory_max
+                + min(left_shared, right_shared)
+            )
+            feasible_min = (
+                overlap_min if feasible_min is None
+                else min(feasible_min, overlap_min)
+            )
+            feasible_max = (
+                overlap_max if feasible_max is None
+                else max(feasible_max, overlap_max)
+            )
+    if feasible_min is None or feasible_max is None:
+        raise ValueError("no feasible cutoff-tie resolution for exact size-k selection")
+    return feasible_min, feasible_max
+
+
+def feasible_top_k_overlap(
+    left: dict[str, float], right: dict[str, float], k: int,
+) -> tuple[int, int]:
+    """Min/max overlap across exact size-k selections with arbitrary cutoff ties."""
+    pair_ids = set(left) & set(right)
+    if not 1 <= k <= len(pair_ids):
+        raise ValueError("k must lie between one and the number of common scores")
+    left_common = {pair_id: left[pair_id] for pair_id in pair_ids}
+    right_common = {pair_id: right[pair_id] for pair_id in pair_ids}
+    return _feasible_overlap_bounds(
+        top_k_selection_profile(left_common, k),
+        top_k_selection_profile(right_common, k),
+    )
+
+
 def top_overlap(
     left: dict[str, float], right: dict[str, float], k: int,
 ) -> dict:
-    """Exact top-k overlap plus the overlap after admitting cutoff ties."""
+    """Exact top-k overlap plus tie-aware feasible overlap bounds."""
     pair_ids = set(left) & set(right)
+    if not 1 <= k <= len(pair_ids):
+        raise ValueError("k must lie between one and the number of common scores")
     left_common = {pair_id: left[pair_id] for pair_id in pair_ids}
     right_common = {pair_id: right[pair_id] for pair_id in pair_ids}
+    left_profile = top_k_selection_profile(left_common, k)
+    right_profile = top_k_selection_profile(right_common, k)
     left_top = top_ids(left_common, k)
     right_top = top_ids(right_common, k)
     exact = len(set(left_top) & set(right_top))
+    feasible_min, feasible_max = _feasible_overlap_bounds(
+        left_profile, right_profile)
     left_cutoff = left_common[left_top[-1]]
     right_cutoff = right_common[right_top[-1]]
-    left_band = {
-        pair_id for pair_id, score in left_common.items()
-        if score >= left_cutoff
-    }
-    right_band = {
-        pair_id for pair_id, score in right_common.items()
-        if score >= right_cutoff
-    }
+    left_band = left_profile.band
+    right_band = right_profile.band
     return {
         "n": len(pair_ids),
         "k": k,
@@ -268,6 +371,8 @@ def top_overlap(
         "left_band_size": len(left_band),
         "right_band_size": len(right_band),
         "tie_band_overlap": len(left_band & right_band),
+        "feasible_overlap_min": feasible_min,
+        "feasible_overlap_max": feasible_max,
     }
 
 
@@ -279,10 +384,32 @@ def _same_event(previous: dict, current: dict) -> bool:
     return all(previous.get(key) == current.get(key) for key in keys)
 
 
-def load_snapshot(ledger_dirs: list[Path]) -> tuple[dict[str, dict], dict[str, dict]]:
-    """Return Haiku events and the largest current strong series per judge."""
+def resolve_instrument_prefix(
+    instrument_judges: dict[str, str], prefix: str, judge: str,
+) -> str:
+    """Resolve one explicit instrument prefix for the named judge."""
+    matches = sorted(
+        instrument_id
+        for instrument_id, instrument_judge in instrument_judges.items()
+        if instrument_judge == judge and instrument_id.startswith(prefix)
+    )
+    if not matches:
+        raise ValueError(f"no {judge} instrument matches {prefix!r}")
+    if len(matches) > 1:
+        raise ValueError(
+            f"{judge} instrument prefix {prefix!r} matches {len(matches)} "
+            "instruments; give a longer prefix"
+        )
+    return matches[0]
+
+
+def load_snapshot(
+    ledger_dirs: list[Path], *, gpt_instrument: str, opus_instrument: str,
+) -> tuple[dict[str, dict], dict[str, dict[str, dict]], dict[str, str]]:
+    """Return Haiku events plus the explicitly selected strong series."""
     haiku: dict[str, dict] = {}
     by_instrument: dict[str, dict[str, dict]] = defaultdict(dict)
+    instrument_judges: dict[str, str] = {}
     for directory in ledger_dirs:
         loaded = ledger.load_ledger(directory)
         for event in loaded.canonical_by_series().values():
@@ -299,25 +426,28 @@ def load_snapshot(ledger_dirs: list[Path]) -> tuple[dict[str, dict], dict[str, d
                     or event.get("repeat")):
                 continue
             instrument = event["instrument_id"]
+            previous_judge = instrument_judges.get(instrument)
+            if previous_judge is not None and previous_judge != event["judge"]:
+                raise ValueError(
+                    f"instrument {instrument} appears under both "
+                    f"{previous_judge} and {event['judge']}"
+                )
+            instrument_judges[instrument] = event["judge"]
             previous = by_instrument[instrument].get(pair_id)
             if previous is not None and not _same_event(previous, event):
                 raise ValueError(
                     f"conflicting verdict for {pair_id}, {instrument}")
             by_instrument[instrument][pair_id] = event
 
-    selected: dict[str, dict[str, dict]] = {}
-    for events in by_instrument.values():
-        if not events:
-            continue
-        judge = next(iter(events.values()))["judge"]
-        if judge not in (GPT, OPUS):
-            continue
-        if judge not in selected or len(events) > len(selected[judge]):
-            selected[judge] = events
-    missing = {GPT, OPUS} - set(selected)
-    if missing:
-        raise ValueError(f"missing strong judge series: {sorted(missing)}")
-    return haiku, selected
+    selected_ids = {
+        GPT: resolve_instrument_prefix(instrument_judges, gpt_instrument, GPT),
+        OPUS: resolve_instrument_prefix(instrument_judges, opus_instrument, OPUS),
+    }
+    selected = {
+        judge: by_instrument[instrument_id]
+        for judge, instrument_id in selected_ids.items()
+    }
+    return haiku, selected, selected_ids
 
 
 def score_map(events: dict[str, dict], field: str = "score") -> dict[str, float]:
@@ -380,7 +510,7 @@ def binned_summary(
 
 def analyse(
     haiku_events: dict[str, dict], strong: dict[str, dict[str, dict]],
-    *, threshold: float, top_k: int, bins: int,
+    *, threshold: float, top_k: int, bins: int, provenance: dict | None = None,
 ) -> dict:
     event_maps = {HAIKU: haiku_events, GPT: strong[GPT], OPUS: strong[OPUS]}
     scores = {judge: score_map(events) for judge, events in event_maps.items()}
@@ -440,7 +570,7 @@ def analyse(
         "GPT recovered by Opus": prefix_recovery_curve(
             restricted[GPT], restricted[OPUS]),
     }
-    return {
+    result = {
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "selection": "three-way shared Haiku-ranked prefix",
         "corpus_pairs": len(scores[HAIKU]),
@@ -463,11 +593,19 @@ def analyse(
             "Opus 5": restricted[OPUS],
         },
     }
+    if provenance is not None:
+        result["provenance"] = provenance
+    return result
 
 
 def write_tex(results: dict, path: Path) -> None:
     def pct(value: float) -> str:
         return f"{100 * value:.1f}\\%"
+
+    def feasible_interval(values: dict) -> str:
+        lower = values["feasible_overlap_min"]
+        upper = values["feasible_overlap_max"]
+        return str(lower) if lower == upper else f"{lower}--{upper}"
 
     score_rows = []
     for pair, fields in results["score_comparisons"].items():
@@ -490,7 +628,8 @@ def write_tex(results: dict, path: Path) -> None:
             f"{pair} & {values['overlap']} & {values['jaccard']:.3f} & "
             f"{values['random_expected_overlap']:.2f} & "
             f"{values['tie_band_overlap']} "
-            f"({values['left_band_size']}/{values['right_band_size']}) \\\\")
+            f"({values['left_band_size']}/{values['right_band_size']}; "
+            f"feasible {feasible_interval(values)}) \\\\")
 
     generated = datetime.fromisoformat(results["generated_at"])
     body = "\n".join([
@@ -664,6 +803,14 @@ def write_rank_plot(results: dict, path: Path) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--ledger", action="append", required=True, type=Path)
+    parser.add_argument(
+        "--gpt-instrument", required=True, metavar="ID_PREFIX",
+        help="unique GPT instrument_id prefix for the strong series to analyse",
+    )
+    parser.add_argument(
+        "--opus-instrument", required=True, metavar="ID_PREFIX",
+        help="unique Opus instrument_id prefix for the strong series to analyse",
+    )
     parser.add_argument("--json-out", required=True, type=Path)
     parser.add_argument("--tex-out", required=True, type=Path)
     parser.add_argument("--plot-out", required=True, type=Path)
@@ -679,10 +826,21 @@ def main() -> int:
     if args.bins < 2:
         parser.error("--bins must be at least two")
 
-    haiku, strong = load_snapshot(args.ledger)
+    haiku, strong, selected_ids = load_snapshot(
+        args.ledger,
+        gpt_instrument=args.gpt_instrument,
+        opus_instrument=args.opus_instrument,
+    )
     results = analyse(
         haiku, strong, threshold=args.threshold,
         top_k=args.top_k, bins=args.bins,
+        provenance={
+            "ledger_dirs": [str(path) for path in args.ledger],
+            "selected_instruments": {
+                "GPT-5.6": selected_ids[GPT],
+                "Opus 5": selected_ids[OPUS],
+            },
+        },
     )
     args.json_out.parent.mkdir(parents=True, exist_ok=True)
     args.json_out.write_text(json.dumps(results, indent=2, sort_keys=True) + "\n")
