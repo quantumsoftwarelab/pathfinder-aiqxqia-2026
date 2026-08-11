@@ -277,6 +277,28 @@ def build_claude_command(*, model_id: str, effort: str | None, prompt: str,
     return cmd
 
 
+def _unwrap_single_markdown_fence(text: str) -> str:
+    """Strip exactly one whole-message markdown fence as claude-cli transport
+    formatting.
+
+    The instrument contract (one bare JSON object) is unchanged and still
+    enforced downstream; this normalises only the chat-style wrapper the
+    Claude CLI sometimes adds around an otherwise conforming response. The
+    unwrap applies only when the entire trimmed message is a single fenced
+    block with an optional language tag and no interior fence delimiter;
+    anything else is returned unchanged for the strict validator to judge.
+    """
+    lines = text.strip().splitlines()
+    if len(lines) < 2:
+        return text
+    opening, closing = lines[0].strip(), lines[-1].strip()
+    if not opening.startswith("```") or closing != "```":
+        return text
+    if any(line.lstrip().startswith("```") for line in lines[1:-1]):
+        return text
+    return "\n".join(lines[1:-1]).strip()
+
+
 def parse_claude_json(stdout: str, *, want_model: str) -> JudgeResult:
     """Parse one claude --output-format json response.
 
@@ -314,19 +336,43 @@ def parse_claude_json(stdout: str, *, want_model: str) -> JudgeResult:
     # Model identity must be evidenced, not assumed. An absent modelUsage
     # previously meant the check was skipped and the requested id was
     # recorded as if served — the ledger would then attest to a model
-    # nothing confirmed.
+    # nothing confirmed. Claude CLI 2.1.x also records its own auxiliary
+    # model (a small title/summary pass) in modelUsage, so the requested
+    # model is selected by prefix and, when auxiliaries are present, must
+    # additionally have produced the dominant output token share.
     models = obj.get("modelUsage") or {}
-    served = next(iter(models), None)
-    if served is None:
+    if not models:
         raise TransportError(
             "claude response carries no modelUsage; model identity unverifiable")
-    if not served.startswith(want_model):
+    matches = [name for name in models if name.startswith(want_model)]
+    if not matches:
         raise ModelMismatchError(
-            f"requested {want_model}, claude ran {served}")
+            f"requested {want_model}, claude ran {sorted(models)}")
+    if len(matches) > 1:
+        raise TransportError(
+            f"ambiguous modelUsage entries for {want_model}: {sorted(matches)}")
+    served = matches[0]
+    others = [name for name in models if name != served]
+    if others:
+        def _output_tokens(name: str) -> int:
+            entry = models.get(name)
+            tokens = entry.get("outputTokens") if isinstance(entry, dict) else None
+            if not isinstance(tokens, int) or isinstance(tokens, bool):
+                raise TransportError(
+                    f"modelUsage[{name!r}] carries no integer outputTokens; "
+                    "served-model dominance unverifiable")
+            return tokens
+        served_tokens = _output_tokens(served)
+        for name in others:
+            if _output_tokens(name) >= served_tokens:
+                raise ModelMismatchError(
+                    f"model identity not evidenced: {name} produced at least "
+                    f"as many output tokens as {served}")
 
     result = obj.get("result")
     if not isinstance(result, str):
         raise TransportError("claude response carries no result string")
+    result = _unwrap_single_markdown_fence(result)
 
     # Core token counts must be present. Defaulting them to 0 turned an
     # empty usage block into a free-looking call. Cache fields legitimately
