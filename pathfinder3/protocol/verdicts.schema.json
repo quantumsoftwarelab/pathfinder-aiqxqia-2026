@@ -41,6 +41,10 @@
     "repeat": {
       "type": "boolean",
       "$comment": "Optional key, present and true ONLY on deliberate repeatability probes; absent otherwise."
+    },
+    "yield_kind": {
+      "enum": ["experiment", "connection", "none"],
+      "$comment": "Optional key, written only by output contract v6. Names what the pair yields: an experiment, a connection of another kind, or neither. Absent on every v2 and v4 row. Three-valued because a boolean pools 'connection' with 'none' -- a junk pair implies no experiment either -- which is the class v6 exists to find pooled with the noise it exists to reject. It also separates two readings of `corr` that are NOT commensurable: feasibility answers 'could the experiment be run' for `experiment`, and 'what would it take to establish the connection' otherwise. Do not pool those populations on a single threshold without deciding that explicitly."
     }
   }
 }

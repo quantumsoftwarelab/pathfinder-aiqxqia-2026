@@ -65,9 +65,19 @@ PROVIDER_JUDGE_PREFIX = {"anthropic": "claude", "openai-codex": "codex"}
 # forbids additional properties. The mapping is feasibility -> corr,
 # gain -> int, each divided by 100. It is recorded in judges.yaml beside the
 # judge, and the prompt hash makes the series unmistakable.
+#
+# v6 adds yield_kind, which v4 has no room for: under v6 the feasibility axis
+# is scored for connections that imply no experiment, so a non-zero corr no
+# longer implies a runnable experiment and this field is the only thing
+# separating the readings. It is three-valued, not a boolean, because the
+# prompt distinguishes three cases and a boolean collapses two of them: a
+# junk pair has no experiment either, so "not an experiment" would pool the
+# class v6 exists to find with the noise it exists to reject.
+YIELD_KINDS = ("experiment", "connection", "none")
 OUTPUT_CONTRACTS = {
     "v2": ("corr", "int", "rationale"),
     "v4": ("feasibility", "gain", "rationale"),
+    "v6": ("feasibility", "gain", "yield_kind", "rationale"),
 }
 
 
@@ -434,6 +444,12 @@ def _parse_verdict(raw: str, contract: str = "v2") -> dict:
         if not 0 <= value <= 100:
             raise ValueError(f"{src} out of range: {value!r}")
         out[dst] = value / 100.0
+    if contract == "v6":
+        kind = obj["yield_kind"]
+        if kind not in YIELD_KINDS:
+            raise ValueError(
+                f"yield_kind must be one of {YIELD_KINDS}: {kind!r}")
+        out["yield_kind"] = kind
     return out
 
 
@@ -562,6 +578,10 @@ def main() -> int:
                 "tokens_in": usage["tokens_in"], "tokens_out": usage["tokens_out"],
                 "est_cost_usd": usage["est_cost_usd"],
             }
+            # Written only by contract v6, and only when the parser produced
+            # it, so v2 and v4 rows keep the key absent rather than null.
+            if "yield_kind" in verdict:
+                event["yield_kind"] = verdict["yield_kind"]
             if args.repeat:
                 event["repeat"] = True
             with write_mutex:
