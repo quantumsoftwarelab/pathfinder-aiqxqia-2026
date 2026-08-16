@@ -133,54 +133,6 @@ judges:
     output_contract: v4
     settings: {effort: xhigh}
 
-  opus5_v6:
-    # v6 instrument. NOT a refinement of v5: v5 scores a pairing through an
-    # experiment's result, so a pair whose value is a gap, an unmet assumption
-    # or a missing guarantee has nowhere to land. Observed on the founding
-    # pairings of pathfinder/revealing_examples.md, which v5 scores at
-    # gain 44/48 (prover / HRL silicon) and 30/47 (blind delegation / IonQ
-    # clinical) while holding the clean stress case at 82/86: both judges
-    # constructed a strained experiment rather than scoring what the pairing
-    # establishes.
-    #
-    # AXIS MAPPING: unchanged from v4/v5. feasibility -> corr, gain -> int,
-    # each divided by 100, because verdicts.schema.json fixes those names and
-    # bounds them to [0,1].
-    #
-    # NOT COMMENSURABLE. v6 scores feasibility in both cases, but it measures
-    # different work in each: "could the experiment be run today" when
-    # yield_kind is "experiment", "what would it take to establish the
-    # connection" otherwise. A corr of 0.85 therefore means one thing or the
-    # other depending on yield_kind. Ranking the populations on one
-    # threshold compares unlike quantities; decide joint or separate ranking
-    # explicitly before any shortlist is cut from a v6 series.
-    #
-    # Same judges, same models, same transports and same effort as the v5
-    # series, per the standing rule below that prompt edits and judge swaps
-    # never happen in the same step. The v5 files are kept unmodified beside
-    # v6 so both series remain readable.
-    alias: claude-opus-5
-    model_id: claude-opus-5
-    tier: strong
-    transport: claude-cli
-    provider: anthropic
-    prompt_file: judge_prompt_v6.md
-    # New contract: v4's key set has no room for yield_kind, and the
-    # contract hash enters the instrument identity.
-    output_contract: v6
-    settings: {effort: xhigh}
-  gpt56_v6:
-    # Second vendor, same v6 instrument. See opus5_v6 for the axis mapping and
-    # the commensurability warning.
-    alias: gpt-5.6-sol
-    model_id: gpt-5.6-sol
-    tier: strong
-    transport: pi
-    provider: openai-codex
-    prompt_file: judge_prompt_v6.md
-    output_contract: v6
-    settings: {effort: xhigh}
-
 
 # Escalation rule (plan item 2): if the cheap judge cannot offer a useful
 # tradeoff between strong-model recall and strong-pass volume, either
