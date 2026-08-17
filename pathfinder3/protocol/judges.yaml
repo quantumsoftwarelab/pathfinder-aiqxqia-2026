@@ -134,6 +134,56 @@ judges:
     settings: {effort: xhigh}
 
   opus5_v6:
+    # PROBED AND REJECTED, 2026-08-17. Retained registered so the 900 rows
+    # under instrument 6bb8f0d8f42f stay readable; not a deployment
+    # candidate, and no shortlist has ever been cut from it. v5 remains the
+    # strong instrument by default, not by reversion.
+    #
+    # The probe ran the frozen 800-pair sample in
+    # manifests/v6-probe-sample-v1.json, whose stopping rule was hashed
+    # before the first call, plus a 100-pair repeat panel. Two of four gates
+    # failed:
+    #
+    #   rule 2 (binding). v6 does find the class it was built for: 136
+    #   connection pairs in 800, 92 of them in the tail bands. But not one
+    #   reached gain 75, the prompt's own bar for materially changing a
+    #   published claim. Best in the arm was 70; the median was 24. The class
+    #   is real and thin, so a 21,824-call sweep would buy more of the same.
+    #
+    #   rule 3, narrowly. Top-band demotion against v5 was 51% (n=150)
+    #   against v6's own re-read demotion rate of 42% (n=100). The margin is
+    #   thin enough to read as reordering rather than harm; recorded as a
+    #   failure because the rule was frozen to be applied, not reasoned
+    #   around once the numbers were in.
+    #
+    # The finding that decided it was not predeclared at all: yield_kind held
+    # on only 79 of 100 re-reads of the same text by the same judge, and 12
+    # of the 21 flips involved 'none' -- the judge disagreeing with itself
+    # about whether anything was there, not merely about which category. So
+    # the 136 is not a population; re-run it and you get a different 136
+    # overlapping by about 80%.
+    #
+    # Note what did NOT fail. v6's scores were MORE stable than v5's:
+    # test-retest on the composite was +0.920 against v5 Opus's >= +0.869,
+    # with gain at +0.940. Rules 1 and 5 passed. The defect was confined to
+    # the categorical field v6 added.
+    #
+    # The reading that closed it: "experiment" is elastic. A numerical
+    # experiment, a thought experiment, even working a proof can all be
+    # framed as one. Pair qsl:2103.13994::e112.001 shows it directly -- v5
+    # called the work "run P's QNN under Q's blind verification protocol",
+    # v6 called it "cast the vault into Q's game-based model". Same activity,
+    # different noun. The boundary v6 asks the judge to draw is linguistic
+    # rather than factual, and the elasticity propagates: if 'experiment' is
+    # loose then 'valuable but not an experiment' is loose on both sides. v5
+    # is stable here because it never asks. Do not reach for a finer
+    # taxonomy to fix this; that is the thing that was tried.
+    #
+    # Never run against the GPT judge: the pi transport was unavailable on
+    # the operator's machine throughout, so every figure above is Opus-only
+    # and none of the cross-judge properties were measured.
+    #
+    # ORIGINAL RATIONALE, kept for the record:
     # v6 instrument. NOT a refinement of v5: v5 scores a pairing through an
     # experiment's result, so a pair whose value is a gap, an unmet assumption
     # or a missing guarantee has nowhere to land. Observed on the founding
