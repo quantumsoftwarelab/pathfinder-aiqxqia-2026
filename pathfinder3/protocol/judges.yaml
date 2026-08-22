@@ -102,15 +102,15 @@ judges:
     # 1,003 verdicts each) said "do not round to multiples of five". Both
     # judges obeyed it absolutely: zero of 1,003 scores were multiples of
     # five, so 21 of the 101 available values were unreachable.
-    # judge_prompt_v5.md (sha256 2fe11bc807ad..., instruments b99996c890be
-    # Opus / d19bb7d063eb GPT) asks for what that meant -- do not snap to a
-    # round number because it looks tidy -- while leaving the values in play.
-    # v4 is kept unmodified beside it so both series remain readable.
+    # The historical judge_prompt_v5.md (sha256 2fe11bc807ad..., instruments
+    # b99996c890be Opus / d19bb7d063eb GPT) asks for what that meant -- do not
+    # snap to a round number because it looks tidy -- while leaving the values
+    # in play. v4 is kept unmodified beside it so both series remain readable.
     #
-    # The v5 file's own heading still reads "prompt v4". That is deliberate:
-    # instrument_id hashes the file's bytes, so editing the heading would
-    # mint a third instrument and orphan the verdicts already judged under
-    # this text. The filename is free to change; the contents are not.
+    # On 2026-08-22 the heading was corrected from v4 to v5, minting the
+    # current prompt bytes (sha256 f7ef292b682d...) and therefore new
+    # instruments. Historical verdicts remain bound to their old instrument
+    # IDs; the current file is the control used by the v5-versus-v7 pilot.
     alias: claude-opus-5
     model_id: claude-opus-5
     tier: strong
