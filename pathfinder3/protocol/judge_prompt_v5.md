@@ -1,4 +1,4 @@
-# Pathfinder pair judge (prompt v4)
+# Pathfinder pair judge (prompt v5)
 
 You are judging one candidate pairing between a research paper from the
 Quantum Software Lab corpus (item Q) and a vendor application or benchmark
