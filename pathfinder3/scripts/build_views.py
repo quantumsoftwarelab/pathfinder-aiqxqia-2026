@@ -32,6 +32,7 @@ from pathlib import Path
 import yaml
 
 import ledger
+from corpus_release import load_release_inputs
 from _common import P3
 from _ledger_common import (dump_jsonl_sorted, instrument_id,
                             instrument_identity_record, json_dumps_pretty,
@@ -207,9 +208,13 @@ def structural_violations(led: ledger.Ledger, ledger_dir: Path, build_dir: Path)
 
 def baseline_violations(led: ledger.Ledger, baseline: dict) -> list[str]:
     violations: list[str] = []
-    if len(led.pairs) != baseline["pairs"]:
+    legacy_pair_count = sum(
+        row.get("schema_version") is None for row in led.pairs.values()
+    )
+    if legacy_pair_count != baseline["pairs"]:
         violations.append(
-            f"[baseline] pair count {len(led.pairs)} != frozen {baseline['pairs']}")
+            f"[baseline] legacy pair count {legacy_pair_count} != frozen "
+            f"{baseline['pairs']}")
 
     canonical = led.canonical_by_series()
     counts: dict[str, int] = {}
@@ -241,7 +246,9 @@ def baseline_violations(led: ledger.Ledger, baseline: dict) -> list[str]:
     return violations
 
 
-def coverage_violations(led: ledger.Ledger, deployment: dict) -> list[str]:
+def coverage_violations(
+    led: ledger.Ledger, deployment: dict, pair_ids: set[str] | None = None,
+) -> list[str]:
     target = deployment["deployed_cheap_series"]
     covered = {
         e["pair_id"] for e in led.canonical_by_series().values()
@@ -249,7 +256,12 @@ def coverage_violations(led: ledger.Ledger, deployment: dict) -> list[str]:
         and e["prompt_version"] == target["prompt_version"]
         and e["instrument_id"] == target["instrument_id"]
     }
-    missing = set(led.pairs) - covered
+    if pair_ids is None:
+        pair_ids = {
+            pair_id for pair_id, row in led.pairs.items()
+            if row.get("schema_version") is None
+        }
+    missing = pair_ids - covered
     if missing:
         sample = sorted(missing)[:5]
         return [f"[coverage] {len(missing)} pair(s) lack a canonical verdict "
@@ -282,6 +294,8 @@ def main() -> int:
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--baseline", action="store_true")
     ap.add_argument("--coverage", action="store_true")
+    ap.add_argument("--release", default=None,
+                    help="scope coverage to one immutable release")
     args = ap.parse_args()
 
     led = ledger.load_ledger()
@@ -292,7 +306,13 @@ def main() -> int:
             baseline = json.loads(BASELINE_PATH.read_text())
             violations += guarded_violations("baseline", baseline_violations, led, baseline)
         deployment = yaml.safe_load(DEPLOYMENT_PATH.read_text())
-        coverage_issues = guarded_violations("coverage", coverage_violations, led, deployment)
+        release_pair_ids = None
+        if args.release:
+            _, release_ids = load_release_inputs(args.release)
+            release_pair_ids = set(release_ids)
+        coverage_issues = guarded_violations(
+            "coverage", coverage_violations, led, deployment, release_pair_ids
+        )
         if args.coverage:
             violations += coverage_issues
         elif coverage_issues:

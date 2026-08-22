@@ -122,7 +122,12 @@ def selector_summary(
     shortlist = ordered[:k]
     qsl_papers = {pair_rows[pair_id]["c1"]["item_id"] for pair_id in shortlist}
     vendor_papers = {pair_rows[pair_id]["c2"]["item_id"] for pair_id in shortlist}
-    vendors = [vendor_by_edge[pair_id.split("::", 1)[1].split(".", 1)[0]] for pair_id in shortlist]
+    vendors = [
+        vendor_by_edge[
+            ledger.pair_logical_ids(pair_rows[pair_id])[2].split(".", 1)[0]
+        ]
+        for pair_id in shortlist
+    ]
     vendor_counts = Counter(vendors)
     largest_vendor, largest_count = sorted(
         vendor_counts.items(), key=lambda item: (-item[1], item[0])

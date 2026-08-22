@@ -48,6 +48,7 @@ import judge_transport
 from _common import P3, corpus_by_item_id, item_block, render_prompt, sha256_text
 from _ledger_common import (dump_jsonl_sorted, instrument_id,
                             instrument_identity_record, sha256_hex)
+from corpus_release import load_release_inputs
 from judge_transport import (JUDGE_SYSTEM_PROMPT, RateLimited, RateLimitGate,
                              TransportError, build_claude_command,
                              build_pi_command, claude_system_prompt_digest,
@@ -309,6 +310,12 @@ def check_provenance(pid: str, q: dict, p: dict, led: ledger.Ledger) -> None:
     """
     pair = led.pairs[pid]
     for side, item in (("c1", q), ("c2", p)):
+        recorded_representation = pair[side].get("representation_id")
+        if recorded_representation is not None:
+            if item.get("representation_id") != recorded_representation:
+                raise SystemExit(
+                    f"provenance mismatch on {pid} {side}: release "
+                    "representation_id differs from the pair row")
         got = sha256_text(item_block(item))
         want = pair[side]["input_sha256"]
         if got != want:
@@ -462,8 +469,11 @@ def main() -> int:
                          "applied after the resume skip, so it bounds the "
                          "work remaining, not the series total: a smoke run "
                          "of 3 followed by --limit 1000 leaves 1,003 judged")
-    ap.add_argument("--pair-ids", nargs="*", default=None,
-                    help="explicit pair ids to judge (default: full pairs.jsonl)")
+    selectors = ap.add_mutually_exclusive_group()
+    selectors.add_argument("--pair-ids", nargs="*", default=None,
+                           help="explicit legacy pair ids to judge")
+    selectors.add_argument("--release", default=None,
+                           help="immutable corpus release whose active pairs to judge")
     ap.add_argument("--repeat", action="store_true",
                     help="stamp repeat: true; resume an exact run ID")
     ap.add_argument("--run-id", default=None)
@@ -512,7 +522,19 @@ def main() -> int:
                 if args.repeat else skip_pair_ids(
                     led, judge=judge_full_id, prompt_version=None,
                     instrument_id=iid))
-        candidates = args.pair_ids if args.pair_ids else sorted(led.pairs)
+        if args.release:
+            items, candidates = load_release_inputs(args.release)
+        else:
+            candidates = (
+                args.pair_ids if args.pair_ids is not None
+                else sorted(
+                    pid for pid, row in led.pairs.items()
+                    if row.get("schema_version") is None
+                )
+            )
+            if any(led.pairs[pid].get("schema_version") == 2 for pid in candidates):
+                raise SystemExit("v2 pair IDs require --release")
+            items = corpus_by_item_id()
         todo = ordered_pair_ids(
             led, [pid for pid in candidates if pid not in skip],
             order_by=args.order_by)
@@ -521,7 +543,6 @@ def main() -> int:
         print(f"{args.judge} ({judge_full_id}, instrument {iid[:12]}...): "
              f"{len(todo)} pairs to judge")
 
-        items = corpus_by_item_id()
         template = prompt_path_for(judge_cfg).read_text()
         write_mutex = threading.Lock()
         today = date.today().isoformat()
