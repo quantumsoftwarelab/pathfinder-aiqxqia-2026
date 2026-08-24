@@ -17,9 +17,9 @@ Usage:
         --gpt-instrument b2a053b3cd994b15dd9f976f8777479b6559e80391a840c1c39bd3dcdf8c7818 \\
         --opus-instrument 7f01f7e54dc02bbc59a447ea77c51c9fe8b16291b8d4e52e37ce1ed0b433b046 \\
         --json-out pathfinder3/build/judge-agreement-snapshot.json \\
-        --tex-out notes/judge-agreement-results.tex \\
-        --plot-out notes/judge-agreement-2026-07-27.png \\
-        --rank-plot-out notes/judge-tail-agreement-2026-07-27.png
+        --tex-out notes/methodology/cascade-optimisation/judge-agreement-results.tex \\
+        --plot-out notes/methodology/cascade-optimisation/judge-agreement-2026-07-27.png \\
+        --rank-plot-out notes/methodology/cascade-optimisation/judge-tail-agreement-2026-07-27.png
 """
 from __future__ import annotations
 

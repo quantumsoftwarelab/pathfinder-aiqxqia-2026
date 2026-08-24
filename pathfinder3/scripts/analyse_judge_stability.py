@@ -1,7 +1,7 @@
 """Test-retest stability of one judge instrument, from its --repeat rows.
 
 This is the measurement half of the experiment written up in
-notes/judge-self-consistency-2026-07-27.tex. That note derives
+notes/methodology/judge-self-consistency-2026/judge-self-consistency-2026-07-27.tex. That note derives
 
     D_within_J = E|U^{J,1} - U^{J,2}|,
 
