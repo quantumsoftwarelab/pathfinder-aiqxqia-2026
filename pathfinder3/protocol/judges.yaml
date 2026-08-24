@@ -133,6 +133,32 @@ judges:
     output_contract: v4
     settings: {effort: xhigh}
 
+  gpt56_fg_elm_fast:
+    # ELM API deployment of the same abstract-only v5 scientific prompt.
+    # This is intentionally a separate transport series from Pi.  Invoke it
+    # through elm_phase_a_runner.py, which binds the requested/served service
+    # tier and HTTP request contract into the instrument identity.
+    alias: gpt-5.6-sol
+    model_id: gpt-5.6-sol
+    tier: strong
+    transport: elm-chat-completions
+    provider: openai
+    prompt_file: judge_prompt_v5.md
+    output_contract: v4
+    settings: {effort: xhigh, service_tier: fast}
+
+  gpt56_fg_elm_standard:
+    # Fallback deployment only if the ELM capability probe rejects Fast or
+    # the measured speed-up does not justify its premium.
+    alias: gpt-5.6-sol
+    model_id: gpt-5.6-sol
+    tier: strong
+    transport: elm-chat-completions
+    provider: openai
+    prompt_file: judge_prompt_v5.md
+    output_contract: v4
+    settings: {effort: xhigh, service_tier: default}
+
   opus5_v6:
     # PROBED AND REJECTED, 2026-08-17. Retained registered so the 900 rows
     # under instrument 6bb8f0d8f42f stay readable; not a deployment

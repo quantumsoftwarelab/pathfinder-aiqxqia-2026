@@ -138,6 +138,15 @@ class AppendLock:
         self._fh.flush()
         os.fsync(self._fh.fileno())
 
+    def truncate_to(self, offset: int) -> None:
+        """Truncate under the held append lock after an explicit recovery copy."""
+        if offset < 0:
+            raise ValueError("truncate offset must be non-negative")
+        self._fh.flush()
+        os.ftruncate(self._fh.fileno(), offset)
+        os.fsync(self._fh.fileno())
+        self._fh.seek(0, os.SEEK_END)
+
 
 def find_torn_tail(path: Path) -> int | None:
     if not path.exists():
@@ -491,6 +500,11 @@ def main() -> int:
     if args.judge not in registry["judges"]:
         raise SystemExit(f"unknown judge {args.judge!r}")
     judge_cfg = registry["judges"][args.judge]
+    if judge_cfg.get("transport") == "elm-chat-completions":
+        raise SystemExit(
+            "ELM judges use pathfinder3/scripts/elm_phase_a_runner.py so "
+            "service-tier, cache, receipt and budget controls cannot be bypassed"
+        )
     model_id = judge_cfg["model_id"]
     judge_full_id = f"{PROVIDER_JUDGE_PREFIX[judge_cfg['provider']]}:{model_id}"
     run_id = args.run_id or datetime.now().strftime("%Y%m%d-%H%M%S") + f"-{os.getpid():04x}"

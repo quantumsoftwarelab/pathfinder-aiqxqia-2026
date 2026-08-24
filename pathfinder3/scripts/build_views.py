@@ -177,14 +177,10 @@ def structural_violations(led: ledger.Ledger, ledger_dir: Path, build_dir: Path)
 
     # Instrument hash recomputation.
     for iid, identity in led.instruments.items():
-        record = instrument_identity_record(
-            model_id=identity["model_id"], role=identity["role"],
-            transport=identity["transport"], effort=identity["effort"],
-            prompt_sha256=identity["prompt_sha256"],
-            output_contract_sha256=identity["output_contract_sha256"],
-            cli_version=identity["cli_version"], cli_sha256=identity["cli_sha256"],
-            system_prompt_sha256=identity["system_prompt_sha256"],
-        )
+        record = {
+            key: value for key, value in identity.items()
+            if key not in {"instrument_id", "registered_at", "first_run_id"}
+        }
         recomputed = instrument_id(record)
         if recomputed != iid:
             violations.append(

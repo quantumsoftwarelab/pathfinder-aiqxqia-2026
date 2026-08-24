@@ -26,6 +26,14 @@
       "$comment": "sha256 of the exact system prompt sent to the model; null for transports that send none (claude-cli). Part of the instrument identity record."
     },
     "registered_at": {"type": "string", "format": "date"},
-    "first_run_id": {"type": "string", "minLength": 1}
+    "first_run_id": {"type": "string", "minLength": 1},
+    "transport_contract_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "endpoint_origin": {"type": "string", "minLength": 1},
+    "api_method": {"type": "string", "minLength": 1},
+    "requested_service_tier": {"enum": ["default", "fast", "priority"]},
+    "served_model": {"type": "string", "minLength": 1},
+    "max_completion_tokens": {"type": "integer", "minimum": 1},
+    "request_layout_version": {"type": "string", "minLength": 1},
+    "prompt_cache_mode": {"enum": ["explicit"]}
   }
 }

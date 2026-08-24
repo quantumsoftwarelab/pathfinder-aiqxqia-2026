@@ -45,6 +45,21 @@
     "yield_kind": {
       "enum": ["experiment", "connection", "none"],
       "$comment": "Optional key, written only by output contract v6. Names what the pair yields: an experiment, a connection of another kind, or neither. Absent on every v2 and v4 row. Three-valued because a boolean pools 'connection' with 'none' -- a junk pair implies no experiment either -- which is the class v6 exists to find pooled with the noise it exists to reject. It also separates two readings of `corr` that are NOT commensurable: feasibility answers 'could the experiment be run' for `experiment`, and 'what would it take to establish the connection' otherwise. Do not pool those populations on a single threshold without deciding that explicitly."
-    }
+    },
+    "release_id": {"type": "string", "pattern": "^release:v1:[0-9a-f]{64}$"},
+    "requested_service_tier": {"enum": ["default", "fast", "priority"]},
+    "served_service_tier": {"enum": ["default", "priority"]},
+    "response_id": {"type": "string", "minLength": 1},
+    "attempt_count": {"type": "integer", "minimum": 1},
+    "request_wall_seconds": {"type": "number", "minimum": 0},
+    "retry_delay_seconds": {"type": "number", "minimum": 0},
+    "prompt_tokens": {"type": "integer", "minimum": 0},
+    "cached_tokens": {"type": "integer", "minimum": 0},
+    "cache_write_tokens": {"type": "integer", "minimum": 0},
+    "ordinary_input_tokens": {"type": "integer", "minimum": 0},
+    "completion_tokens": {"type": "integer", "minimum": 0},
+    "reasoning_tokens": {"type": "integer", "minimum": 0},
+    "visible_completion_tokens": {"type": "integer", "minimum": 0},
+    "price_schedule": {"type": "string", "minLength": 1}
   }
 }
