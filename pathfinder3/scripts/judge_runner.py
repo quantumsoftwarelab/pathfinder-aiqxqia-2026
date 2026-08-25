@@ -500,9 +500,11 @@ def main() -> int:
     if args.judge not in registry["judges"]:
         raise SystemExit(f"unknown judge {args.judge!r}")
     judge_cfg = registry["judges"][args.judge]
-    if judge_cfg.get("transport") == "elm-chat-completions":
+    if judge_cfg.get("transport") in {
+        "elm-chat-completions", "openai-chat-completions",
+    }:
         raise SystemExit(
-            "ELM judges use pathfinder3/scripts/elm_phase_a_runner.py so "
+            "paid Chat Completions judges use the dedicated Phase A runner so "
             "service-tier, cache, receipt and budget controls cannot be bypassed"
         )
     model_id = judge_cfg["model_id"]

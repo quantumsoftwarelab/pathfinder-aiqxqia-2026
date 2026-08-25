@@ -28,6 +28,7 @@
     "registered_at": {"type": "string", "format": "date"},
     "first_run_id": {"type": "string", "minLength": 1},
     "transport_contract_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "api_provider": {"type": "string", "minLength": 1},
     "endpoint_origin": {"type": "string", "minLength": 1},
     "api_method": {"type": "string", "minLength": 1},
     "requested_service_tier": {"enum": ["default", "fast", "priority"]},

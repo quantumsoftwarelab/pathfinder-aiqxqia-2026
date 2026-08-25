@@ -159,6 +159,29 @@ judges:
     output_contract: v4
     settings: {effort: xhigh, service_tier: default}
 
+  gpt56_fg_openai_fast:
+    # Direct OpenAI successor. Invoke only through elm_phase_a_runner.py,
+    # which binds the provider, origin, tier, receipts and budget controls.
+    alias: gpt-5.6-sol
+    model_id: gpt-5.6-sol
+    tier: strong
+    transport: openai-chat-completions
+    provider: openai
+    prompt_file: judge_prompt_v5.md
+    output_contract: v4
+    settings: {effort: xhigh, service_tier: fast}
+
+  gpt56_fg_openai_standard:
+    # Direct OpenAI fallback when Fast is unavailable or uneconomic.
+    alias: gpt-5.6-sol
+    model_id: gpt-5.6-sol
+    tier: strong
+    transport: openai-chat-completions
+    provider: openai
+    prompt_file: judge_prompt_v5.md
+    output_contract: v4
+    settings: {effort: xhigh, service_tier: default}
+
   opus5_v6:
     # PROBED AND REJECTED, 2026-08-17. Retained registered so the 900 rows
     # under instrument 6bb8f0d8f42f stay readable; not a deployment
