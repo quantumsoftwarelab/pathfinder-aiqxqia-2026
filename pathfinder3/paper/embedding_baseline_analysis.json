@@ -1,0 +1,62 @@
+{
+  "num_pairs_analyzed": 11022,
+  "cosine_similarity": {
+    "mean": 0.3729688212665578,
+    "median": 0.387727,
+    "std_dev": 0.10882225697720882,
+    "min": -0.014538,
+    "max": 0.716103
+  },
+  "judge_scores": {
+    "mean": 0.12683175467247323,
+    "median": 0.08000000000000002,
+    "std_dev": 0.13054878681224028,
+    "min": 0.0,
+    "max": 0.7215999999999999
+  },
+  "spearman_correlation": {
+    "rho": 0.3117,
+    "p_value": NaN,
+    "interpretation": "weak"
+  },
+  "top_k_overlap": [
+    {
+      "k": 10,
+      "cosine_top_k": 10,
+      "judge_top_k": 10,
+      "overlap": 0,
+      "expected_random_overlap": 0.01,
+      "enrichment_factor": 0.0
+    },
+    {
+      "k": 20,
+      "cosine_top_k": 20,
+      "judge_top_k": 20,
+      "overlap": 0,
+      "expected_random_overlap": 0.04,
+      "enrichment_factor": 0.0
+    },
+    {
+      "k": 50,
+      "cosine_top_k": 50,
+      "judge_top_k": 50,
+      "overlap": 0,
+      "expected_random_overlap": 0.23,
+      "enrichment_factor": 0.0
+    },
+    {
+      "k": 100,
+      "cosine_top_k": 100,
+      "judge_top_k": 100,
+      "overlap": 3,
+      "expected_random_overlap": 0.91,
+      "enrichment_factor": 3.307
+    }
+  ],
+  "conclusion": "Judges add substantial value beyond similarity",
+  "reproducibility": {
+    "ledger_sha256": "e7484d9e3b21ddb05d4c4fcbce3e5f24077070c45fd2056c21e2ca01a4aebbb6",
+    "computed_at": "2026-09-03T10:33:25Z",
+    "schema_version": 1
+  }
+}
