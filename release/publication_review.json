@@ -1,0 +1,30 @@
+{
+  "accepted_outlier_summary": "Nine audit outliers are accepted as scientific rationales or trailing-newline formatting.",
+  "artefacts": [
+    {
+      "mode": "snapshot",
+      "public_path": "pathfinder3/ledger/verdicts.jsonl",
+      "reviewed_sha256": "9ad556a75e6735b6e2d79fb3dedf73640423ff45f75596c9c51829038d7ccaaa",
+      "sha256": "1a689b0f92b7bf771ba4ec21fba4e3415cc301419b0d0ade996bf8a22e0caea9",
+      "status": "review_required"
+    },
+    {
+      "mode": "snapshot",
+      "public_path": "pathfinder3/corpus/qsl_papers.jsonl",
+      "reviewed_sha256": "2ef619f799daff7af4295324cad4d2439e747a08b81ebd0d2a72b61e914640d8",
+      "sha256": "2ef619f799daff7af4295324cad4d2439e747a08b81ebd0d2a72b61e914640d8",
+      "status": "approved"
+    },
+    {
+      "mode": "snapshot",
+      "public_path": "pathfinder3/corpus/vendor_papers.jsonl",
+      "reviewed_sha256": "19585d659bbcb43127ad2a7fae82b48321df92871739932031a5c8cd811132a0",
+      "sha256": "19585d659bbcb43127ad2a7fae82b48321df92871739932031a5c8cd811132a0",
+      "status": "approved"
+    }
+  ],
+  "hash_change_policy": "Any change to a recorded hash requires the corresponding review to run again.",
+  "ledger_review_summary": "Ledger review records 41,120 valid rows and no publication-sensitive finding.",
+  "rights_basis": "Academic research and fair use support release of source identifiers, titles, and abstracts. Third-party text remains separately sourced and is not licensed as original work.",
+  "snapshot_policy": "Each artefact enters public Git as one reviewed snapshot."
+}

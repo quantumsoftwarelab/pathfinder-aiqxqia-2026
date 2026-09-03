@@ -1,0 +1,13 @@
+[project]
+name = "pathfinder-aiqxqia-2026"
+version = "0.0.0"
+description = "Public Pathfinder AIQxQIA release calculation environment."
+requires-python = ">=3.10"
+dependencies = [
+    "-ledger-common",
+    "corpus-release",
+    "judge-runner",
+    "matplotlib",
+    "numpy",
+    "yaml",
+]

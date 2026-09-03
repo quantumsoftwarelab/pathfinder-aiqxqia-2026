@@ -774,7 +774,7 @@ def render_markdown(report: dict) -> str:
         "",
         "## Frozen artefact",
         "",
-        f"The [content-addressed tranche manifest]({manifest_link}) records the",
+        f"The [content-addressed tranche manifest](../manifests/phase-b-initial-tranche-v1-8d42b2b961859358.json) records the",
         "exact reference and repeat runs, semantic evidence digests, selection",
         "formulae, set and order digests, input hashes, canonical scores,",
         "percentiles, ranks, and descriptive gap metadata.",

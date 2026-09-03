@@ -1,0 +1,192 @@
+[
+  {
+    "source_path": "README.md",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "README.md"
+  },
+  {
+    "source_path": "pathfinder3/corpus/qsl_papers.jsonl",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/corpus/qsl_papers.jsonl"
+  },
+  {
+    "source_path": "pathfinder3/corpus/vendor_papers.jsonl",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/corpus/vendor_papers.jsonl"
+  },
+  {
+    "source_path": "pathfinder3/ledger/verdicts.jsonl",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/ledger/verdicts.jsonl"
+  },
+  {
+    "source_path": "pathfinder3/ledger/pairs.jsonl",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/ledger/pairs.jsonl"
+  },
+  {
+    "source_path": "pathfinder3/ledger/instruments.jsonl",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/ledger/instruments.jsonl"
+  },
+  {
+    "source_path": "pathfinder3/ledger/calibration_manifest.jsonl",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/ledger/calibration_manifest.jsonl"
+  },
+  {
+    "source_path": "pathfinder3/scripts/_common.py",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/scripts/_common.py"
+  },
+  {
+    "source_path": "pathfinder3/scripts/_ledger_common.py",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/scripts/_ledger_common.py"
+  },
+  {
+    "source_path": "pathfinder3/scripts/ledger.py",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/scripts/ledger.py"
+  },
+  {
+    "source_path": "pathfinder3/scripts/build_phase1_pairs.py",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/scripts/build_phase1_pairs.py"
+  },
+  {
+    "source_path": "pathfinder3/scripts/build_views.py",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/scripts/build_views.py"
+  },
+  {
+    "source_path": "pathfinder3/scripts/calibration_report.py",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/scripts/calibration_report.py"
+  },
+  {
+    "source_path": "pathfinder3/scripts/analyse_judge_agreement.py",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/scripts/analyse_judge_agreement.py"
+  },
+  {
+    "source_path": "pathfinder3/scripts/build_shortlist_snapshot.py",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/scripts/build_shortlist_snapshot.py"
+  },
+  {
+    "source_path": "pathfinder3/scripts/analyse_judge_stability.py",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/scripts/analyse_judge_stability.py"
+  },
+  {
+    "source_path": "pathfinder3/scripts/analyse_phase_b_priority_stability.py",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/scripts/analyse_phase_b_priority_stability.py"
+  },
+  {
+    "source_path": "pathfinder3/scripts/judge_runner.py",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/scripts/judge_runner.py"
+  },
+  {
+    "source_path": "pathfinder3/scripts/judge_transport.py",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/scripts/judge_transport.py"
+  },
+  {
+    "source_path": "pathfinder3/protocol/baseline.json",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/protocol/baseline.json"
+  },
+  {
+    "source_path": "pathfinder3/protocol/judge_prompt_v1.md",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/protocol/judge_prompt_v1.md"
+  },
+  {
+    "source_path": "pathfinder3/protocol/judge_prompt_v2.md",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/protocol/judge_prompt_v2.md"
+  },
+  {
+    "source_path": "pathfinder3/protocol/judge_prompt_v3.md",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/protocol/judge_prompt_v3.md"
+  },
+  {
+    "source_path": "pathfinder3/protocol/judge_prompt_v4.md",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/protocol/judge_prompt_v4.md"
+  },
+  {
+    "source_path": "pathfinder3/protocol/judge_prompt_v5.md",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/protocol/judge_prompt_v5.md"
+  },
+  {
+    "source_path": "pathfinder3/protocol/judges.yaml",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/protocol/judges.yaml"
+  },
+  {
+    "source_path": "pathfinder3/protocol/instruments.schema.json",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/protocol/instruments.schema.json"
+  },
+  {
+    "source_path": "pathfinder3/protocol/verdicts.schema.json",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/protocol/verdicts.schema.json"
+  },
+  {
+    "source_path": "pathfinder3/protocol/judge_stability_gpt_v5_manifest.json",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/protocol/judge_stability_gpt_v5_manifest.json"
+  },
+  {
+    "source_path": "pathfinder3/manifests/phase-b-initial-tranche-v1-8d42b2b961859358.json",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/manifests/phase-b-initial-tranche-v1-8d42b2b961859358.json"
+  },
+  {
+    "source_path": "pathfinder3/paper/shortlist_snapshot.json",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/paper/shortlist_snapshot.json"
+  },
+  {
+    "source_path": "pathfinder3/paper/shortlist_snapshot.md",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/paper/shortlist_snapshot.md"
+  },
+  {
+    "source_path": "pathfinder3/paper/judge_stability_v5.json",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/paper/judge_stability_v5.json"
+  },
+  {
+    "source_path": "pathfinder3/paper/phase_b_within_panel_priority_stability.json",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/paper/phase_b_within_panel_priority_stability.json"
+  },
+  {
+    "source_path": "pathfinder3/paper/phase_b_within_panel_priority_stability.md",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/paper/phase_b_within_panel_priority_stability.md"
+  },
+  {
+    "source_path": "pathfinder3/ledger/cosine_baselines.jsonl",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/ledger/cosine_baselines.jsonl"
+  },
+  {
+    "source_path": "pathfinder3/paper/embedding_baseline_analysis.json",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/paper/embedding_baseline_analysis.json"
+  },
+  {
+    "source_path": "pathfinder3/scripts/compute_embedding_baseline.py",
+    "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+    "public_path": "pathfinder3/scripts/compute_embedding_baseline.py"
+  }
+]

@@ -1,312 +1,62 @@
-# agQSL
-
-`agQSL` is the working repository for the Quantum Software Lab vendor evaluation and debate project. It holds the local artefacts used to compare quantum hardware vendors, curate vendor/application evidence, run portability dossiers from recent hardware papers, and support the Ezratty-backed debate/search bots.
-
-The repository is deliberately filesystem-first: generated outputs should be rebuilt from source data, and agent handoffs should be visible in versioned Markdown rather than hidden in local prompt memory.
-
-## Main Workflows
-
-| Workflow | Source of truth | Main outputs |
-|---|---|---|
-| QSL paper inventory | `pathfinder/qsl_sources.csv` | `qsl-papers/`, `pathfinder/qsl_techniques.json`, Pathfinder3 Q corpus |
-| Vendor/application graph | `vendor-app/edges.json` | `vendor-app/quantum_algorithm_portfolio.md`, `vendor-app/vendor_application_matrix.html` |
-| Vendor capability and supplier DB | `vendor-db/*.json`, `vendor-db/*.jsonl`, `vendor-notes/substrate_note_map.json` | `vendor-db/exports/*.json`, `vendor-db/*_matrix.html`, `vendor-db/lookup.py` answers |
-| Portability dossiers | `vendor-app/edges.json` (queue + portability metadata), `dossiers/<slug>/dossier.md`, `dossiers/<slug>/extraction.md` | Per-paper `dossier.md`; generated `dossiers/_queue.md`; local ignored `dossier.pdf` |
-| Scan candidates | `vendor-app/scan_candidates.jsonl` (untagged scanner findings) | JSONL appended by `scan.py`; humans triage by promoting rows into `edges.json` |
-| Ezratty index/search | `ezratty/`, `ezratty2/` | `ezratty/build/seed.jsonl`, local search answers, Slack/debate bot runtime files |
-| Plans and agent comments | `plans/`, `comments/` | Reviewed implementation plans, inter-agent review notes |
-
-## Repository Structure
-
-```text
-.
-├── comments/                 # Inter-agent review and coordination notes
-├── debates/                  # Debate outputs and experiments
-├── dossiers/                 # Portability scanner queue and per-paper dossiers
-├── ezratty/                  # Ezratty indexer and legacy graph-backed Slack/debate bot runtime
-├── ezratty2/                 # Key-less search wrapper over the Ezratty seed/index data
-├── inbox/                    # Local paper inputs and unpacked source bundles
-├── logs/                     # Per-stage runner logs (gitignored under logs/portability/)
-├── plans/                    # Active implementation and design plans
-├── prompts/portability/      # Scanner, Romain, Julien, Brillant, and Critic prompts
-├── qatch/                    # QATCH LaTeX note and generated local PDF
-├── scripts/                  # Repository helper scripts, including portability
-├── slides/                   # Presentation material
-├── surveys/                  # Academic survey and reference inputs
-├── tests/                    # Pytest coverage for portability and Ezratty tooling
-├── vendor-app/               # Canonical vendor/application graph and generated matrix outputs
-├── vendor-db/                # Curated vendor capability and supplier lookup layer
-└── vendor-notes/             # Physical-layer substrate notes
-```
-
-The former `quantum-wars/` and `vq-slides/` material now lives in the standalone
-[`qwQSL`](https://github.com/vd1/qwQSL) repository.
-
-## QSL Paper SSIB
-
-[`pathfinder/qsl_sources.csv`](pathfinder/qsl_sources.csv) is the canonical QSL
-paper inventory. Ingestion uses an explicit Scan, Sort, Insert and Build (SSIB)
-boundary:
-
-```bash
-# Discover into the review queue; never changes the canonical CSV.
-python3 -m scripts.pathfinder.qsl_ingest scan --round YYYY-MM-DD --dry-run
-python3 -m scripts.pathfinder.qsl_ingest scan --round YYYY-MM-DD
-
-# Apply deterministic identity/provenance decisions to the queue only.
-python3 -m scripts.pathfinder.qsl_ingest sort --round YYYY-MM-DD
-
-# Review the candidate JSONL, then preview and explicitly insert accepted rows.
-python3 -m scripts.pathfinder.qsl_ingest apply --round YYYY-MM-DD --dry-run
-python3 -m scripts.pathfinder.qsl_ingest apply --round YYYY-MM-DD
-
-# Read-only integrity and downstream-readiness reports.
-python3 -m scripts.pathfinder.qsl_ingest check
-python3 -m scripts.pathfinder.qsl_ingest build-status --round YYYY-MM-DD
-```
-
-Candidates live in `pathfinder/qsl_scan_candidates.jsonl`; immutable scan/apply
-events live in `pathfinder/qsl_ingestion_events.jsonl`. A publications-page
-round never deletes rows. New disappearance flags require `--allow-drops`, and
-brochure-sourced rows are outside publications-page presence reconciliation.
-The old `scripts.pathfinder.scan` executable can no longer write the canonical
-CSV.
-
-After insertion, build work is explicit. Bootstrap a paper by immutable arXiv
-identity with `python3 -m scripts.pathfinder.bootstrap <arxiv-id>`; technique
-extraction/harvest and Pathfinder3 corpus-release judging remain separate
-reviewed operations. `vendor-app/qsl_sources_qec.csv` is a generated filtered
-view whose builder reads the canonical inventory rather than scraping the
-website independently.
-
-## Vendor/Application Graph
-
-[`vendor-app/edges.json`](vendor-app/edges.json) is the canonical local data source for vendor/application edges. It currently tracks 118 edges across 28 vendors and 13 application groups.
-
-Each edge records the vendor, application group, communication evidence, technical papers, normalised match type, partner organisations, local reference IDs, verification status, notes, and optional portability metadata on paper rows. Every communication and paper entry also carries a stable `artefact_id` (`eNNN.NNN`, assigned once per edge in accession order and never renumbered) so downstream analyses can cite individual artefacts rather than whole edges. The generated matrix and portfolio files are derived artefacts and should not be hand-edited. Collection-round metadata lives in `edges.json`; the last data collection round was 2026-07-08, and later output regeneration does not imply fresh collection.
-
-Regenerate the graph outputs after changing `edges.json`:
+# Pathfinder AIQxQIA 2026 public supplementary repository
 
-```bash
-python3 vendor-app/build.py
-```
+This repository is the public supplementary material for the Pathfinder AIQxQIA paper package. The supplementary material contains submission-time title and abstract corpora, the verdict ledger, instrument and input hashes, and provenance manifests.
 
-Key generated outputs:
+The released data expose every pair identity, both judges' scores, and recorded rationales. Readers can inspect any queue entry and apply an independent evaluation protocol to the same frozen records.
 
-- [`vendor-app/quantum_algorithm_portfolio.md`](vendor-app/quantum_algorithm_portfolio.md)
-- [`vendor-app/vendor_application_matrix.html`](vendor-app/vendor_application_matrix.html)
-- [`vendor-app/algorithm_vendor_matrix.html`](vendor-app/algorithm_vendor_matrix.html) (QPU-primitive by vendor matrix, built from the `dossiers/<slug>/algorithm.json` sidecars and `edge_algorithm.json`)
-- [`vendor-app/vendor_application_bipartite.excalidraw`](vendor-app/vendor_application_bipartite.excalidraw)
-- [`vendor-app/vendor_application_bipartite.svg`](vendor-app/vendor_application_bipartite.svg)
-- [`vendor-app/vendor_application_bipartite.png`](vendor-app/vendor_application_bipartite.png)
+Included calculation scripts live under `pathfinder3/scripts/`. Retained judge prompts live under `pathfinder3/protocol/`, and retained execution code lives under `pathfinder3/scripts/judge_runner.py` and `pathfinder3/scripts/judge_transport.py`.
 
-Reference evidence lives under [`vendor-app/refs/`](vendor-app/refs/), with 114 local files covering vendor strategy documents, technical excerpts, benchmark papers, HTML snapshots, and external pointers.
-The collection history is tracked in [`vendor-app/collection_rounds.md`](vendor-app/collection_rounds.md).
+Run `make verify` for offline reproduction. Offline verification is bounded to inspection, recalculation, and released snapshot consistency. Model calls are outside offline reproduction, and fresh proprietary-model calls are outside the reproduction claim.
 
-Physical-layer reference notes for each hardware substrate live under [`vendor-notes/`](vendor-notes/), indexed by [`vendor-notes/README.md`](vendor-notes/README.md) and discoverable through [`vendor-db/lookup.py`](vendor-db/lookup.py). The portability agents that reason about substrate physics (Brillant, Julien, the quantum-physicist triage reviewer) are pointed at this corpus from their prompts.
+The manuscript is distributed separately during anonymous review. This attributed repository remains private until the review embargo ends, and the README will link the manuscript only after a publisher or arXiv URL exists.
 
-## Vendor Capability DB
+Paper full text is excluded while metadata and source links are retained.
 
-[`vendor-db/`](vendor-db/) is the curated operational store for current vendor,
-system, capability, supplier, offering, substrate, dependency, and evidence
-facts. It complements, but does not replace, the demand-side application graph
-in [`vendor-app/edges.json`](vendor-app/edges.json), the substrate notes in
-[`vendor-notes/`](vendor-notes/), or the supply-chain narrative in the sibling
-`../qwQSL` repository.
+## Public release note
 
-Agents should query it through the lookup CLI rather than reading raw JSON:
+Commit author email metadata is normalised for publication. William Waites commits use `ww@inf`. Vincent Danos commits use `vd@ens`.
 
-```bash
-python3 vendor-db/lookup.py vendor quantinuum
-python3 vendor-db/lookup.py system quantinuum --current
-python3 vendor-db/lookup.py capability mid_circuit_measurement --vendor quantinuum
-python3 vendor-db/lookup.py notes --vendor quantinuum
-python3 vendor-db/lookup.py dependencies --vendor quantinuum
-python3 vendor-db/lookup.py chain --vendor quantinuum --capability mid_circuit_measurement
-```
+## Scientific interpretation limits
 
-Lookup checks freshness before returning answers. If it fails with an instruction
-to run `python3 vendor-db/build.py`, an operator should refresh the deterministic
-tracked outputs and then run `python3 vendor-db/build.py --check`. Lookup may
-write ignored cache files under `vendor-db/build/`, but it must not rewrite
-tracked source tables, exports, review queues, or vendor/application data.
+The strong-judge sweep was ungated.
 
-Ezratty remains useful survey context through `ezratty2/search.py`, but it is
-not the authority for current vendor specifications. Current capability and
-supplier/dependency claims should be sourced through vendor-db and primary
-evidence, with probable or undocumented dependencies carried as caveats.
+Judge agreement does not establish discovery accuracy or scientific validity.
 
-## Portability Pipeline
+The Haiku thresholds are retrospective.
 
-The portability pipeline starts from recent papers or announcements that actually executed a workload on a named vendor platform, then asks: given this application ran on vendor X, which other vendors could support it, and how?
+Within-panel stability is bounded to the measured panels and shortlist depths.
 
-The scanner runs two tracks in one sweep, and they are never interchangeable:
+Vendor composition reflects the frozen corpus as well as the selector.
 
-- **`portability`** — technical evidence. Lands in an edge's `papers[]` and can feed a dossier. Must clear the execution and circuit-detail filter below.
-- **`announcement`** — a vendor's own claim: a launch, a milestone, a partnership, a deployment, or an availability date. Lands in `communication[]`, carries no `portability` sub-object, and can never feed a dossier. It must come from a vendor-controlled channel and make a concrete, checkable claim, but it is not required to show circuit detail.
+## Released materials
 
-The second track exists because the portability filter is deliberately blind to announcements — its "reject teaser posts with no technical content" rule excludes most of what vendors publish, which left `communication[]` with nothing feeding it. Segregating them is what lets announcements be collected without ever being scored as technical evidence.
+- Submission-time corpora: [`pathfinder3/corpus/qsl_papers.jsonl`](pathfinder3/corpus/qsl_papers.jsonl) and [`pathfinder3/corpus/vendor_papers.jsonl`](pathfinder3/corpus/vendor_papers.jsonl)
+- Verdict ledger and pair identities: [`pathfinder3/ledger/verdicts.jsonl`](pathfinder3/ledger/verdicts.jsonl), [`pathfinder3/ledger/pairs.jsonl`](pathfinder3/ledger/pairs.jsonl), [`pathfinder3/ledger/instruments.jsonl`](pathfinder3/ledger/instruments.jsonl), and [`pathfinder3/ledger/calibration_manifest.jsonl`](pathfinder3/ledger/calibration_manifest.jsonl)
+- Frozen reported outputs: [`pathfinder3/paper/shortlist_snapshot.md`](pathfinder3/paper/shortlist_snapshot.md), [`pathfinder3/paper/shortlist_snapshot.json`](pathfinder3/paper/shortlist_snapshot.json), [`pathfinder3/paper/judge_stability_v5.json`](pathfinder3/paper/judge_stability_v5.json), [`pathfinder3/paper/phase_b_within_panel_priority_stability.md`](pathfinder3/paper/phase_b_within_panel_priority_stability.md), and [`pathfinder3/paper/phase_b_within_panel_priority_stability.json`](pathfinder3/paper/phase_b_within_panel_priority_stability.json)
+- Provenance manifests: `release/manifests/*.json`, [`release/path-index.json`](release/path-index.json), and `release/publication_review.json` (`release/publication_review.json`; see [release/path-index.json](release/path-index.json))
 
-Execution counts in two forms, recorded per row as `execution_mode`:
+Legacy rows without instrument hashes remain in `pathfinder3/ledger/verdicts.jsonl` for historical comparison (11,312 rows in this release). `judge_prompt_v1.md` and `judge_prompt_v2.md` are retained as historical prompts. Frozen results use instrument-pinned prompt versions v3, v4, and v5.
 
-- `hardware`: the workload ran on the vendor's QPU.
-- `vendor_emulator`: the workload ran on a vendor emulator that both applies a noise model of that vendor's hardware and compiles to that vendor's native gate set. Both conditions are required, and the row must carry an `execution_evidence` line naming the emulator, the noise model, and the gate set. Noiseless simulation, generic depolarising noise, and abstract gate sets do not qualify. A backend derived from a named device — Qiskit's `Fake<Device>` backends, `AerSimulator.from_backend()`, and equivalents — carries that device's basis gates and coupling map in its target, so it satisfies the gate-set condition by construction unless the source says the circuits bypassed that target; the noise-model condition is still judged on its own evidence.
+## Metric family mapping
 
-Emulator evidence is admissible but weaker than hardware, and the two are never collapsed: the scanner records the distinction, the physicist reviewer verifies it against the source, and `promote_candidates.py` carries it through into `edges.json`. The scanner sweeps a 92-day (three-month) rolling window, so consecutive runs overlap and a missed run does not permanently drop its window; duplicate suppression against `scan_candidates.jsonl` absorbs the overlap.
+| Metric family | Instrument id | Prompt version | Prompt hash | Output contract | System instruction boundary |
+| --- | --- | --- | --- | --- | --- |
+| legacy Haiku threshold counts | legacy rows without instrument hashes | judge_prompt_v2 historical prompt | 8984dd744c9aaa5a69a969a1cfbc7c690a892452ced68bb92090736d08165168 | legacy rows without instrument hashes | legacy rows without instrument hashes |
+| Phase A shortlist snapshot and reported score-scale comparison | 7f01f7e54dc02bbc59a447ea77c51c9fe8b16291b8d4e52e37ce1ed0b433b046, b2a053b3cd994b15dd9f976f8777479b6559e80391a840c1c39bd3dcdf8c7818, e7ed3e7159a34ac3352b0d59ea64e50c11f2118858afd9df737dccbbfddc6c5c | judge_prompt_v3 | 1ac3c25f03661c5b880cc3d204eccdc2c421c22d026d61ffaa9c2c702f21c397 | 8377100f299229cdc58c57f31122c1b6ca66045142b4438e8a1a65a0fd6538cd | prompt markdown retained; system instruction boundary recorded by instrument-specific system prompt hash |
+| v4 strong-judge transition rows | 425d1c378968a6d24fabf07208a7bd1a83a7b8af83d109b94e0e3a16571dc146, 60ed46389e21beb12e5be94ce08f5aa6042d4f84855544a52b9e38bdcab8e53c | judge_prompt_v4 | db111b02a6b9aac642d5c43c821da2aff9fd0188592228c635355ef75c0adc55 | 2ae297b3c6ea5ea31ba25339c390b3d93a8e126775a19fe27c0117280a192f72 | prompt markdown retained; system instruction boundary recorded by instrument-specific system prompt hash |
+| v5 judge stability and within-panel priority analysis | b99996c890becb87ec59a144e419a013a8284c98bbf7e3656c830f52526ad5f0, d19bb7d063eb10e65b6e8aa0944bc2a5767494a67c743d213268a6d365caa0b0 | judge_prompt_v5 | f7ef292b682d53fdb9ac91555952f7244ff46967c6e0b653528ca672f063e9cf | 2ae297b3c6ea5ea31ba25339c390b3d93a8e126775a19fe27c0117280a192f72 | prompt markdown retained; system instruction boundary recorded by instrument-specific system prompt hash |
 
-The current app path is:
+## Represented instrument registry
 
-```text
-scan -> librarian/physicist triage -> manual promotion -> bootstrap -> Romain -> Julien -> Brillant -> Critic -> publish
-```
-
-A side artefact of each dossier run is `dossiers/<slug>/algorithm.json`,
-harvested from Julien's `## Computational primitive` paragraph and
-Brillant's `### Summary` table. The companion file
-`vendor-app/edge_algorithm.json` extends the projection over
-`vendor-app/edges.json`. Both are surfaced through
-`vendor-app/algorithm_lookup.py`. See `plans/algorithm-vendor-matrix.md`.
-
-A daily LaunchAgent (`scripts/portability/port_next_daily.py`) can drive
-the queue one paper at a time. It picks one `queued` paper at random,
-runs bootstrap and `port_paper --all`, and parks the row on failure.
-Install it with `scripts/portability/install_port_next_daily.sh` (renders
-a plist into `~/Library/LaunchAgents/`; run the printed `launchctl
-bootstrap` line). Each wake writes one line to
-`logs/portability/daily.log`; parked rows surface in a `## Parked`
-section of `dossiers/_queue.md`. Recover a parked paper with
-`uv run python -m scripts.portability.port_next_daily --slug <slug>`.
-
-The queue is a projection over [`vendor-app/edges.json`](vendor-app/edges.json). Each entry in an edge's `papers[]` array carries an optional `portability` sub-object with the dossier status, slug, queue decision, and rationale. The Markdown view at [`dossiers/_queue.md`](dossiers/_queue.md) is generated by `scripts/portability/render_queue.py` for human reading and must not be hand-edited. Approved candidates have `portability.dossier_status = "queued"`; bootstrapped dossiers have `"in_progress"`; published ones have `"published"`. In the current checkout, portability rows include 65 queued papers and 6 published dossiers.
-
-Untagged scanner findings live separately in [`vendor-app/scan_candidates.jsonl`](vendor-app/scan_candidates.jsonl). New scan runs append JSONL rows there; the automated librarian and physicist triage reviewers can mark rows as promoted or rejected, but promoted rows still require a manual curation pass through `promote_candidates.py` before they land in `edges.json`.
-
-Holding the two evidence classes apart is what makes them comparable. `scripts/portability/render_claim_gap.py` renders that comparison to [`vendor-app/claim_evidence_gap.html`](vendor-app/claim_evidence_gap.html): per vendor, how many claims sit in `communication[]` against how many demonstrations sit in `papers[]`, and how far the newest claim runs ahead of the newest paper. It is a pointer to what needs checking, not a verdict — the counts describe the corpus rather than the world, since announcement collection only began on 2026-08-16 and two vendor news pages were unreachable during that sweep.
-
-Because that ledger is append-only and the scanner refuses to re-surface an already-rejected paper, a wrong rejection is permanent until someone re-scans it deliberately. `scripts/portability/render_rejections.py` renders the ledger as a single self-contained HTML file at [`vendor-app/rejection_ledger.html`](vendor-app/rejection_ledger.html) — every declined candidate with its recorded reason, the individual librarian, physicist, and arbiter verdicts, and an intake table showing how many papers entered the pipeline and which stage decided each one. Reading those reasons in bulk is how filter drift gets caught.
-
-A completed collection round is therefore four steps in order: `scan` (with auto-triage), `promote_candidates.py` against a hand-authored mapping, `enrich_publication_dates.py` to backfill arXiv dates on the newly promoted rows, then `build.py` to regenerate the derived artefacts. Skipping the enrichment step leaves the new papers undated and absent from the paper-growth plots.
-
-Per-paper dossier folders contain:
-
-- `dossier.md`: metadata, Romain sourcing, Brillant matrix, Critic verdicts.
-- `extraction.md`: Julien's standalone technical extraction.
-- `paper.html`, `paper.pdf`, or `paper.url`: fetched source paper or fetch fallback.
-- `dossier.pdf`: generated presentation PDF, ignored by git.
-
-`dossier.md` retains the full audit trail (every Critic pass, every Brillant revision). The published `dossier.pdf` strips inter-agent chatter: the rendered Critic block surfaces only the final pass's `Residual caveats` subsection, with verifier identity, findings, and verdict rationale held back as pipeline-internal context.
-
-Useful commands:
-
-```bash
-uv run python -m scripts.portability.scan --since YYYY-MM-DD       # appends to vendor-app/scan_candidates.jsonl
-uv run python -m scripts.portability.triage --dry-run              # reviews pending scan candidates without writing
-uv run python -m scripts.portability.promote_candidates --dry-run  # validates the promotion mapping before writing edges.json
-uv run python -m scripts.portability.bootstrap <slug> --triager <name>
-uv run python -m scripts.portability.port_paper <slug> --all
-uv run python -m scripts.portability.publish <slug>                # writes dossier_status="published" back to edges.json
-uv run python -m scripts.portability.render_queue                  # regenerates dossiers/_queue.md from edges.json
-scripts/portability/port_next.sh --run
-```
-
-The scanner appends JSONL rows to `vendor-app/scan_candidates.jsonl` and dedupes against existing entries by `url`. By default, a successful scan also runs the triage step; pass `--no-triage` to skip it. The queue helpers in [`scripts/portability/_queue.py`](scripts/portability/_queue.py) read directly from `edges.json` (the public API: `parse`, `find_row`, `pending_bootstrap_slugs`, `mark_bootstrapped`, `mark_published` -- is preserved). Use the provided scripts rather than parsing the generated `_queue.md` directly.
-
-Published worked dossiers include:
-
-- [`dossiers/2026-arxiv-2604.14921-ethylene-se-qpe/`](dossiers/2026-arxiv-2604.14921-ethylene-se-qpe/)
-- [`dossiers/2026-arxiv-2604.16164-nonlinear-spectroscopy/`](dossiers/2026-arxiv-2604.16164-nonlinear-spectroscopy/)
-- [`dossiers/2026-arxiv-2604.12635-iqp-connectivity/`](dossiers/2026-arxiv-2604.12635-iqp-connectivity/)
-- [`dossiers/2026-arxiv-2605.04737-aquila-graph-classification/`](dossiers/2026-arxiv-2605.04737-aquila-graph-classification/)
-- [`dossiers/2026-arxiv-2605.21276-pasqal-logical-kernel-de-solver/`](dossiers/2026-arxiv-2605.21276-pasqal-logical-kernel-de-solver/)
-- [`dossiers/2026-arxiv-2407.02553-quera-quantum-reservoir-learning/`](dossiers/2026-arxiv-2407.02553-quera-quantum-reservoir-learning/)
-
-To build dossier PDFs reproducibly on Linux or macOS, enter the repo dev shell
-first:
-
-```bash
-nix develop
-python -m scripts.portability.publish <slug>
-```
-
-`publish.py` renders `dossier.md` plus `extraction.md` through `pandoc` and
-`xelatex`, writing `dossiers/<slug>/dossier.pdf`. The site exporter prefers the
-PDF when it exists and otherwise falls back to `dossier.md`.
-
-## Ezratty Index And Bots
-
-[`ezratty/`](ezratty/) contains the Olivier Ezratty source workflow and legacy
-graph-backed Slack/debate bot support files. That path can use Nanograph and
-hosted embeddings, depending on its local configuration.
-[`ezratty2/search.py`](ezratty2/search.py) is the key-less local search wrapper
-used by agents when they need vendor/modality background without OpenAI
-embedding API access.
-
-`ezratty2` still depends on the generated seed file
-`ezratty/build/seed.jsonl`; it does not query the raw Ezratty PDF. If that seed
-is absent, portability agents should skip Ezratty rather than downloading or
-reading the source survey during a dossier stage.
-
-Typical search commands:
-
-```bash
-python3 ezratty2/search.py search "mid-circuit measurement"
-python3 ezratty2/search.py section 8-3-7-vendors Quantinuum
-python3 ezratty2/search.py references <section-slug>
-```
-
-Container and shared-home setup for the bots is documented in
-[`ezratty/README.md`](ezratty/README.md). Pipeline agents should use
-`ezratty2/search.py`; the older graph-backed bot runtime is a separate legacy
-path.
-
-## Planning And Coordination
-
-Implementation plans live under [`plans/`](plans/). Use them for non-trivial repo-scoped work so the plan travels with the code.
-
-Inter-agent comments live under [`comments/`](comments/). This is the preferred local home for Codex/Claude review notes and cross-agent handoff material that should be visible in-tree.
-
-Durable organisation-level memory belongs in QSL documents, not in local hidden agent memory. Local files should cite QSL documents with full document URLs when needed.
-
-## Debate Architecture
-
-The original vendor debate system is described in [`debates/quantum_vendor_debate_architecture.md`](debates/quantum_vendor_debate_architecture.md). It scores vendor-specific agents on:
-
-| Metric | Weight |
-|---|---:|
-| Expected output fidelity | 30% |
-| Native circuit depth + 2Q gates | 25% |
-| Error mitigation overhead | 15% |
-| Wall-clock time | 15% |
-| Qubit sufficiency | 10% |
-| Engineering complexity | 5% |
-
-The portability pipeline complements that architecture: debate compares vendor readiness across application classes, while dossiers produce paper-specific portability evidence that can feed later debate prompts and graph curation.
-
-## Verification
-
-Run the test suite before committing substantive changes:
-
-```bash
-uv run pytest -q
-```
-
-Focused portability tests:
-
-```bash
-uv run pytest tests/portability -q
-```
-
-Some Ezratty bot tests depend on optional plumbing packages that are installed in the bot/container environment. They are skipped when those optional dependencies are absent.
-
-## Built with Shipshape
-
-This repository uses [Shipshape](https://github.com/dmytri/shipshape), a context-isolated spec-driven workflow for coding agents. Install with `npx skills add dmytri/shipshape --skill '*'`, or the experimental open-plugin build with `npx plugins add dmytri/shipshape`.
-
-## Conventions
-
-- Use British English in Markdown and project prose.
-- Edit source data first, then regenerate derived artefacts.
-- Keep citations, retrieval dates, provenance, and uncertainty explicit.
-- Do not read or commit secrets, `.env` files, tokens, or credential material.
-- Do not hand-edit generated portability PDFs; regenerate them with `publish.py`.
-- Do not revert unrelated work in the tree. Other agents and humans may be working concurrently.
+| Instrument id | Model | Prompt version | Prompt hash | Output contract | System instruction boundary |
+| --- | --- | --- | --- | --- | --- |
+| 34fb2deadc200869886751e8db3bbedce99a21280bc8bfc402f35cbb3e5b09ed | gpt-5.6-sol | judge_prompt_v5 | f7ef292b682d53fdb9ac91555952f7244ff46967c6e0b653528ca672f063e9cf | 2ae297b3c6ea5ea31ba25339c390b3d93a8e126775a19fe27c0117280a192f72 | ffc54f65ad277ac11b3b5e5b3ea8b20baafb43c2b9130b6694dfd04cc3977e85 |
+| 425d1c378968a6d24fabf07208a7bd1a83a7b8af83d109b94e0e3a16571dc146 | claude-opus-5 | judge_prompt_v4 | db111b02a6b9aac642d5c43c821da2aff9fd0188592228c635355ef75c0adc55 | 2ae297b3c6ea5ea31ba25339c390b3d93a8e126775a19fe27c0117280a192f72 | 9af236fc23ec70a5c7d442ab2de9730132e3f61bf0e9660984ebc4cf4be22fa1 |
+| 60ed46389e21beb12e5be94ce08f5aa6042d4f84855544a52b9e38bdcab8e53c | gpt-5.6-sol | judge_prompt_v4 | db111b02a6b9aac642d5c43c821da2aff9fd0188592228c635355ef75c0adc55 | 2ae297b3c6ea5ea31ba25339c390b3d93a8e126775a19fe27c0117280a192f72 | ffc54f65ad277ac11b3b5e5b3ea8b20baafb43c2b9130b6694dfd04cc3977e85 |
+| 6bb8f0d8f42fc5908b7c5cd1717bb4503c27a86ecb6f9d2e2919ed8331f66396 | claude-opus-5 | historical prompt | 143196d0414f9480f90596aa4f9df17556dfebe2752efd6823c537897f37c5b5 | f0b6729a477ae5e6aaf1cdc1dacfbe906c2ee8da2c2a7398224ede13af265738 | 6deb1b429fdf418a9829a7480a153614bf96d15eeefd86597f14e9f4d515380b |
+| 7f01f7e54dc02bbc59a447ea77c51c9fe8b16291b8d4e52e37ce1ed0b433b046 | claude-opus-5 | judge_prompt_v3 | 1ac3c25f03661c5b880cc3d204eccdc2c421c22d026d61ffaa9c2c702f21c397 | 8377100f299229cdc58c57f31122c1b6ca66045142b4438e8a1a65a0fd6538cd | 9af236fc23ec70a5c7d442ab2de9730132e3f61bf0e9660984ebc4cf4be22fa1 |
+| b2a053b3cd994b15dd9f976f8777479b6559e80391a840c1c39bd3dcdf8c7818 | gpt-5.6-sol | judge_prompt_v3 | 1ac3c25f03661c5b880cc3d204eccdc2c421c22d026d61ffaa9c2c702f21c397 | 8377100f299229cdc58c57f31122c1b6ca66045142b4438e8a1a65a0fd6538cd | ffc54f65ad277ac11b3b5e5b3ea8b20baafb43c2b9130b6694dfd04cc3977e85 |
+| b99996c890becb87ec59a144e419a013a8284c98bbf7e3656c830f52526ad5f0 | claude-opus-5 | historical prompt | 2fe11bc807ad9527610849df751474f6a5529ff79230aa93615fb19efa118455 | 2ae297b3c6ea5ea31ba25339c390b3d93a8e126775a19fe27c0117280a192f72 | 9af236fc23ec70a5c7d442ab2de9730132e3f61bf0e9660984ebc4cf4be22fa1 |
+| d19bb7d063eb10e65b6e8aa0944bc2a5767494a67c743d213268a6d365caa0b0 | gpt-5.6-sol | historical prompt | 2fe11bc807ad9527610849df751474f6a5529ff79230aa93615fb19efa118455 | 2ae297b3c6ea5ea31ba25339c390b3d93a8e126775a19fe27c0117280a192f72 | ffc54f65ad277ac11b3b5e5b3ea8b20baafb43c2b9130b6694dfd04cc3977e85 |
+| e7ed3e7159a34ac3352b0d59ea64e50c11f2118858afd9df737dccbbfddc6c5c | claude-opus-5 | judge_prompt_v3 | 1ac3c25f03661c5b880cc3d204eccdc2c421c22d026d61ffaa9c2c702f21c397 | 8377100f299229cdc58c57f31122c1b6ca66045142b4438e8a1a65a0fd6538cd | historical row without system instruction hash |
+| e8c7663f83bece170a9bcabb833951615c378cd1d04369d055c8dec09bdbca01 | claude-opus-5 | historical prompt | 2fe11bc807ad9527610849df751474f6a5529ff79230aa93615fb19efa118455 | 2ae297b3c6ea5ea31ba25339c390b3d93a8e126775a19fe27c0117280a192f72 | 9af236fc23ec70a5c7d442ab2de9730132e3f61bf0e9660984ebc4cf4be22fa1 |

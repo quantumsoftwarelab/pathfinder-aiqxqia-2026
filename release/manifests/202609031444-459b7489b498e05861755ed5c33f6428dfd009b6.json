@@ -1,0 +1,642 @@
+{
+  "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+  "source_commit_timestamp": "2026-09-03T14:44:45+00:00",
+  "source_manifest_sha256": "1281d01b3346f9c9f01f230d1101b768aa9629f35f4ae81a4931be2c1c7282ea",
+  "imports": [
+    {
+      "classification": "canonical",
+      "source_path": "README.md",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "README.md",
+      "mode": "history",
+      "sha256": "47cd8e4383f794d6d4ec99132f1ae1c5c002ea85ea2cd4cab8ac5de8799906b5",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/corpus/qsl_papers.jsonl",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/corpus/qsl_papers.jsonl",
+      "mode": "snapshot",
+      "sha256": "2ef619f799daff7af4295324cad4d2439e747a08b81ebd0d2a72b61e914640d8",
+      "review": {
+        "kind": "publication-readiness",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved",
+        "reviewed_sha256": "2ef619f799daff7af4295324cad4d2439e747a08b81ebd0d2a72b61e914640d8"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/corpus/vendor_papers.jsonl",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/corpus/vendor_papers.jsonl",
+      "mode": "snapshot",
+      "sha256": "19585d659bbcb43127ad2a7fae82b48321df92871739932031a5c8cd811132a0",
+      "review": {
+        "kind": "publication-readiness",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved",
+        "reviewed_sha256": "19585d659bbcb43127ad2a7fae82b48321df92871739932031a5c8cd811132a0"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/ledger/verdicts.jsonl",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/ledger/verdicts.jsonl",
+      "mode": "snapshot",
+      "sha256": "1a689b0f92b7bf771ba4ec21fba4e3415cc301419b0d0ade996bf8a22e0caea9",
+      "review": {
+        "kind": "publication-readiness",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "review_required",
+        "reviewed_sha256": "9ad556a75e6735b6e2d79fb3dedf73640423ff45f75596c9c51829038d7ccaaa"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/ledger/pairs.jsonl",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/ledger/pairs.jsonl",
+      "mode": "snapshot",
+      "sha256": "578c9e841b9f5e14196fdb3f4b05737fc43e2aa539c2e12942ba22fc742bd56c",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/ledger/instruments.jsonl",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/ledger/instruments.jsonl",
+      "mode": "snapshot",
+      "sha256": "9b0b11c800c2f252aed1507f3e679074485e37a18d0d32253c9a97c21fae3e84",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/ledger/calibration_manifest.jsonl",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/ledger/calibration_manifest.jsonl",
+      "mode": "snapshot",
+      "sha256": "78d6dbe9e74ba81a8b49b4090ca4c6e4ed4a099119dffe550dc52bd814766b29",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/scripts/_common.py",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/scripts/_common.py",
+      "mode": "snapshot",
+      "sha256": "6979d9410f43a75e90720e405122b57a6d2808aa4afdcdd0f9aa4c40f4842729",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/scripts/_ledger_common.py",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/scripts/_ledger_common.py",
+      "mode": "snapshot",
+      "sha256": "485cdfdaccdb882cf1d6e73f806414bcd6c313d29fc6a85b20900e8e1b866726",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/scripts/ledger.py",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/scripts/ledger.py",
+      "mode": "snapshot",
+      "sha256": "f819aab3c91879167ad866d56b753c2991c5736950f67161fd64bdebbf89756c",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/scripts/build_phase1_pairs.py",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/scripts/build_phase1_pairs.py",
+      "mode": "snapshot",
+      "sha256": "45f4d548baf0585ba41058a66bdb68bd88911b76889d9e90290132cb9081454c",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/scripts/build_views.py",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/scripts/build_views.py",
+      "mode": "snapshot",
+      "sha256": "a5e7737060ab5b70939856beba46c33de63e1d069ab67fa9fb396c4f445d1565",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/scripts/calibration_report.py",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/scripts/calibration_report.py",
+      "mode": "snapshot",
+      "sha256": "5a18682d69ce425c1f08467c3eed72def9e3bf89bdbd38bd3a180952e7699436",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/scripts/analyse_judge_agreement.py",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/scripts/analyse_judge_agreement.py",
+      "mode": "snapshot",
+      "sha256": "0050a89d4eee6f5fd665b38828d647fa9b98c246e117cb0d99dcb4ce90768529",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/scripts/build_shortlist_snapshot.py",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/scripts/build_shortlist_snapshot.py",
+      "mode": "snapshot",
+      "sha256": "9c4ad4dd0ca2547f2b367aa20d16a7c01f3e3a331dbbf66410d1ebc38aebabbc",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/scripts/analyse_judge_stability.py",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/scripts/analyse_judge_stability.py",
+      "mode": "snapshot",
+      "sha256": "ff808e77d37d5416c9fdc7c1fc45a0ccdec8cce289a69af485fdc888391d9904",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/scripts/analyse_phase_b_priority_stability.py",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/scripts/analyse_phase_b_priority_stability.py",
+      "mode": "snapshot",
+      "sha256": "a82c259dc401a0f57e8e0db3f60be7b760603bb61c89090c076dfc129612d377",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/scripts/judge_runner.py",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/scripts/judge_runner.py",
+      "mode": "snapshot",
+      "sha256": "d619bb00489b10beef77c56a32c02b57ce54ac1c3d1f32c5db2e916d5d2a183b",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/scripts/judge_transport.py",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/scripts/judge_transport.py",
+      "mode": "snapshot",
+      "sha256": "88e1a12d991ba560ab4bf7f3c390b4205b623b576a7e09555dc2e340ad5820b2",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/protocol/baseline.json",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/protocol/baseline.json",
+      "mode": "snapshot",
+      "sha256": "7988a9d620832eeb1a36f09cfad7c2dc3f9399747d7a6e4092e43dc34774cd19",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "historical",
+      "source_path": "pathfinder3/protocol/judge_prompt_v1.md",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/protocol/judge_prompt_v1.md",
+      "mode": "snapshot",
+      "sha256": "450dde88f7fbb06d47ccddbff334fb769f1b848405fc9dadc9ed22d19c5d7da2",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "historical",
+      "source_path": "pathfinder3/protocol/judge_prompt_v2.md",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/protocol/judge_prompt_v2.md",
+      "mode": "snapshot",
+      "sha256": "8984dd744c9aaa5a69a969a1cfbc7c690a892452ced68bb92090736d08165168",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/protocol/judge_prompt_v3.md",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/protocol/judge_prompt_v3.md",
+      "mode": "snapshot",
+      "sha256": "1ac3c25f03661c5b880cc3d204eccdc2c421c22d026d61ffaa9c2c702f21c397",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/protocol/judge_prompt_v4.md",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/protocol/judge_prompt_v4.md",
+      "mode": "snapshot",
+      "sha256": "db111b02a6b9aac642d5c43c821da2aff9fd0188592228c635355ef75c0adc55",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/protocol/judge_prompt_v5.md",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/protocol/judge_prompt_v5.md",
+      "mode": "snapshot",
+      "sha256": "f7ef292b682d53fdb9ac91555952f7244ff46967c6e0b653528ca672f063e9cf",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/protocol/judges.yaml",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/protocol/judges.yaml",
+      "mode": "snapshot",
+      "sha256": "66f206f9442d2f029de1f4f242cedbfb32a976a9c57ad32fe67528cdfe8303b0",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/protocol/instruments.schema.json",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/protocol/instruments.schema.json",
+      "mode": "snapshot",
+      "sha256": "91081355013eb6069a10f45c02649ccd77ea259bc72c80b11701377ecb2af8a1",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/protocol/verdicts.schema.json",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/protocol/verdicts.schema.json",
+      "mode": "snapshot",
+      "sha256": "495805f69a830657537730ba76126cec08097c49742d183e153965342a0a4177",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/protocol/judge_stability_gpt_v5_manifest.json",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/protocol/judge_stability_gpt_v5_manifest.json",
+      "mode": "snapshot",
+      "sha256": "d5619c09ce2e726989c92eb269563e499bbcc8dee99bd77a5e4077f937f865c9",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "historical",
+      "source_path": "pathfinder3/manifests/phase-b-initial-tranche-v1-8d42b2b961859358.json",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/manifests/phase-b-initial-tranche-v1-8d42b2b961859358.json",
+      "mode": "snapshot",
+      "sha256": "b09fefaf0d5ada37dbb68b5719e7a0878596ca988ceb50f62d5e2729996b91a4",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/paper/shortlist_snapshot.json",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/paper/shortlist_snapshot.json",
+      "mode": "snapshot",
+      "sha256": "e73abfdab8a35d567fc04568a30e4539c3d0471b6d2c0bfe68c7d3beece11a12",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/paper/shortlist_snapshot.md",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/paper/shortlist_snapshot.md",
+      "mode": "snapshot",
+      "sha256": "83496170210908a9f465e4c20ddb5359f2a1e58608b117b6bbb06b771fa785e1",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/paper/judge_stability_v5.json",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/paper/judge_stability_v5.json",
+      "mode": "snapshot",
+      "sha256": "c6c44f8a16bc00dc0b55bbda9094ec94e6f9fe2e141a87c7436b42d7264ec3da",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/paper/phase_b_within_panel_priority_stability.json",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/paper/phase_b_within_panel_priority_stability.json",
+      "mode": "snapshot",
+      "sha256": "fe10400e47729044f316ed1d483b897522f294bac1362ee2b810f4ed59e3e659",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/paper/phase_b_within_panel_priority_stability.md",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/paper/phase_b_within_panel_priority_stability.md",
+      "mode": "snapshot",
+      "sha256": "24479e6b3f91598bde58fc4c01238418d5705878d6b79355d90ecf4e657b78af",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/ledger/cosine_baselines.jsonl",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/ledger/cosine_baselines.jsonl",
+      "mode": "snapshot",
+      "sha256": "e7484d9e3b21ddb05d4c4fcbce3e5f24077070c45fd2056c21e2ca01a4aebbb6",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/paper/embedding_baseline_analysis.json",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/paper/embedding_baseline_analysis.json",
+      "mode": "snapshot",
+      "sha256": "43a64928944c2b220642cbd7f2f678410078bb6450e0bb579251d3afb2961d2c",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    },
+    {
+      "classification": "canonical",
+      "source_path": "pathfinder3/scripts/compute_embedding_baseline.py",
+      "source_revision": "459b7489b498e05861755ed5c33f6428dfd009b6",
+      "public_path": "pathfinder3/scripts/compute_embedding_baseline.py",
+      "mode": "snapshot",
+      "sha256": "cd70e2dba3b5958ebfc1694baab8f5d8b8a8ed6fd984e923cf1886dc370e40c0",
+      "review": {
+        "kind": "release-source-selection",
+        "summary": "Any change to a recorded hash requires the corresponding review to run again.",
+        "rerun_on_hash_change": true,
+        "status": "approved"
+      }
+    }
+  ],
+  "history_map": {
+    "0254f8556ccbacad65cfbae86884f92b983a8f50": "8dd9887b19962c41035286470fca44de86228aab",
+    "fcb6e59dca7a932a202c502f772c6e6ef47777f5": "13cc83e36ad11bab472331bcd8b76ab18e72178f",
+    "cb4af0ac30c98e0ab921cb8fd7b1d292ca0b6752": "28cfdeb89b17df61a0a1764d4bbc191fa8861dd5",
+    "12840dae7b5a2b02b9a65822dee2ef0f85ddb5a0": "493c1f150950a0af8249b43b15331e23e397dae6",
+    "af6d976968d32e5a5c137d07fe93a4b6a9a1a6ab": "66ef5524d5b0dc5f9318d803affec3046b0d9bd0",
+    "bcb5431518435a76971b370582f91dd815bcb117": "79f9c836ca20bc2d49ac6adfdc8e2fe2e4929e0a",
+    "68f014c18610b636014d6d27ec7332e1c1841405": "ef66347d4fdbcd3e88bcf2964ee5dc855cd310f6",
+    "4018c405a42b72727b29c0253471ba091439483a": "115d74b2534693b64cea0d2e5b72e6f2c91f31e6",
+    "dcf840e2bb737212166784b0c8a85872e96a3c27": "0f4ce9ee747870aa6eeb9a259a23fcb2b6f82b13",
+    "957508a15f5fcb75f5693cc8e1d586f2f1c6c824": "1fc1a14c78e7a443a80fb70210b28b6e2c5cfecc",
+    "b8c112959d883019404eac74d401f478ddadaed4": "73177c51df6eac9e7f766ac2e5ca98363294a578",
+    "aba0164bffefa421bc5a75a4ab0e1b797fd4f272": "434c02584da6518dfa6f1f35828d950df751a83f",
+    "370a2e379444db9b3db9078fa8cfd08a74e2be8d": "a79bb6c96ce9a56aa38175d2e79274b776d3bad4",
+    "20897bbe122f7dd05da11c80236e4812d44748d5": "d03b281e1da9dcdbb6f15fe1f0eeb3db1679d53d",
+    "a6a2c39f465a525e42d680e062cfc8d5d6315290": "8b6cfb6f6c979aa39a00d022421094194bc4d4f4",
+    "81316f19437a337d4a293fe66dc24863016483eb": "b9edb7dc6f52bace592f9a5dd5de859520160d31",
+    "c8d70afbaa917259926f240855b480ace2c698c7": "097f521a3a61bb008a13f3c0496eae174f2accb4",
+    "35febb735f4eaef381cdda8357ec77e3ab3922c7": "abba34c4386fb7c0a7a97f8bb7e8842b6fe4800b",
+    "311f420d9dd071fad08d2cc560f6b2fb312197b6": "a7f346631a24ccf8e7c8f3a51968bfc295321cb1",
+    "7a17988c7a8fa5ac21a82222d0c5823b3040ae30": "7b5d0524a162357e99e583d56db94acf8326ae72",
+    "ea67739f2b1bb392d64cd12027ad876ff13669d8": "83e12110aeac03bb3c8d80056b0ecf8d37e96c49",
+    "5338a3a7b1b3a50ce6b908722f893769b814195d": "fdd560930230ae17b525a04f529d09a8c2b5501e",
+    "6b434a266950bac12ddc5e59d40e7f3a22eddbcb": "d8deb3cf340f0d349035076ada7fcd90508e647b",
+    "59202ab501b9503a9ba94198da46d94b8c7ce712": "8615734b2a18db80138549c32b64222e120a3f83",
+    "25c780a355a620550b81249b8ca253e44569979b": "9c4523063295d177f3edf01f96c572ff586dd4f3",
+    "8e830b1a4d45688707730489ab1539acef9ac9c4": "97302b30a397fffa238362b14459d9484d138fcf",
+    "5084e966ee28fb30122c3a53218e3a38c7e1c666": "8b9f376762fdd2f429f1b83ee081394ab82ab274",
+    "e6c5025286abed24287d41ed1051f5dc8a07ffe7": "e6d00a9b96280caf9ef01546881d1b2e1d04fd3f",
+    "7bb350f8756fe246f1e22392f231c6b1ca19f6a5": "2cca7af26453c2a410a4d9c72056f07b74a974bb",
+    "e0c0108444751c10409acde6f48cb124de298846": "24bb268045d472aa1697549ae9434ea649948df2",
+    "7713ef87153c237a2c562bfb6618ac37cc1068fa": "bb48c37eafaea318ff3ff46edd66099b8947ce87",
+    "9a5755df2c9dda25448566f9c35fb4bdbbb35db9": "0c86af1f42fe05d57018d4dd3ff8d91987d49998",
+    "f25ed1411ce26b52c0758f7a9b019fd3d4b2b70b": "c5f36558fe32f990a5912399733153d055f6e26a",
+    "8966666496516289bf0923ace695ffdb49467a76": "b972b4875ea3a934e43b689e3bafff7ee0bc34bb",
+    "14c9d708e0e50becd79ef1bac165f41556538cb8": "02c31a3d118ae89fad746ab654d2a925aa86e344",
+    "16dccbd4b2aa15128fa285bd9f9206ae2b117878": "2b63d3d487bc997dd792dfc7837e30257381902b",
+    "98fa6a83f909d9fac10a027daec1c09662c9359f": "c9ef6704fddee7673eec65d964c19507ba5bae9c",
+    "470e7fa954a9109e2d780b27de7fb0e5c2d2e1cb": "396e7f46e8a1b446d2fc9b00ef214c7fbf826c4d",
+    "49a2042f5414fda2481aa113afc3dcf72167c33c": "4e0537b8c217fe13b1731659e16404fb24ea63aa",
+    "f03c023e92e34b74d173d5bb4acc6a2813808daf": "32a1a1b865c4762863e18d1d8c630eb7ae4a3c02",
+    "d51b07118c9944a8abe1e94686dfc4613fe6a2a0": "5262e1661ca0e93b297cc223713e5375c2d3240e",
+    "58a001cd265cd50f77200f6d0678df6c4d671330": "abaa9cf67f2c2f76beb4f4c29d6d572444ff26eb",
+    "0d9c01a38e3055afcd256744d4305d373d4edc61": "fa66b896ce3860ef34c0411a9d5db66d127cef98",
+    "0f4c0273e0ab1383cc53c3f9b9672f3c13aa653a": "dfca093508f1253e83e62d32ae6fef5875540d23",
+    "33e76a52140fbc0692760a859e4ae89bc2651fa1": "2ff3e6533d305d294ce0e0c4819cd004c9ffad45",
+    "6cdf54f1eb1a12020cbe75f4d36800804333a4e5": "862e80a404a4ec41382f06ecfb8c38cbb43bbe75",
+    "37e7e0d4cbced87637ae045f4407825662eaf9e6": "320d98efca4d18e1145347956560de7e337176a2",
+    "26c7d2ee5bd44962b90e08342a3732a89e8d474c": "20081d7d1fadac7145ca59f519630431066eca2f",
+    "3763a7f47792c1e713aa64dbcd0d063d27980931": "7c5a882af8635681446121f466df02ef1b67ac32",
+    "1f7ca3c2e77cb6e098b13a1ef4834d51caef2620": "e70370c3d663a693189594690d27bc56b9852a52",
+    "d936b1700e7b04678fab5d2dbc4b9c7aa2c14257": "f36ad7cc7b5e543f5fc63c068d5dc78ae0e40710",
+    "440a60b1dcc8ae4beffcb39d5fb0e2f529e8db96": "ec6f84b73f37f0b86ac563e1ef4cfcfda932243c",
+    "702d6c8620671bea102eff061c4931b136676dcf": "91d383dce19ae003c20723fdf4d6791790fc4f8d",
+    "3d4cc4ea8274e125db7d987bfe1e40cc54aab3a1": "34c4482835a2a2f09b14021597418bc8ab2f7cdf",
+    "5b7deee05860f1565f0ae61e19b6426697396a3d": "b67fd37e729cd357add3ec1b41c5442ac7719a1b",
+    "efcbf9ba5b94edea3d37bfad40c0a79905a76df6": "ada1335fe502224c02fd5922524d92de11b3e97b",
+    "0244ba0e0ea343702be614c93a9095937664f85e": "c27cd899285c2bcb8efb702fc465efeb9c091828",
+    "de2a549f7bc4a426b40aa65c1d107d9f6033b5b2": "4e9ebf038a31f2d4cb7a4e2bd3eae66c1274b5f6",
+    "c4b50d48dd6c3f64632b1b9d73a55373ecda2775": "6bc519da14feb5c4f2482c25cd2dc651e900e9be",
+    "acc044bbcd6aef776e6052cee6ac3a0fa128a033": "1bc201329306b2f8b90fabaa4f86cac8f45d7195",
+    "c2f692c3f618222f1251d1629c4127d0e9131bcd": "972a67d35b725c662d3bd77841a72e91dcdaf328",
+    "92e56cfae4e4c8a87a84306582689384d9d6b209": "10d1c64a1be4dfa4fb7bd17dee3efa5fc35d0774",
+    "524752158c15fcec62a2db67083148e9c990b5b7": "e49fd64f8945da895197b67f610b00ae5bbf4f8d",
+    "7c726b430a0a9c2ea1ff9e37f2dd4def4c151ccb": "e9fa9f2a632f4fd53bbda19fd2e4bed7962b619d",
+    "0cf30229ccb9741de17835934d2d04bb6de1e01f": "6971359d5cc1d58c8a4ebb637009f91dc44988ba",
+    "0ad61517ffad66394a604658d3e6a6b97712850d": "320cf340249d1ebd63d213ab5ade367ffa1bb86d",
+    "8492b26f4966aa3c6d71bbb17122f4d82b950924": "b72e11f6744d00dbe2f7b576aba28355fcd9908f",
+    "3bce2e9eaf2813e192c83444997354a18edf795b": "a7cf77fdf0f981bc42ad0bcf53ac385f08c85614",
+    "75dc2672271be4762c0f6c5fafe479df1899811c": "ffb0ebd116f18c3e7fbf16e3a691f459e696b578",
+    "6aefc3977a51dd52d392e08474476453bef844fe": "7a4e8af011e9a0b00d0ba329967450dede20918e",
+    "b02684e3c73bcac13b498b72061f3f4135b7c903": "869b426bdd0b21dae57c5e897ea69e5bf789973f",
+    "10a5bac6297b6a3bb9362017268d07c01db89f4c": "0d9cee2facea29c0c37c0a336871d334b2c16eec",
+    "54aa06bd8040dc947113d91a9cb681f59ea86292": "80db5f000e31436627b8be2b979c534b8b0edcb9",
+    "dc40efd0f25b2f5f0f4744080d81070e5ffdfe1e": "17f21e9561b0548bfc95abe667856caaf639772c",
+    "0aeb72e0a0dacc0878c166ad96c012e61fac7ec3": "32db5fdda744a8e1adcf968b383472159132f957",
+    "f8feb8eb30aa9246b1345599ad01cfc758d191bc": "6eb961a892902099fc07fb7fe60964f5ce19ab08",
+    "9734e69fcc4b5ffa8e8c378d036c263131168afa": "48f35cfe33dc272c06d2a9ef5a3d950674286678",
+    "46ac06e759329e992512edb9f48f5143ea107063": "b6be756319e4f878cde749e980976e0bdb9fedaa",
+    "e3c90548d6803ad5f2a06ce731d7f124e970c8c1": "c6384421035ce09d9e2f4f8edfca2c945ff8a1a2",
+    "3df107c4f706f35f40839cba0b30d12aa0cc3db8": "bac61c1a7b28b1e21d0d1fb6546ba5b8b38e2c65",
+    "995a0c43576f8bf4d04832c73add1431a229c962": "e08de66c6f033126323d753c1dc4cb6a6ba3f6e2",
+    "7bf86b4a5536c565d23f1f19ed61d775cc41e7f6": "e10158fddbde1b92d1e8f4ab212cf688ed754203",
+    "1a192f2b40b70a54ebd5279a0998437254907882": "9bac254d1990885353453cbab7819771ba42fa56",
+    "7973b711a4a3ac91c4f13a68744e92f60d504ea5": "5ba458660c818831ca988e735c8e2239d9ef9d9f",
+    "4678e3c7dc29a0e0ae96d78954a2cf6c0cc81774": "7938c9e87e41bb31cba2aae3ebe488fb459a4b5a",
+    "98f1d0453c4f0c73d7322c634fea9ed144a29d32": "6e3fb965e862922f5ef8be979644f6727afe32e2",
+    "dd25f66f2f72f5b0c4a3020930aa8448fb514cd6": "a9640df047c768fe4972453b6785e19449b752ce",
+    "55f963694f299c018e2333abafa987733e8fb95b": "361d1bebd17c8b459544faa18c49ceb888ec0389",
+    "572b01c7413ecb0586b24b221a5e28f34eac1e19": "e2ffdafedc65eaee2210c6032c9eb04bb2495bf2",
+    "5148079a0d728c06092fe6c2980485e4e0d785b9": "e3656db504c21724caff706e301c13848fdf9d16",
+    "c52265ab0da80a70009d7810975d5b8815568048": "4e8fd73f932687f8f38483a3b34763228d7a7d7e",
+    "a16c9ef314c691f8ccde84976b07591e60202069": "2e7f0b6bec6f1473626d6e88bf5f00028f45e0b2",
+    "4007d0c46eba353bc2bdf224b3acf983ffabb1b1": "b6dab137e900a4dee92c73c83d6726ddd6140dfe",
+    "a283e2d961cfca9bbf37b1649d397b6aa1c8442e": "68df0b485e713b79418cab458f50be0001aa406f",
+    "5f99a54b7460062a08c8f59de6c04c6d1b2be06c": "a6e0818568afbfc48b8ce3e7241f822a4aba755a",
+    "412441c80b1f85dd390144a12bd4a9162fcc593f": "d4184598995718d01b4015332f66851b2ace0e68",
+    "dac4388cea317127981c5cf058319b3bcdc02a24": "8215ff2d54afbe53f0219aa10f384e205118f4d3",
+    "766ff82a99382c16d0e983023a6a856f76153ecb": "f879eb76a50a8087e501c2990f3dac31d007bd4a"
+  }
+}
